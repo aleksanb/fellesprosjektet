@@ -1,0 +1,6 @@
+.settings/
+.project
+.class
+bin/
+gen/
+*~
