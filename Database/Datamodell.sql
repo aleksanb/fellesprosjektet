@@ -2,169 +2,169 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `sids` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `sids` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`User`
+-- Table `sids`.`user`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`User` (
-  `ID` INT NOT NULL ,
-  `Name` VARCHAR(45) NOT NULL ,
-  `Email` VARCHAR(45) NOT NULL ,
-  `HashedPassword` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`ID`) )
+CREATE  TABLE IF NOT EXISTS `sids`.`user` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `email` VARCHAR(45) NOT NULL ,
+  `hashedPassword` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Group`
+-- Table `sids`.`group`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`Group` (
-  `ID` INT NOT NULL ,
-  `Name` VARCHAR(45) NOT NULL ,
-  PRIMARY KEY (`ID`) )
+CREATE  TABLE IF NOT EXISTS `sids`.`group` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`GroupGroup`
+-- Table `sids`.`group_group`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`GroupGroup` (
-  `MasterID` INT NOT NULL ,
-  `SlaveID` INT NOT NULL ,
-  INDEX `fk_Group_has_Group_Group1_idx` (`SlaveID` ASC) ,
-  INDEX `fk_Group_has_Group_Group_idx` (`MasterID` ASC) ,
-  PRIMARY KEY (`SlaveID`, `MasterID`) ,
+CREATE  TABLE IF NOT EXISTS `sids`.`group_group` (
+  `masterId` INT NOT NULL ,
+  `slaveId` INT NOT NULL ,
+  INDEX `fk_Group_has_Group_Group1_idx` (`slaveId` ASC) ,
+  INDEX `fk_Group_has_Group_Group_idx` (`masterId` ASC) ,
+  PRIMARY KEY (`slaveId`, `masterId`) ,
   CONSTRAINT `fk_Group_has_Group_Group`
-    FOREIGN KEY (`MasterID` )
-    REFERENCES `mydb`.`Group` (`ID` )
+    FOREIGN KEY (`masterId` )
+    REFERENCES `sids`.`group` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Group_has_Group_Group1`
-    FOREIGN KEY (`SlaveID` )
-    REFERENCES `mydb`.`Group` (`ID` )
+    FOREIGN KEY (`slaveId` )
+    REFERENCES `sids`.`group` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`GroupUser`
+-- Table `sids`.`group_user`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`GroupUser` (
-  `GroupID` INT NOT NULL ,
-  `UserID` INT NOT NULL ,
-  INDEX `fk_Group_has_User_User1_idx` (`UserID` ASC) ,
-  INDEX `fk_Group_has_User_Group1_idx` (`GroupID` ASC) ,
-  PRIMARY KEY (`GroupID`, `UserID`) ,
+CREATE  TABLE IF NOT EXISTS `sids`.`group_user` (
+  `groupId` INT NOT NULL ,
+  `userId` INT NOT NULL ,
+  INDEX `fk_Group_has_User_User1_idx` (`userId` ASC) ,
+  INDEX `fk_Group_has_User_Group1_idx` (`groupId` ASC) ,
+  PRIMARY KEY (`groupId`, `userId`) ,
   CONSTRAINT `fk_Group_has_User_Group1`
-    FOREIGN KEY (`GroupID` )
-    REFERENCES `mydb`.`Group` (`ID` )
+    FOREIGN KEY (`groupId` )
+    REFERENCES `sids`.`group` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Group_has_User_User1`
-    FOREIGN KEY (`UserID` )
-    REFERENCES `mydb`.`User` (`ID` )
+    FOREIGN KEY (`userId` )
+    REFERENCES `sids`.`user` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`Appointment`
+-- Table `sids`.`appointment`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`Appointment` (
-  `ID` INT NOT NULL ,
-  `CreatorUserID` INT NOT NULL ,
-  `Title` VARCHAR(45) NOT NULL ,
-  `Start` DATETIME NOT NULL ,
-  `End` DATETIME NOT NULL ,
-  `Description` VARCHAR(255) NOT NULL ,
-  `IsMeeting` TINYINT(1) NOT NULL DEFAULT False ,
-  PRIMARY KEY (`ID`) )
+CREATE  TABLE IF NOT EXISTS `sids`.`appointment` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `creatorUserId` INT NOT NULL ,
+  `title` VARCHAR(45) NOT NULL ,
+  `start` DATETIME NOT NULL ,
+  `end` DATETIME NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  `isMeeting` TINYINT(1) NOT NULL DEFAULT False ,
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`MeetingPoint`
+-- Table `sids`.`meetingpoint`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`MeetingPoint` (
-  `ID` INT NOT NULL ,
-  `Name` VARCHAR(45) NULL ,
-  `Capacity` INT NULL ,
-  PRIMARY KEY (`ID`) )
+CREATE  TABLE IF NOT EXISTS `sids`.`meetingpoint` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NULL ,
+  `capacity` INT NULL ,
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`GroupAppointment`
+-- Table `sids`.`group_appointment`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`GroupAppointment` (
-  `GroupID` INT NOT NULL ,
-  `AppointmentID` INT NOT NULL ,
-  INDEX `fk_Group_has_Appointment_Appointment1_idx` (`AppointmentID` ASC) ,
-  INDEX `fk_Group_has_Appointment_Group1_idx` (`GroupID` ASC) ,
-  PRIMARY KEY (`GroupID`, `AppointmentID`) ,
+CREATE  TABLE IF NOT EXISTS `sids`.`group_appointment` (
+  `groupId` INT NOT NULL ,
+  `appointmentId` INT NOT NULL ,
+  INDEX `fk_Group_has_Appointment_Appointment1_idx` (`appointmentId` ASC) ,
+  INDEX `fk_Group_has_Appointment_Group1_idx` (`groupId` ASC) ,
+  PRIMARY KEY (`groupId`, `appointmentId`) ,
   CONSTRAINT `fk_Group_has_Appointment_Group1`
-    FOREIGN KEY (`GroupID` )
-    REFERENCES `mydb`.`Group` (`ID` )
+    FOREIGN KEY (`groupId` )
+    REFERENCES `sids`.`group` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Group_has_Appointment_Appointment1`
-    FOREIGN KEY (`AppointmentID` )
-    REFERENCES `mydb`.`Appointment` (`ID` )
+    FOREIGN KEY (`appointmentId` )
+    REFERENCES `sids`.`appointment` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`UserAppointment`
+-- Table `sids`.`user_appointment`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`UserAppointment` (
-  `UserID` INT NOT NULL ,
-  `AppointmentID` INT NOT NULL ,
-  `IsGoing` TINYINT(1) NULL DEFAULT NULL ,
-  `alarmTime` DATETIME NULL DEFAULT NULL ,
-  INDEX `fk_User_has_Appointment_Appointment1_idx` (`AppointmentID` ASC) ,
-  INDEX `fk_User_has_Appointment_User1_idx` (`UserID` ASC) ,
-  PRIMARY KEY (`AppointmentID`, `UserID`) ,
+CREATE  TABLE IF NOT EXISTS `sids`.`user_appointment` (
+  `userId` INT NOT NULL ,
+  `appointmentId` INT NOT NULL ,
+  `isGoing` TINYINT(1) NULL DEFAULT NULL ,
+  `alarmTime` DATETIME NULL ,
+  INDEX `fk_User_has_Appointment_Appointment1_idx` (`appointmentId` ASC) ,
+  INDEX `fk_User_has_Appointment_User1_idx` (`userId` ASC) ,
+  PRIMARY KEY (`appointmentId`, `userId`) ,
   CONSTRAINT `fk_User_has_Appointment_User1`
-    FOREIGN KEY (`UserID` )
-    REFERENCES `mydb`.`User` (`ID` )
+    FOREIGN KEY (`userId` )
+    REFERENCES `sids`.`user` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_User_has_Appointment_Appointment1`
-    FOREIGN KEY (`AppointmentID` )
-    REFERENCES `mydb`.`Appointment` (`ID` )
+    FOREIGN KEY (`appointmentId` )
+    REFERENCES `sids`.`appointment` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`AppointmentMeetingPoint`
+-- Table `sids`.`appointment_meetingpoint`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `mydb`.`AppointmentMeetingPoint` (
-  `AppointmentID` INT NOT NULL ,
-  `MeetingPointID` INT NULL ,
-  PRIMARY KEY (`MeetingPointID`, `AppointmentID`) ,
-  INDEX `fk_Appointment_has_MeetingPoint_MeetingPoint1_idx` (`MeetingPointID` ASC) ,
-  INDEX `fk_Appointment_has_MeetingPoint_Appointment1_idx` (`AppointmentID` ASC) ,
+CREATE  TABLE IF NOT EXISTS `sids`.`appointment_meetingpoint` (
+  `appointmentId` INT NOT NULL ,
+  `meetingpointId` INT NULL ,
+  PRIMARY KEY (`meetingpointId`, `appointmentId`) ,
+  INDEX `fk_Appointment_has_MeetingPoint_MeetingPoint1_idx` (`meetingpointId` ASC) ,
+  INDEX `fk_Appointment_has_MeetingPoint_Appointment1_idx` (`appointmentId` ASC) ,
   CONSTRAINT `fk_Appointment_has_MeetingPoint_Appointment1`
-    FOREIGN KEY (`AppointmentID` )
-    REFERENCES `mydb`.`Appointment` (`ID` )
+    FOREIGN KEY (`appointmentId` )
+    REFERENCES `sids`.`appointment` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Appointment_has_MeetingPoint_MeetingPoint1`
-    FOREIGN KEY (`MeetingPointID` )
-    REFERENCES `mydb`.`MeetingPoint` (`ID` )
+    FOREIGN KEY (`meetingpointId` )
+    REFERENCES `sids`.`meetingpoint` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-USE `mydb` ;
+USE `sids` ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
