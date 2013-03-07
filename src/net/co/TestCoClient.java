@@ -9,8 +9,8 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import fp.net.admin.Log;
-import fp.net.co.Connection;
+import net.admin.Log;
+import net.co.Connection;
 
 /**
  * Simplest possible test application, client part.
