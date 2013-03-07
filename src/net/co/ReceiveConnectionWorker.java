@@ -1,7 +1,7 @@
 /**
  * 25. jan.. 2009
  */
-package no.ntnu.fp.net.co;
+package net.co;
 
 /**
  * @author Marius Bjerke

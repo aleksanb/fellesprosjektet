@@ -2,15 +2,15 @@
  * Created on Oct 27, 2004
  *
  */
-package no.ntnu.fp.net.co;
+package net.co;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import no.ntnu.fp.net.admin.Log;
-import no.ntnu.fp.net.co.Connection;
+import fp.net.admin.Log;
+import fp.net.co.Connection;
 
 /**
  * Simplest possible test application, client part.
