@@ -1,10 +1,10 @@
-package no.ntnu.fp.net.co;
+package net.co;
 
 import java.io.IOException;
 
-import no.ntnu.fp.net.admin.Log;
-import no.ntnu.fp.net.cl.ClSocket;
-import no.ntnu.fp.net.cl.KtnDatagram;
+import net.admin.Log;
+import net.cl.ClSocket;
+import net.cl.KtnDatagram;
 
 /**
  * Helper class for timed receiving. This thread runs until a packet is

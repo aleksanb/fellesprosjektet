@@ -1,13 +1,13 @@
-package no.ntnu.fp.net.co;
+package net.co;
 
 import java.io.IOException;
 import java.util.TimerTask;
 
-import no.ntnu.fp.net.admin.Log;
-import no.ntnu.fp.net.cl.ClException;
-import no.ntnu.fp.net.cl.ClSocket;
-import no.ntnu.fp.net.cl.KtnDatagram;
-import no.ntnu.fp.net.co.AbstractConnection;
+import net.admin.Log;
+import net.cl.ClException;
+import net.cl.ClSocket;
+import net.cl.KtnDatagram;
+import net.co.AbstractConnection;
 
 /**
  * A helper class used when sending datagrams and waiting for ack. The class
@@ -18,7 +18,7 @@ import no.ntnu.fp.net.co.AbstractConnection;
  * @see AbstractConnection#simplySendPacket(KtnDatagram)
  * @see java.util.TimerTask
  * @see java.util.Timer
- * @author Stein Jakob Nordbø
+ * @author Stein Jakob Nordbï¿½
  */
 public class SendTimer extends TimerTask {
 

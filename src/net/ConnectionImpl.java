@@ -1,7 +1,7 @@
 /*
  * Created on Oct 27, 2004
  */
-package no.ntnu.fp.net.co;
+package net.co;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -15,11 +15,11 @@ import java.util.Map;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import no.ntnu.fp.net.admin.Log;
-import no.ntnu.fp.net.cl.ClException;
-import no.ntnu.fp.net.cl.ClSocket;
-import no.ntnu.fp.net.cl.KtnDatagram;
-import no.ntnu.fp.net.cl.KtnDatagram.Flag;
+import net.admin.Log;
+import net.cl.ClException;
+import net.cl.ClSocket;
+import net.cl.KtnDatagram;
+import net.cl.KtnDatagram.Flag;
 
 /**
  * Implementation of the Connection-interface. <br>
@@ -30,7 +30,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * of the functionality, leaving message passing and error handling to this
  * implementation.
  * 
- * @author Sebjørn Birkeland and Stein Jakob Nordbø
+ * @author Sebjï¿½rn Birkeland and Stein Jakob Nordbï¿½
  * @see no.ntnu.fp.net.co.Connection
  * @see no.ntnu.fp.net.cl.ClSocket
  */

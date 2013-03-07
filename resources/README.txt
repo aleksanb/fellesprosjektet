@@ -1,0 +1,1 @@
+In this folder we keep sql syntax and images and other fancy stuff to use in this awsum program
