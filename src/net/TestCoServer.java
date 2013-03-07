@@ -9,8 +9,8 @@ package net.co;
 import java.io.EOFException;
 import java.io.IOException;
 
-import fp.net.admin.Log;
-import fp.net.co.Connection;
+import net.admin.Log;
+import net.co.Connection;
 
 /**
  * Simplest possible test application, server part.
