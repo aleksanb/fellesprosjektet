@@ -4,5 +4,7 @@
 	<classpathentry kind="src" path="eksempelApp"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="lib_path/xom-1.2.9.jar"/>
+	<classpathentry kind="var" path="lib_path/xom-samples.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
