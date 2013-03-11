@@ -1,4 +1,4 @@
-package db.connection;
+package db;
 
 
 //here we will connect to the db
