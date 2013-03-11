@@ -14,6 +14,10 @@ public class Factory {
 		db = new DBConnection(properties);	
 	}
 	
+	public boolean checkValid(String username, String password) {
+		return true;
+	}
+	
 	public User createUser(String name, String password, String email) throws ClassNotFoundException, SQLException {
 
 		PreparedStatement prest;
