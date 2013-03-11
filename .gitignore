@@ -2,4 +2,5 @@
 .class
 bin/
 gen/
+resources/database.properties
 *~
