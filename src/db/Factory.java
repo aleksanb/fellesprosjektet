@@ -22,5 +22,10 @@ public class Factory {
 		User u = new User(name, password, email);
 		return u;
 	}
+
+	public boolean checkValid(String username, String password) {
+		return false;
+	}
+	
 	
 }
