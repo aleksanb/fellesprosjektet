@@ -24,7 +24,7 @@ public class Factory {
 	}
 
 	public boolean checkValid(String username, String password) {
-		return false;
+		return true;
 	}
 	
 	
