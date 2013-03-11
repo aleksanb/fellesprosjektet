@@ -2,6 +2,17 @@ package db;
 
 import java.util.Date;
 
+/**
+ * 
+ * @author Espen
+ *
+ *Kan vi bruke klassen GregorianCalendar istedet for "Date" til å lagre dato-objekter?
+ *"Date" brukes mest til å sette dato inn i en database tror jeg?
+ *når vi gjør det kan vi istedet bruke gregorianCalendar.getTime()
+ */
+
+
+
 public class Appointment {
 
 	int id;
