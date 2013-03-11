@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import gui.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -49,6 +50,7 @@ public class CalendarProgram extends JFrame {
 		MenuPanel menuPanel = new MenuPanel();
 		contentPane.add(menuPanel, BorderLayout.WEST);
 		menuPanel.setBackground(Color.GREEN);
+
 	}
 
 }
