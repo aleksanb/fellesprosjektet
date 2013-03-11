@@ -6,8 +6,11 @@ public class Person {
 	private String password;
 	private String email;
 	
-	public Person(int id){
+	public Person(int id, String name, String password, String email){
 		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.email = email;
 	}
 	public void setName(String name){
 		this.name = name;
