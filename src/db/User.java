@@ -1,12 +1,12 @@
 package db;
 
-public class Person {
+public class User {
 	private int id;
 	private String name;
 	private String password;
 	private String email;
 	
-	public Person(int id, String name, String password, String email){
+	public User(int id, String name, String password, String email){
 		this.id = id;
 		this.name = name;
 		this.password = password;
