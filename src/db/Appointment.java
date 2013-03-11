@@ -26,9 +26,6 @@ public class Appointment {
 	public int getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public int getCreatorUserId() {
 		return creatorUserId;
 	}
