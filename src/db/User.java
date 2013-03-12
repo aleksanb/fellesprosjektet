@@ -12,6 +12,9 @@ public class User {
 		this.password = password;
 		this.email = email;
 	}
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 	public void setName(String name){
 		this.name = name;
 	}
