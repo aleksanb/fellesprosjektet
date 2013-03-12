@@ -18,11 +18,13 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class AddAppointmentPanel extends JPanel implements ActionListener {
@@ -37,6 +39,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JCheckBox meetingBox;
 	private JButton addAppButton;
 	private JButton cancelButton;
+	private boolean approved = false;
 	
 	/**
 	 * Create the panel.
@@ -172,6 +175,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gbc_meetingBox.gridy = 6;
 		add(meetingBox, gbc_meetingBox);
 		
+		//add appointment
 		addAppButton = new JButton("Add Appointment");
 		addAppButton.addActionListener(this);
 		addAppButton.setActionCommand("Add");
@@ -181,6 +185,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gbc_addAppButton.gridy = 8;
 		add(addAppButton, gbc_addAppButton);
 		
+		//cancel appointment
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(this);
 		cancelButton.setActionCommand("Cancel");
@@ -216,55 +221,82 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		System.out.println(event.getActionCommand());
+//		System.out.println(event.getActionCommand());
 		
 		//date picking start and end
-		if(event.getActionCommand().equals("datePickerCommit")){
-			JXDatePicker picker = (JXDatePicker) event.getSource();
-			Date date = picker.getDate();
-			if(event.getSource()==endPick){
-				System.out.println("end");
-				appointment.setEnd(date);
-			}
-			if(event.getSource()==startPick){
-				System.out.println("start");
-				appointment.setStart(date);
-			}
-		}
+//		if(event.getActionCommand().equals("datePickerCommit")){
+//			JXDatePicker picker = (JXDatePicker) event.getSource();
+//			Date date = picker.getDate();
+//			if(event.getSource()==endPick){
+//				System.out.println("end");
+//				appointment.setEnd(date);
+//			}
+//			if(event.getSource()==startPick){
+//				System.out.println("start");
+//				appointment.setStart(date);
+//			}
+//		}
 		
 		//set title
-		if(event.getActionCommand().equals("Title"))
-			appointment.setTitle(titleField.getText());
+//		if(event.getActionCommand().equals("Title"))
+//			appointment.setTitle(titleField.getText());
 		
 		// TODO: check that time is correct format
 		//set start time
-		if(event.getActionCommand().equals("Start time")){
-			Date start = appointment.getStart();
-			String[] time = startField.getText().split(":");
-			int hours = Integer.parseInt(time[0]);
-			int mins = Integer.parseInt(time[1]);
-			start.setHours(hours);
-			start.setMinutes(mins);
-		}
+//		if(event.getActionCommand().equals("Start time")){
+//			Date start = appointment.getStart();
+//			String[] time = startField.getText().split(":");
+//			int hours = Integer.parseInt(time[0]);
+//			int mins = Integer.parseInt(time[1]);
+//			start.setHours(hours);
+//			start.setMinutes(mins);
+//		}
 		//set end time
-		if(event.getActionCommand().equals("End time")){
-			Date end = appointment.getStart();
-			String[] time = endField.getText().split(":");
-			int hours = Integer.parseInt(time[0]);
-			int mins = Integer.parseInt(time[1]);
-			end.setHours(hours);
-			end.setMinutes(mins);
-		}
+//		if(event.getActionCommand().equals("End time")){
+//			Date end = appointment.getStart();
+//			String[] time = endField.getText().split(":");
+//			int hours = Integer.parseInt(time[0]);
+//			int mins = Integer.parseInt(time[1]);
+//			end.setHours(hours);
+//			end.setMinutes(mins);
+//		}
 		
-		//set title
+		//add meeting options
 		if(event.getActionCommand().equals("Meeting"))
 			//TODO: make the other stuff appear and disappear
 			;
 		
 		//add Appointment
-		if(event.getActionCommand().equals("Add"))
-			//TODO: save all fields and add the appointment
-			;
+		if(event.getActionCommand().equals("Add")){
+			
+			//set title
+			appointment.setTitle(titleField.getText());
+			
+			//set dates
+			appointment.setStart(startPick.getDate());
+			appointment.setEnd(endPick.getDate());
+			if(appointment.getStart()==null || appointment.getEnd()==null){
+				approved=false;
+				JOptionPane.showMessageDialog(this, "You must pick dates.","Date error",JOptionPane.ERROR_MESSAGE);
+			} else approved=true;
+			
+			//check format and set time
+			if(approved)
+				appointment.setStart(addTime(startField.getText(), appointment.getStart()));
+			if(approved)
+				appointment.setEnd(addTime(endField.getText(), appointment.getEnd()));
+			
+			//check that start if before end
+			if(approved)
+				checkStartVsEndTime();
+			
+			//set description
+			if(approved)
+				appointment.setDescription(descriptionArea.getText());
+			
+			//debug
+			System.out.println(appointment);
+		}
 		
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel"))
@@ -273,6 +305,45 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 	}
 	
+	private void checkStartVsEndTime() {
+		if(appointment.getEnd().before(appointment.getStart())){
+			JOptionPane.showMessageDialog(this, "End-date is after start-date","Date error",JOptionPane.ERROR_MESSAGE);
+			approved=false;
+		}
+		approved=true;
+	}
+
+
+	private Date addTime(String text, Date date) {
+		String[] time = text.split(":");
+		int hours;
+		int mins;
+		
+		try{
+			checkTimeFormat(time);
+			hours = Integer.parseInt(time[0]);
+			mins = Integer.parseInt(time[1]);
+			if(hours>23||hours<0 || mins >60 || mins<0)
+				throw new IllegalArgumentException();
+			date.setHours(hours);
+			date.setMinutes(mins);
+			approved=true;
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(this, "Wrong time-format","Time Error",JOptionPane.ERROR_MESSAGE);
+			approved=false;
+		}
+		return date;
+	}
+
+
+	private void checkTimeFormat(String[] text) throws IllegalArgumentException{
+		if(text.length!=2)
+			throw new IllegalArgumentException();
+		if(text[1].length()!=2 && text[0].length()!=2)
+			throw new IllegalArgumentException();
+	}
+
+
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new AddAppointmentPanel());

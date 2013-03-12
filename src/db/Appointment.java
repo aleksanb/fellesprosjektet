@@ -73,6 +73,14 @@ public class Appointment {
 	public void setMeeting(boolean isMeeting) {
 		this.isMeeting = isMeeting;
 	}
+
+	@Override
+	public String toString() {
+		return "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
+				+ "\n title: " + title + "\n start: " + start + "\n end: " + end
+				+ "\n description: " + description + "\n isMeeting: " + isMeeting;
+	}
+	
 	
 	
 }
