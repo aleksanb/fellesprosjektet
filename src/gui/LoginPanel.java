@@ -14,6 +14,9 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.Properties;
+
 import db.Factory;
 
 public class LoginPanel extends JPanel {
@@ -91,8 +94,9 @@ public class LoginPanel extends JPanel {
 	}
 
 }
-	 public static void main(String args[]){
-		 	Factory f = new db.Factory();
+	 public static void main(String args[]) throws ClassNotFoundException, SQLException{
+		 	Properties p = new Properties();
+		 	Factory f = new db.Factory(p);
 			JFrame frame = new JFrame("...");
 			frame.add(new LoginPanel(f));
 			frame.pack();
