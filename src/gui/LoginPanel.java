@@ -11,6 +11,9 @@ import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import core.CalendarProgram;
+import db.Factory;
+
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -18,18 +21,18 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import db.Factory;
-
 public class LoginPanel extends JPanel {
 	private JTextField textField;
 	private JPasswordField passwordfield;
 	private Factory factory;
+	private CalendarProgram cp;
+
 
 	/**
 	 * Create the panel.
 	 */
-	public LoginPanel(Factory factory) {
-		this.factory = factory;
+	public LoginPanel(CalendarProgram cp) {
+		this.cp = cp;
 		setBackground(new Color(255, 153, 0));
 		setBackground(Color.MAGENTA); 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -74,7 +77,7 @@ public class LoginPanel extends JPanel {
 		passwordfield.setColumns(25);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.addActionListener(new LoginAction(this));
+		btnLogin.addActionListener(new LoginAction(this, cp));
 		
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.insets = new Insets(0, 0, 5, 0);
@@ -86,21 +89,20 @@ public class LoginPanel extends JPanel {
 	} 
 	class LoginAction implements ActionListener {
 		LoginPanel lp;
-		public LoginAction(LoginPanel lp){
+		public LoginAction(LoginPanel lp, CalendarProgram cp){
 			this.lp = lp;
 		}
 		public void actionPerformed(ActionEvent e) {
-			if(factory.checkValid(textField.getText(),passwordfield.getText())){
+			if(cp.checkValid(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 		}
 	}
 
 }
 	 public static void main(String args[]) throws ClassNotFoundException, SQLException{
-		 	Properties p = new Properties();
-		 	Factory f = new db.Factory(p);
+		 	CalendarProgram cp = new CalendarProgram();
 			JFrame frame = new JFrame("...");
-			frame.add(new LoginPanel(f));
+			frame.add(new LoginPanel(cp));
 			frame.pack();
 			frame.setVisible(true);
 		}    
