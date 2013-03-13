@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import db.User;
+
 import gui.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -15,6 +17,7 @@ import java.awt.Color;
 public class CalendarProgram extends JFrame {
 
 	private JPanel contentPane;
+	private User user;
 
 	/**
 	 * Launch the application.
@@ -53,9 +56,15 @@ public class CalendarProgram extends JFrame {
 		contentPane.add(menuPanel, BorderLayout.WEST);
 		menuPanel.setBackground(Color.GREEN);
 		
-		AddAppointmentPanel addAppointmentPanel = new AddAppointmentPanel();
+		AddAppointmentPanel addAppointmentPanel = new AddAppointmentPanel(this);
 		contentPane.add(addAppointmentPanel, BorderLayout.EAST);
 
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 
+import core.CalendarProgram;
+
 import db.Appointment;
 import db.User;
 
@@ -40,14 +42,17 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JButton addAppButton;
 	private JButton cancelButton;
 	private boolean approved = false;
+	private CalendarProgram cp;
 	
 	/**
 	 * Create the panel.
 	 */
-	public AddAppointmentPanel() {
+	public AddAppointmentPanel(CalendarProgram cp) {
 		
 		//creates a default appiontment object based on today, with uniqe id
 		appointment = createAppointment();
+		//reference to the main program
+		this.cp=cp;
 		
 		//GridBagLayout
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -346,7 +351,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		frame.getContentPane().add(new AddAppointmentPanel());
+		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram()));
 		frame.pack();
         frame.setSize (800,300);
         frame.setVisible(true);
