@@ -8,6 +8,7 @@ public class CalendarPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public CalendarPanel() {
+		
 
 	}
 
