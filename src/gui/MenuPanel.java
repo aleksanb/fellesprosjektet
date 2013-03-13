@@ -28,7 +28,7 @@ public class MenuPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public MenuPanel() {
+	public MenuPanel(CalendarProgram cp) {
 		listModel = new DefaultListModel();
 		setBackground(new Color(51, 204, 204));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -50,10 +50,7 @@ public class MenuPanel extends JPanel {
 		add(lblHello, gbc_lblHello);
 		
 		JButton btnNewA = new JButton("New appointment");
-		btnNewA.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnNewA.addActionListener(new AddAppointmentListener(cp));
 		GridBagConstraints gbc_btnNewA = new GridBagConstraints();
 		gbc_btnNewA.gridwidth = 5;
 		gbc_btnNewA.insets = new Insets(0, 0, 5, 0);
@@ -89,10 +86,7 @@ public class MenuPanel extends JPanel {
 		
 		
 		JButton btnLog = new JButton("Logout");
-		btnLog.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnLog.addActionListener(new logoutListener(cp));
 		GridBagConstraints gbc_btnLog = new GridBagConstraints();
 		gbc_btnLog.gridwidth = 3;
 		gbc_btnLog.insets = new Insets(0, 0, 0, 5);
@@ -108,9 +102,32 @@ public class MenuPanel extends JPanel {
 	private void update() {
 		notificationList.setListData(listModel.toArray());
 	}
+	class logoutListener implements ActionListener{
+		CalendarProgram cp;
+		public logoutListener(CalendarProgram cp){
+			this.cp = cp;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			cp.displayLogin();
+		}
+		
+	}
+	class AddAppointmentListener implements ActionListener{
+		CalendarProgram cp;
+		public AddAppointmentListener(CalendarProgram cp){
+			this.cp = cp;
+		}
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			cp.createAppointmentPanel();
+		}
+		
+	}
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
-			MenuPanel mp = new MenuPanel();
+			CalendarProgram cp1 = new CalendarProgram();
+			MenuPanel mp = new MenuPanel(cp1);
 			frame.add(mp);
 			frame.pack();
 			frame.setSize(200, 400);
