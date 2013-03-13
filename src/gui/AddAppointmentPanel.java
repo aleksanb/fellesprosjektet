@@ -18,6 +18,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 import javax.swing.JOptionPane;
@@ -65,6 +66,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//Pick start
 		startPick = new JXDatePicker();
 		startPick.addActionListener(this);
+		startPick.setDate(new Date());
 		
 		//title label
 		JLabel titleLabel = new JLabel("Title");
@@ -104,6 +106,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//pick end
 		endPick = new JXDatePicker();
 		endPick.addActionListener(this);
+		endPick.setDate(new Date());
 		
 		//set start time
 		startField = new JTextField();
@@ -205,13 +208,13 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 	@SuppressWarnings("deprecation")
 	private Appointment createAppointment() {
-		Date today = new Date();
+//		Date today = new Date();
+		GregorianCalendar today = new GregorianCalendar();
 		//if unique id is needed we can use theese
-//		int intID = (int)today.getTime();
-//		long longID = today.getTime();
+//		long intID = today.getTimeInMillis();
 		
 		//unique for date+hours+minutes
-		String id = ""+today.getDate()+today.getHours()+today.getMinutes();
+		String id = ""+today.DATE+today.HOUR+today.MINUTE;
 		int creatorUserId = getUser().getId();
 		
 		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today, "", false);
@@ -318,7 +321,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	}
 
 
-	private Date addTime(String text, Date date) {
+	private GregorianCalendar addTime(String text, GregorianCalendar date) {
 		String[] time = text.split(":");
 		int hours;
 		int mins;
@@ -329,8 +332,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			mins = Integer.parseInt(time[1]);
 			if(hours>23||hours<0 || mins >60 || mins<0)
 				throw new IllegalArgumentException();
-			date.setHours(hours);
-			date.setMinutes(mins);
+			date.set(GregorianCalendar.HOUR,hours);
+			date.set(GregorianCalendar.MINUTE,mins);
 			approved=true;
 		}catch(Exception ex){
 			JOptionPane.showMessageDialog(this, "Wrong time-format","Time Error",JOptionPane.ERROR_MESSAGE);
