@@ -1,14 +1,15 @@
 package db;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * 
  * @author Espen
  *
- *Kan vi bruke klassen GregorianCalendar istedet for "Date" til å lagre dato-objekter?
- *"Date" brukes mest til å sette dato inn i en database tror jeg?
- *når vi gjør det kan vi istedet bruke gregorianCalendar.getTime()
+ *Kan vi bruke klassen GregorianCalendar istedet for "Date" til ï¿½ lagre dato-objekter?
+ *"Date" brukes mest til ï¿½ sette dato inn i en database tror jeg?
+ *nï¿½r vi gjï¿½r det kan vi istedet bruke gregorianCalendar.getTime()
  */
 
 
@@ -18,13 +19,13 @@ public class Appointment {
 	int id;
 	int creatorUserId ;
 	String title;
-	Date start;
-	Date end;
+	GregorianCalendar start;
+	GregorianCalendar end;
 	String description;
 	boolean isMeeting;
 	
-	public Appointment(int id, int creatorUserId, String title, Date start,
-			Date end, String description, boolean isMeeting) {
+	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
+			GregorianCalendar end, String description, boolean isMeeting) {
 		this.id = id;
 		this.creatorUserId = creatorUserId;
 		this.title = title;
@@ -49,16 +50,18 @@ public class Appointment {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public Date getStart() {
+	public GregorianCalendar getStart() {
 		return start;
 	}
-	public void setStart(Date start) {
+	//overload
+	public void setStart(GregorianCalendar start) {
 		this.start = start;
 	}
-	public Date getEnd() {
+	public GregorianCalendar getEnd() {
 		return end;
 	}
-	public void setEnd(Date end) {
+	//overload
+	public void setEnd(GregorianCalendar end) {
 		this.end = end;
 	}
 	public String getDescription() {
@@ -73,11 +76,25 @@ public class Appointment {
 	public void setMeeting(boolean isMeeting) {
 		this.isMeeting = isMeeting;
 	}
+	public Date getStartAsDate(){
+		return start.getTime();
+	}
+	public Date getEndAsDate(){
+		return end.getTime();
+	}
+	//overload
+	public void setStart(Date date){
+		start.setTime(date);
+	}
+	//overload
+	public void setEnd(Date date){
+		end.setTime(date);
+	}
 
 	@Override
 	public String toString() {
 		return "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
-				+ "\n title: " + title + "\n start: " + start + "\n end: " + end
+				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
 				+ "\n description: " + description + "\n isMeeting: " + isMeeting;
 	}
 	
