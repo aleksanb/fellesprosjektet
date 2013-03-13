@@ -219,7 +219,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 
 	private User getUser() {
-		// TODO Auto-generated method stub
 		return new User();
 	}
 
