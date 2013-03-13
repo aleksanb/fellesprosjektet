@@ -31,13 +31,15 @@ public class CalendarProgram extends JFrame {
 			}
 		});
 	}
+	
+	
 
 	/**
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 559, 380);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -50,6 +52,9 @@ public class CalendarProgram extends JFrame {
 		MenuPanel menuPanel = new MenuPanel();
 		contentPane.add(menuPanel, BorderLayout.WEST);
 		menuPanel.setBackground(Color.GREEN);
+		
+		AddAppointmentPanel addAppointmentPanel = new AddAppointmentPanel();
+		contentPane.add(addAppointmentPanel, BorderLayout.EAST);
 
 	}
 
