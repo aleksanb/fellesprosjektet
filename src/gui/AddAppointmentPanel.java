@@ -210,14 +210,16 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private Appointment createAppointment() {
 //		Date today = new Date();
 		GregorianCalendar today = new GregorianCalendar();
+		GregorianCalendar today2 = new GregorianCalendar();
 		//if unique id is needed we can use theese
 //		long intID = today.getTimeInMillis();
+		
 		
 		//unique for date+hours+minutes
 		String id = ""+today.DATE+today.HOUR+today.MINUTE;
 		int creatorUserId = getUser().getId();
 		
-		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today, "", false);
+		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
 	}
 
 
