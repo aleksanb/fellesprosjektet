@@ -28,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import java.awt.Color;
+import javax.swing.JComboBox;
 
 @SuppressWarnings("serial")
 public class AddAppointmentPanel extends JPanel implements ActionListener {
@@ -44,6 +45,10 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JButton cancelButton;
 	private boolean approved = false;
 	private CalendarProgram cp;
+	private JCheckBox alarmBox;
+	private JTextField alarmValueField;
+	private JComboBox<String> valueTypePick;
+	private JLabel beforeStartLabel;
 	
 	/**
 	 * Create the panel.
@@ -57,10 +62,10 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//GridBagLayout
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {0, 30, 189, 39};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] {0, 30, 141, -6};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		//Pick start
@@ -173,24 +178,70 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gbc_descriptionArea.gridy = 5;
 		add(descriptionArea, gbc_descriptionArea);
 		
-		//checkbox for the meetings
-		JCheckBox meetingBox = new JCheckBox("Meeting");
-		meetingBox.addActionListener(this);
-		meetingBox.setActionCommand("Meeting");
-		GridBagConstraints gbc_meetingBox = new GridBagConstraints();
-		gbc_meetingBox.insets = new Insets(0, 0, 5, 5);
-		gbc_meetingBox.gridx = 0;
-		gbc_meetingBox.gridy = 6;
-		add(meetingBox, gbc_meetingBox);
-		
 		//add appointment
 		addAppButton = new JButton("Add Appointment");
 		addAppButton.addActionListener(this);
+		
+		//checkbox for the meetings
+		JCheckBox meetingBox_1 = new JCheckBox("Meeting");
+		meetingBox_1.addActionListener(this);
+		
+		//checkbox for alarms
+		alarmBox = new JCheckBox("Alarm");
+		alarmBox.addActionListener(this);
+		alarmBox.setActionCommand("alarm");
+		GridBagConstraints gbc_alarmBox = new GridBagConstraints();
+		gbc_alarmBox.insets = new Insets(0, 0, 5, 5);
+		gbc_alarmBox.gridx = 0;
+		gbc_alarmBox.gridy = 6;
+		add(alarmBox, gbc_alarmBox);
+		
+		//field for the value you want
+		alarmValueField = new JTextField();
+		alarmValueField.setText("10");
+		alarmValueField.setVisible(false);
+		
+		beforeStartLabel = new JLabel("Before Start");
+		beforeStartLabel.setVisible(false);
+		GridBagConstraints gbc_beforeStartLabel = new GridBagConstraints();
+		gbc_beforeStartLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_beforeStartLabel.gridx = 2;
+		gbc_beforeStartLabel.gridy = 6;
+		add(beforeStartLabel, gbc_beforeStartLabel);
+		GridBagConstraints gbc_alarmValueField = new GridBagConstraints();
+		gbc_alarmValueField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_alarmValueField.insets = new Insets(0, 0, 5, 5);
+		gbc_alarmValueField.gridx = 0;
+		gbc_alarmValueField.gridy = 7;
+		add(alarmValueField, gbc_alarmValueField);
+		alarmValueField.setColumns(3);
+		
+		//pick what type the value should representent e.g. hours, minutes days.
+		valueTypePick = new JComboBox<String>();
+		valueTypePick.setVisible(false);
+		valueTypePick.addItem("Minutes");
+		valueTypePick.addItem("Hour");
+		GridBagConstraints gbc_valueTypePick = new GridBagConstraints();
+		gbc_valueTypePick.anchor = GridBagConstraints.WEST;
+		gbc_valueTypePick.insets = new Insets(0, 0, 5, 5);
+		gbc_valueTypePick.gridx = 2;
+		gbc_valueTypePick.gridy = 7;
+		add(valueTypePick, gbc_valueTypePick);
+		
+		
+		meetingBox_1.setActionCommand("Meeting");
+		GridBagConstraints gbc_meetingBox_1 = new GridBagConstraints();
+		gbc_meetingBox_1.insets = new Insets(0, 0, 5, 5);
+		gbc_meetingBox_1.gridx = 0;
+		gbc_meetingBox_1.gridy = 8;
+		add(meetingBox_1, gbc_meetingBox_1);
+		
+		//add appointment
 		addAppButton.setActionCommand("Add");
 		GridBagConstraints gbc_addAppButton = new GridBagConstraints();
 		gbc_addAppButton.insets = new Insets(0, 0, 0, 5);
 		gbc_addAppButton.gridx = 0;
-		gbc_addAppButton.gridy = 8;
+		gbc_addAppButton.gridy = 10;
 		add(addAppButton, gbc_addAppButton);
 		
 		//cancel appointment
@@ -200,7 +251,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		GridBagConstraints gbc_cancelButton = new GridBagConstraints();
 		gbc_cancelButton.insets = new Insets(0, 0, 0, 5);
 		gbc_cancelButton.gridx = 2;
-		gbc_cancelButton.gridy = 8;
+		gbc_cancelButton.gridy = 10;
 		add(cancelButton, gbc_cancelButton);
 		
 	}
@@ -228,10 +279,11 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	}
 
 
-	@Override
+	
 	public void actionPerformed(ActionEvent event) {
 //		System.out.println(event.getActionCommand());
-		
+
+/**
 		//date picking start and end
 //		if(event.getActionCommand().equals("datePickerCommit")){
 //			JXDatePicker picker = (JXDatePicker) event.getSource();
@@ -250,7 +302,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 //		if(event.getActionCommand().equals("Title"))
 //			appointment.setTitle(titleField.getText());
 		
-		// TODO: check that time is correct format
 		//set start time
 //		if(event.getActionCommand().equals("Start time")){
 //			Date start = appointment.getStart();
@@ -269,6 +320,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 //			end.setHours(hours);
 //			end.setMinutes(mins);
 //		}
+ * 
+ */
+		//add alarm options
+		if(event.getActionCommand().equals("alarm")){
+				alarmValueField.setVisible(alarmBox.isSelected());
+				valueTypePick.setVisible(alarmBox.isSelected());
+				beforeStartLabel.setVisible(alarmBox.isSelected());
+		}
+			
 		
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting"))

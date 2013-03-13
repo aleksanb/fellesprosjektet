@@ -23,7 +23,9 @@ public class Appointment {
 	GregorianCalendar end;
 	String description;
 	boolean isMeeting;
+	GregorianCalendar alarm;
 	
+
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
 		this.id = id;
@@ -90,7 +92,13 @@ public class Appointment {
 	public void setEnd(Date date){
 		end.setTime(date);
 	}
+	public GregorianCalendar getAlarm() {
+		return alarm;
+	}
 
+	public void setAlarm(GregorianCalendar alarm) {
+		this.alarm = alarm;
+	}
 	@Override
 	public String toString() {
 		return "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
