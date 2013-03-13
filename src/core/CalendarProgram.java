@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -15,6 +16,9 @@ import java.awt.Color;
 public class CalendarProgram extends JFrame {
 
 	private JPanel contentPane;
+	private AddAppointmentPanel aap;
+	private LoginPanel loginPanel;
+	private JLayeredPane layeredPane;
 
 	/**
 	 * Launch the application.
@@ -31,15 +35,14 @@ public class CalendarProgram extends JFrame {
 			}
 		});
 	}
-	
-	
 
 	/**
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
+		layeredPane = new JLayeredPane();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 559, 380);
+		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -49,13 +52,26 @@ public class CalendarProgram extends JFrame {
 		calendarPanel.setBackground(Color.RED);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
 		
-		MenuPanel menuPanel = new MenuPanel();
+		MenuPanel menuPanel = new MenuPanel(this);
 		contentPane.add(menuPanel, BorderLayout.WEST);
 		menuPanel.setBackground(Color.GREEN);
 		
-		AddAppointmentPanel addAppointmentPanel = new AddAppointmentPanel();
-		contentPane.add(addAppointmentPanel, BorderLayout.EAST);
+		loginPanel = new LoginPanel(this);
+		
+	}
 
+	public void displayLogin() {
+		contentPane.add(loginPanel, BorderLayout.CENTER);
+		loginPanel.setBackground(Color.BLUE);
+	}
+	public void createAppointmentPanel(){
+		aap = new AddAppointmentPanel();
+		contentPane.add(aap, BorderLayout.CENTER);
+		aap.setBackground(Color.BLUE);
+	}
+
+	public boolean checkValid(String userName, String password) {
+		return true;
 	}
 
 }
