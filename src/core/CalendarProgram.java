@@ -18,7 +18,8 @@ public class CalendarProgram extends JFrame {
 	private JPanel contentPane;
 	private AddAppointmentPanel aap;
 	private LoginPanel loginPanel;
-	private JLayeredPane layeredPane;
+	private MenuPanel menuPanel;
+	private CalendarPanel calendarPanel;
 
 	/**
 	 * Launch the application.
@@ -40,31 +41,28 @@ public class CalendarProgram extends JFrame {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
-		layeredPane = new JLayeredPane();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
-		
-		CalendarPanel calendarPanel = new CalendarPanel();
-		calendarPanel.setBackground(Color.RED);
-		contentPane.add(calendarPanel, BorderLayout.CENTER);
-		
-		MenuPanel menuPanel = new MenuPanel(this);
-		contentPane.add(menuPanel, BorderLayout.WEST);
-		menuPanel.setBackground(Color.GREEN);
-		
 		loginPanel = new LoginPanel(this);
+		contentPane.add(loginPanel, BorderLayout.CENTER);
+		loginPanel.setBackground(Color.BLUE);
 		
 	}
 
 	public void displayLogin() {
+		menuPanel.setVisible(false);
+		calendarPanel.setVisible(false);
+		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
 		loginPanel.setBackground(Color.BLUE);
 	}
 	public void createAppointmentPanel(){
+		menuPanel.setVisible(false);
+		calendarPanel.setVisible(false);
 		aap = new AddAppointmentPanel(this);
 		contentPane.add(aap, BorderLayout.CENTER);
 		aap.setBackground(Color.BLUE);
@@ -75,7 +73,12 @@ public class CalendarProgram extends JFrame {
 	}
 
 	public void makeMainProgramVisible() {
-		// TODO Auto-generated method stub
+		menuPanel = new MenuPanel(this);
+		contentPane.add(menuPanel, BorderLayout.WEST);
+		menuPanel.setBackground(Color.GREEN);
+		calendarPanel = new CalendarPanel();
+		calendarPanel.setBackground(Color.RED);
+		contentPane.add(calendarPanel, BorderLayout.CENTER);
 		
 	}
 
