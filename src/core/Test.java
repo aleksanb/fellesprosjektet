@@ -20,7 +20,7 @@ public class Test {
 			System.out.println(p.toString());
 			
 			Factory f = new Factory(p);
-			System.out.println(f.createUser("aleksander", "passord", "email"));
+			System.out.println(f.checkValid("aleksander", "passord"));
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
