@@ -101,9 +101,12 @@ public class Appointment {
 	}
 	@Override
 	public String toString() {
-		return "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
+		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
 				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
 				+ "\n description: " + description + "\n isMeeting: " + isMeeting;
+		if(alarm!=null) 
+			out+="\n Alarm: " + alarm.getTime();
+		return out;
 	}
 	
 	

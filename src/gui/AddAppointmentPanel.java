@@ -219,8 +219,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//pick what type the value should representent e.g. hours, minutes days.
 		valueTypePick = new JComboBox<String>();
 		valueTypePick.setVisible(false);
-		valueTypePick.addItem("Minutes");
+		valueTypePick.addItem("Minute");
 		valueTypePick.addItem("Hour");
+		valueTypePick.addItem("Day");
 		GridBagConstraints gbc_valueTypePick = new GridBagConstraints();
 		gbc_valueTypePick.anchor = GridBagConstraints.WEST;
 		gbc_valueTypePick.insets = new Insets(0, 0, 5, 5);
@@ -257,7 +258,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	}
 
 
-	@SuppressWarnings("deprecation")
 	private Appointment createAppointment() {
 //		Date today = new Date();
 		GregorianCalendar today = new GregorianCalendar();
@@ -283,50 +283,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 //		System.out.println(event.getActionCommand());
 
-/**
-		//date picking start and end
-//		if(event.getActionCommand().equals("datePickerCommit")){
-//			JXDatePicker picker = (JXDatePicker) event.getSource();
-//			Date date = picker.getDate();
-//			if(event.getSource()==endPick){
-//				System.out.println("end");
-//				appointment.setEnd(date);
-//			}
-//			if(event.getSource()==startPick){
-//				System.out.println("start");
-//				appointment.setStart(date);
-//			}
-//		}
-		
-		//set title
-//		if(event.getActionCommand().equals("Title"))
-//			appointment.setTitle(titleField.getText());
-		
-		//set start time
-//		if(event.getActionCommand().equals("Start time")){
-//			Date start = appointment.getStart();
-//			String[] time = startField.getText().split(":");
-//			int hours = Integer.parseInt(time[0]);
-//			int mins = Integer.parseInt(time[1]);
-//			start.setHours(hours);
-//			start.setMinutes(mins);
-//		}
-		//set end time
-//		if(event.getActionCommand().equals("End time")){
-//			Date end = appointment.getStart();
-//			String[] time = endField.getText().split(":");
-//			int hours = Integer.parseInt(time[0]);
-//			int mins = Integer.parseInt(time[1]);
-//			end.setHours(hours);
-//			end.setMinutes(mins);
-//		}
- * 
- */
 		//add alarm options
 		if(event.getActionCommand().equals("alarm")){
-				alarmValueField.setVisible(alarmBox.isSelected());
-				valueTypePick.setVisible(alarmBox.isSelected());
-				beforeStartLabel.setVisible(alarmBox.isSelected());
+				boolean bool = alarmBox.isSelected();
+				alarmValueField.setVisible(bool);
+				valueTypePick.setVisible(bool);
+				beforeStartLabel.setVisible(bool);
+				//if checkbox gets unchecked it sets alarmfield to null
+				if(!bool)
+					setAlarm(bool);
 		}
 			
 		
@@ -355,13 +320,21 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			if(approved)
 				appointment.setEnd(addTime(endField.getText(), appointment.getEnd()));
 			
-			//check that start if before end
+			//check that start is before end
 			if(approved)
 				checkStartVsEndTime();
 			
 			//set description
 			if(approved)
 				appointment.setDescription(descriptionArea.getText());
+			
+			//set alarm
+			if(alarmBox.isSelected())
+				setAlarm(true);
+			
+			//if approved
+			if(approved)
+				; //TODO: save it/send it something
 			
 			//debug
 			System.out.println(appointment);
@@ -374,6 +347,37 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 	}
 	
+	private void setAlarm(boolean bool) {
+		if(bool)
+			appointment.setAlarm(getAlarmValue());
+		else
+			appointment.setAlarm(null);
+	}
+	private GregorianCalendar getAlarmValue() {
+		String type = (String) valueTypePick.getSelectedItem();
+		GregorianCalendar alarm = (GregorianCalendar) appointment.getStart().clone();
+		int value = Integer.parseInt(alarmValueField.getText());
+		if(value<0){
+			JOptionPane.showMessageDialog(this, "No negative numbers i alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
+			approved=false;
+			return appointment.getAlarm();
+		}
+		if(type.equals("Minute"))
+			alarm.set(GregorianCalendar.MINUTE,alarm.get(GregorianCalendar.MINUTE) - value);
+		else if(type.equals("Hour"))
+			alarm.set(GregorianCalendar.HOUR,alarm.get(GregorianCalendar.HOUR) - value);
+		else
+			alarm.set(GregorianCalendar.DATE,alarm.get(GregorianCalendar.DATE) - value);
+		return alarm;
+		
+	}
+
+
+	public boolean hasAlarm(){
+		return appointment.getAlarm() != null;
+	}
+
+
 	private void checkStartVsEndTime() {
 		if(appointment.getEnd().before(appointment.getStart())){
 			JOptionPane.showMessageDialog(this, "End-date is after start-date","Date error",JOptionPane.ERROR_MESSAGE);
