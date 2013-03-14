@@ -79,6 +79,7 @@ public class MenuPanel extends JPanel {
 		
 		notificationList = new JComboBox<Notification>();
 		notificationList.setMaximumRowCount(5);
+		notificationList.addActionListener(new NotificationListListener(notificationList));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.anchor = GridBagConstraints.NORTH;
 		gbc_comboBox.gridwidth = 8;
@@ -129,6 +130,23 @@ public class MenuPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			cp.createAppointmentPanel();
+		}
+		
+	}
+	class NotificationListListener implements ActionListener{
+		JComboBox<Notification> notificationList;
+		
+		public NotificationListListener(JComboBox<Notification> notificationList) {
+			this.notificationList = notificationList;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int index = notificationList.getSelectedIndex();
+			Notification note = (Notification) notificationList.getSelectedItem();
+			if(index != -1 && index != 0){
+			notificationList.removeItem(note);
+			}
 		}
 		
 	}

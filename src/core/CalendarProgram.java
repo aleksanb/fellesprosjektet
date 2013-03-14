@@ -83,6 +83,11 @@ public class CalendarProgram extends JFrame {
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		contentPane.add(menuPanel, BorderLayout.WEST);
+		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
+		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
+		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
+		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
+		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
 		calendarPanel = new CalendarPanel();
 		calendarPanel.setBackground(Color.RED);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
