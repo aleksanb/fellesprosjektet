@@ -49,6 +49,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JTextField alarmValueField;
 	private JComboBox<String> valueTypePick;
 	private JLabel beforeStartLabel;
+	private MeetingPanel meetingPanel;
 	
 	/**
 	 * Create the panel.
@@ -65,7 +66,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gridBagLayout.columnWidths = new int[] {0, 30, 136, -6};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		//Pick start
@@ -237,6 +238,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gbc_meetingBox_1.gridy = 8;
 		add(meetingBox_1, gbc_meetingBox_1);
 		
+		meetingPanel = new MeetingPanel(this);
+		meetingPanel.setVisible(false);
+		GridBagConstraints gbc_meetingPanel = new GridBagConstraints();
+		gbc_meetingPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_meetingPanel.fill = GridBagConstraints.BOTH;
+		gbc_meetingPanel.gridx = 0;
+		gbc_meetingPanel.gridy = 9;
+		add(meetingPanel, gbc_meetingPanel);
+		
 		//add appointment
 		addAppButton.setActionCommand("Add");
 		GridBagConstraints gbc_addAppButton = new GridBagConstraints();
@@ -298,7 +308,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting"))
 			//TODO: make the other stuff appear and disappear
-			;
+			meetingPanel.setVisible(meetingBox.isSelected());
 		
 		//add Appointment
 		if(event.getActionCommand().equals("Add")){
