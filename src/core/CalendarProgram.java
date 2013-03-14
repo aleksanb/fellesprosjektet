@@ -65,13 +65,18 @@ public class CalendarProgram extends JFrame {
 		loginPanel.setBackground(Color.BLUE);
 	}
 	public void createAppointmentPanel(){
-		aap = new AddAppointmentPanel();
+		aap = new AddAppointmentPanel(this);
 		contentPane.add(aap, BorderLayout.CENTER);
 		aap.setBackground(Color.BLUE);
 	}
 
 	public boolean checkValid(String userName, String password) {
 		return true;
+	}
+
+	public void makeMainProgramVisible() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

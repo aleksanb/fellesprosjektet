@@ -95,6 +95,7 @@ public class LoginPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if(cp.checkValid(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
+				cp.makeMainProgramVisible();
 		}
 	}
 

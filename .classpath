@@ -16,5 +16,6 @@
 	</classpathentry>
 	<classpathentry kind="var" path="resource_path"/>
 	<classpathentry kind="var" path="resource_path/forms-1.3.0.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
