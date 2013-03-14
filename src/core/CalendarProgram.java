@@ -8,6 +8,10 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import db.Appointment;
+import db.Notification;
+import db.NotificationType;
+
 import gui.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -20,6 +24,7 @@ public class CalendarProgram extends JFrame {
 	private LoginPanel loginPanel;
 	private MenuPanel menuPanel;
 	private CalendarPanel calendarPanel;
+	private Appointment[] appointments;
 
 	/**
 	 * Launch the application.
