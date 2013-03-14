@@ -49,7 +49,6 @@ public class CalendarProgram extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
-		loginPanel.setBackground(Color.BLUE);
 		
 	}
 
@@ -58,24 +57,27 @@ public class CalendarProgram extends JFrame {
 		calendarPanel.setVisible(false);
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
-		loginPanel.setBackground(Color.BLUE);
 	}
 	public void createAppointmentPanel(){
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
 		aap = new AddAppointmentPanel(this);
 		contentPane.add(aap, BorderLayout.CENTER);
-		aap.setBackground(Color.BLUE);
+		aap.setBackground(Color.LIGHT_GRAY);
 	}
 
 	public boolean checkValid(String userName, String password) {
 		return true;
 	}
-
-	public void makeMainProgramVisible() {
+	
+	public void displayMainProgram(){
+		aap.setVisible(false);
+		menuPanel.setVisible(true);
+		calendarPanel.setVisible(true);
+	}
+	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		contentPane.add(menuPanel, BorderLayout.WEST);
-		menuPanel.setBackground(Color.GREEN);
 		calendarPanel = new CalendarPanel();
 		calendarPanel.setBackground(Color.RED);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
