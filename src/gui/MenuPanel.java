@@ -20,16 +20,17 @@ import javax.swing.JList;
 
 import db.Appointment;
 import db.Factory;
+import db.Notification;
 import core.CalendarProgram;
+import javax.swing.JComboBox;
 
 public class MenuPanel extends JPanel {
-	JList notificationList;
-	private DefaultListModel listModel;
+	private JComboBox<Notification> notificationList;
+	JLabel lblNotifications;
 	/**
 	 * Create the panel.
 	 */
 	public MenuPanel(CalendarProgram cp) {
-		listModel = new DefaultListModel();
 		setBackground(new Color(51, 204, 204));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -66,27 +67,27 @@ public class MenuPanel extends JPanel {
 		gbc_btnShowCalendars.gridy = 3;
 		add(btnShowCalendars, gbc_btnShowCalendars);
 		
-		JLabel lblNotifications = new JLabel("Notifications");
+		JButton btnLog = new JButton("Logout");
+		btnLog.addActionListener(new logoutListener(cp));
+		
+		lblNotifications = new JLabel("you do not have any notifications");
 		GridBagConstraints gbc_lblNotifications = new GridBagConstraints();
-		gbc_lblNotifications.gridwidth = 3;
 		gbc_lblNotifications.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNotifications.gridx = 1;
+		gbc_lblNotifications.gridx = 2;
 		gbc_lblNotifications.gridy = 5;
 		add(lblNotifications, gbc_lblNotifications);
 		
-		notificationList = new JList();
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.gridwidth = 3;
-		gbc_list.gridheight = 2;
-		gbc_list.insets = new Insets(0, 0, 5, 5);
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 1;
-		gbc_list.gridy = 6;
-		add(notificationList, gbc_list);
-		
-		
-		JButton btnLog = new JButton("Logout");
-		btnLog.addActionListener(new logoutListener(cp));
+		notificationList = new JComboBox<Notification>();
+		notificationList.setMaximumRowCount(5);
+		notificationList.addActionListener(new NotificationListListener(notificationList));
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.anchor = GridBagConstraints.NORTH;
+		gbc_comboBox.gridwidth = 8;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 0;
+		gbc_comboBox.gridy = 6;
+		add(notificationList, gbc_comboBox);
 		GridBagConstraints gbc_btnLog = new GridBagConstraints();
 		gbc_btnLog.gridwidth = 3;
 		gbc_btnLog.insets = new Insets(0, 0, 0, 5);
@@ -95,12 +96,20 @@ public class MenuPanel extends JPanel {
 		add(btnLog, gbc_btnLog);
 
 	}
-	public void addNotification(String description){
-		listModel.addElement(description);
+	public void addNotification(Notification notification){
+		notification.setMeassage("Please attend meeting");
+		notificationList.addItem(notification);
+		notificationList.setSelectedIndex(-1);
 		update();
 	}
 	private void update() {
-		notificationList.setListData(listModel.toArray());
+		int antall = notificationList.getItemCount();
+		if(antall == 1){
+			lblNotifications.setText("you  have 1 notification");
+		}
+		else{
+			lblNotifications.setText("you have: " + Integer.toString(antall) + " notifications");
+		}
 	}
 	class logoutListener implements ActionListener{
 		CalendarProgram cp;
@@ -124,15 +133,31 @@ public class MenuPanel extends JPanel {
 		}
 		
 	}
+	class NotificationListListener implements ActionListener{
+		JComboBox<Notification> notificationList;
+		
+		public NotificationListListener(JComboBox<Notification> notificationList) {
+			this.notificationList = notificationList;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int index = notificationList.getSelectedIndex();
+			Notification note = (Notification) notificationList.getSelectedItem();
+			if(index != -1 && index != 0){
+			notificationList.removeItem(note);
+			}
+		}
+		
+	}
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
 			CalendarProgram cp1 = new CalendarProgram();
 			MenuPanel mp = new MenuPanel(cp1);
-			frame.add(mp);
+			frame.getContentPane().add(mp);
 			frame.pack();
 			frame.setSize(200, 400);
 			frame.setVisible(true);
-			mp.addNotification("Holla holla");
 		}  
 
 }

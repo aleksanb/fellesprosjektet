@@ -80,8 +80,8 @@ public class LoginPanel extends JPanel {
 		btnLogin.addActionListener(new LoginAction(this, cp));
 		
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
-		gbc_btnLogin.insets = new Insets(0, 0, 5, 0);
 		gbc_btnLogin.anchor = GridBagConstraints.WEST;
+		gbc_btnLogin.insets = new Insets(0, 0, 5, 0);
 		gbc_btnLogin.gridx = 2;
 		gbc_btnLogin.gridy = 4;
 		add(btnLogin, gbc_btnLogin);
@@ -95,7 +95,7 @@ public class LoginPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if(cp.checkValid(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
-				cp.makeMainProgramVisible();
+				cp.CreateMainProgram();
 		}
 	}
 
@@ -103,7 +103,7 @@ public class LoginPanel extends JPanel {
 	 public static void main(String args[]) throws ClassNotFoundException, SQLException{
 		 	CalendarProgram cp = new CalendarProgram();
 			JFrame frame = new JFrame("...");
-			frame.add(new LoginPanel(cp));
+			frame.getContentPane().add(new LoginPanel(cp));
 			frame.pack();
 			frame.setVisible(true);
 		}    
