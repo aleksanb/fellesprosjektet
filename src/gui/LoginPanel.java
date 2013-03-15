@@ -106,5 +106,5 @@ public class LoginPanel extends JPanel {
 			frame.getContentPane().add(new LoginPanel(cp));
 			frame.pack();
 			frame.setVisible(true);
-		}    
+		}
 }

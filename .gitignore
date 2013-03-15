@@ -3,5 +3,6 @@
 bin/
 gen/
 resources/database.properties
+resource/server.properties
 .classpath
 *~
