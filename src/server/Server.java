@@ -32,7 +32,7 @@ public class Server {
 					whileRunning();
 				//when ending connection
 				}catch(EOFException e){
-					showMessage("\n Server ended the connection");
+					print("Server ended the connection");
 				}finally{
 					closeApp();
 				}
@@ -43,16 +43,16 @@ public class Server {
 	}
 	//wait for connection then display connection info
 	private void waitForConnection()throws IOException{
-		showMessage(" Waiting for someone to connect...\n");
+		print("Waiting for someone to connect...");
 		connection = server.accept();
-		showMessage(" Now connected to"+connection.getInetAddress().getHostName());
+		print("Now connected to"+connection.getInetAddress().getHostName());
 	}
 	//get stream to send and receive data
 	private void setupStreams()throws IOException{
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
-		showMessage("\n Streams are now set up!\n");	
+		print("Streams are now set up!");	
 	}
 	//after connection is setup 
 	private void whileRunning()throws IOException{
@@ -66,7 +66,7 @@ public class Server {
 		}while(true/*end condition*/); 
 	}
 	private void closeApp(){
-		showMessage("\n Closing connections" );
+		print("Closing connections" );
 		try{
 			output.close();
 			input.close();
@@ -77,7 +77,7 @@ public class Server {
 	}
 	
 	
-	public void showMessage(final String text){
+	public void print(String text){
 		System.out.println(text);
 	}
 }
