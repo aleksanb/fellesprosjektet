@@ -48,6 +48,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JTextField alarmValueField;
 	private JComboBox valueTypePick;
 	private JLabel beforeStartLabel;
+	private MeetingPanel mp;
 	
 	/**
 	 * Create the panel.
