@@ -29,12 +29,19 @@ public class Server {
 				try{
 					waitForConnection();
 					setupStreams();
-					whileRunning();
+					new Thread(new Runnable() {
+						@Override
+						public void run(){
+							try {
+								whileRunning();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}).start();
 				//when ending connection
 				}catch(EOFException e){
 					print("Server ended the connection");
-				}finally{
-					closeApp();
 				}
 			}
 		}catch(IOException e){
@@ -56,14 +63,15 @@ public class Server {
 	}
 	//after connection is setup 
 	private void whileRunning()throws IOException{
-		
+		boolean closeConnection = true;
 		do{
 			try{
 				;
 			}catch(Exception e){
 				;
 			}
-		}while(true/*end condition*/); 
+		}while(!closeConnection); 
+		closeApp();
 	}
 	private void closeApp(){
 		print("Closing connections" );
