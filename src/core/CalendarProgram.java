@@ -25,6 +25,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 public class CalendarProgram extends JFrame {
@@ -38,6 +40,9 @@ public class CalendarProgram extends JFrame {
 	
 	//model
 	private Appointment[] appointments;
+	
+	//tools
+	AlarmHandler alarmHandler;
 	
 	//server
 	private ObjectOutputStream output;
@@ -67,6 +72,10 @@ public class CalendarProgram extends JFrame {
 	public CalendarProgram() {
 		//sets up a connection to the server
 		connectToServer();
+		//get alarmlist and put them in the class. 
+		alarmHandler = new AlarmHandler(getAlarmList());
+		
+		//TODO make a method that runs alarmHandler in a own thread.
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -76,6 +85,12 @@ public class CalendarProgram extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
+		
+	}
+
+	private ArrayList<GregorianCalendar> getAlarmList() {
+		// TODO get the alarm list from server/db. Get user as a parameter to get the right ones
+		return null;
 		
 	}
 
