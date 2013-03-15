@@ -14,12 +14,12 @@ public class Notification {
 		this.notificationType = notificationType;	
 	}
 	
-	public String getMeassage() {
+	public String getMessage() {
 		return message;
 	}
 
-	public void setMeassage(String meassage) {
-		this.message = meassage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public int getUserId() {
