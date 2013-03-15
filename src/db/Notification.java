@@ -8,7 +8,7 @@ public class Notification {
 	private String message;
 	
 
-	public Notification(int iserId, int appointmentId, NotificationType notificationType){
+	public Notification(int userId, int appointmentId, NotificationType notificationType){
 		this.userId = userId;
 		this.appointmentId = appointmentId;
 		this.notificationType = notificationType;	
