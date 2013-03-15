@@ -7,11 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * It might just allow one connection atm
- * @author espen
- *
- */
 
 public class Server {
 	
@@ -41,7 +36,7 @@ public class Server {
 					}).start();
 				//when ending connection
 				}catch(EOFException e){
-					print("Server ended the connection");
+					logConsole("Server ended the connection");
 				}
 			}
 		}catch(IOException e){
@@ -50,20 +45,22 @@ public class Server {
 	}
 	//wait for connection then display connection info
 	private void waitForConnection()throws IOException{
-		print("Waiting for someone to connect...");
+		logConsole("Waiting for someone to connect...");
 		connection = server.accept();
-		print("Now connected to"+connection.getInetAddress().getHostName());
+		logConsole("Now connected to "+connection.getInetAddress().getHostName());
 	}
+	
 	//get stream to send and receive data
 	private void setupStreams()throws IOException{
+		//TODO: rewrite this method to handle gson
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
-		print("Streams are now set up!");	
+		logConsole("Streams are now set up!");	
 	}
 	//after connection is setup 
 	private void whileRunning()throws IOException{
-		boolean closeConnection = true;
+		boolean closeConnection = false;
 		do{
 			try{
 				;
@@ -74,7 +71,7 @@ public class Server {
 		closeApp();
 	}
 	private void closeApp(){
-		print("Closing connections" );
+		logConsole("Closing connections" );
 		try{
 			output.close();
 			input.close();
@@ -85,7 +82,7 @@ public class Server {
 	}
 	
 	
-	public void print(String text){
-		System.out.println(text);
+	public void logConsole(String text){
+		System.out.println("SERVER: "+text);
 	}
 }
