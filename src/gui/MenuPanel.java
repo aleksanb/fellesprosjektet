@@ -97,7 +97,7 @@ public class MenuPanel extends JPanel {
 
 	}
 	public void addNotification(Notification notification){
-		notification.setMeassage("Please attend meeting");
+		notification.setMessage("Please attend meeting");
 		notificationList.addItem(notification);
 		notificationList.setSelectedIndex(-1);
 		update();
