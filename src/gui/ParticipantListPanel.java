@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -15,15 +16,19 @@ import db.User;
 
 public class ParticipantListPanel {  
    public static void main(String args[]) {
-	  Dimension d = new Dimension(20,10);
       JFrame frame = new JFrame("Participants");
+      Dimension d = new Dimension(200,200);
       frame.setSize(d);
       frame.setResizable(false);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      User user1 = new User();
-      user1.setName("Kathrine Steffensen");
-      JList list = new JList(new CheckListItem[] {new CheckListItem(user1),});
+      User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+      User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+      User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+      JList list = new JList(new DefaultListModel());
       list.setCellRenderer(new CheckListRenderer());
+      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user1));
+      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user2));
+      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user3));
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       list.addMouseListener(new MouseAdapter() {
          public void mouseClicked(MouseEvent event) {
@@ -60,7 +65,7 @@ class CheckListItem {
 	protected boolean isSelected = false;
 	
 	public CheckListItem(User u) {
-		this.user = user;
+		this.user = u;
 	}
 	
 	public boolean isSelected() {
