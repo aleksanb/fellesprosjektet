@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
@@ -29,12 +30,13 @@ import javax.swing.JComboBox;
 public class MenuPanel extends JPanel {
 	private JComboBox<Notification> notificationList;
 	private int selectedIndex;
-	ArrayList  selectedHistory = new ArrayList();
 	JLabel lblNotifications;
+	CalendarProgram cp;
 	/**
 	 * Create the panel.
 	 */
 	public MenuPanel(CalendarProgram cp) {
+		this.cp = cp;
 		setBackground(new Color(51, 204, 204));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -74,7 +76,7 @@ public class MenuPanel extends JPanel {
 		JButton btnLog = new JButton("Logout");
 		btnLog.addActionListener(new logoutListener(cp));
 		
-		lblNotifications = new JLabel("you have 0 notifications");
+		lblNotifications = new JLabel("You have 0 notifications");
 		GridBagConstraints gbc_lblNotifications = new GridBagConstraints();
 		gbc_lblNotifications.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNotifications.gridx = 2;
@@ -83,6 +85,7 @@ public class MenuPanel extends JPanel {
 		
 		notificationList = new JComboBox<Notification>();
 		notificationList.setMaximumRowCount(5);
+		notificationList.setPreferredSize(new Dimension(250,20));
 		notificationList.addActionListener(new NotificationListListener(notificationList));
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
 		gbc_comboBox.anchor = GridBagConstraints.NORTH;
@@ -104,8 +107,22 @@ public class MenuPanel extends JPanel {
 
 	}
 	public void addNotification(Notification notification){
-		if(notification.getNotificationType() == NotificationType.CANCELLED){
-			notification.setMessage("Please attend meeting");
+		NotificationType notificationType =notification.getNotificationType();
+		Appointment appointment = cp.getAppointment(notification.getAppointmentId());
+		if(appointment == null){
+			return;
+		}
+		if(notificationType == NotificationType.CANCELLED){
+			notification.setMessage("Meeting with title: " + appointment.getTitle() + " is cancelled");
+		}
+		else if(notificationType == NotificationType.CHANGED){
+			notification.setMessage("Meeting with title: " + appointment.getTitle() + " is changed");
+		}
+		else if(notificationType == NotificationType.INVITE){
+			notification.setMessage("Someone invited you to the event with title: " + appointment.getTitle());
+		}
+		else if(notificationType == NotificationType.REJECTION){
+			notification.setMessage("Someone rejected the event with title: " + appointment.getTitle());
 		}
 		notificationList.addItem(notification);
 		update();
@@ -113,13 +130,13 @@ public class MenuPanel extends JPanel {
 	private void update() {
 		int antall = notificationList.getItemCount();
 		if(antall == 1){
-			lblNotifications.setText(("you have: 0 notification"));
+			lblNotifications.setText(("You have: 0 notifications"));
 		}
 		else if(antall == 2){
-			lblNotifications.setText("you have: 1 notification");
+			lblNotifications.setText("You have: 1 notification");
 		}
 		else{
-			lblNotifications.setText("you have: " + Integer.toString(antall-1) + " notifications");
+			lblNotifications.setText("You have: " + Integer.toString(antall-1) + " notifications");
 		}
 	}
 	class logoutListener implements ActionListener{
@@ -157,7 +174,9 @@ public class MenuPanel extends JPanel {
 			int index = notificationList.getSelectedIndex();
 			Notification note = (Notification) notificationList.getSelectedItem();
 			if(index != -1 && index != 0){
-			notificationList.removeItem(note);
+				notificationList.removeItem(note);
+				notificationList.setSelectedIndex(0);
+				//Her må det legges inn en referanse til en metode som setter appointmenten notificationen som fjaernes refererer til aktiv i kalenderen
 			}
 			update();
 		}

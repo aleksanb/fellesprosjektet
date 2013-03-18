@@ -77,6 +77,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
+		appointments = new ArrayList<Appointment>();
+		appointments.add(new Appointment(2, 1, "test", null,
+			null, "holla", false));
 		//sets up a connection to the server
 		connectToServer();
 		
@@ -210,6 +213,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			e.printStackTrace();
 		}
 	}
+	
 	public void addAppointment(Appointment app){
 		appointments.add(app);
 		if(app.hasAlarm())
@@ -222,6 +226,14 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void alarmEvent(Appointment appointment) {
 		//TODO: format the message on the alarm
 		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
-		
+	}
+	
+	public Appointment getAppointment(int id){
+		for(int i=0; i<appointments.size(); i++){
+			if(appointments.get(i).getId() == id){
+				return appointments.get(i);
+			}
+		}
+		return null;
 	}
 }
