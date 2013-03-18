@@ -198,4 +198,13 @@ public class CalendarProgram extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	public Appointment getAppointment(int id){
+		for(int i=1; i<appointments.length; i++){
+			if(appointments[i].getId() == id){
+				return appointments[i];
+			}
+		}
+		return null;
+	}
 }
