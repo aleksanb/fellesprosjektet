@@ -6,7 +6,6 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 
 import core.CalendarProgram;
 
@@ -47,15 +46,16 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private CalendarProgram cp;
 	private JCheckBox alarmBox;
 	private JTextField alarmValueField;
-	private JComboBox<String> valueTypePick;
+	private JComboBox valueTypePick;
 	private JLabel beforeStartLabel;
+	private MeetingPanel mp;
 	
 	/**
 	 * Create the panel.
 	 */
 	public AddAppointmentPanel(CalendarProgram cp) {
 		
-		//creates a default appiontment object based on today, with uniqe id
+		//creates a default appointment object based on today, with unique id
 		appointment = createAppointment();
 		//reference to the main program
 		this.cp=cp;
@@ -94,7 +94,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		titleField.setColumns(10);
 		
 		//start label
-		JLabel startLabel = DefaultComponentFactory.getInstance().createLabel("Start");
+		JLabel startLabel = new JLabel("Start");
 		startLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_startLabel = new GridBagConstraints();
 		gbc_startLabel.insets = new Insets(0, 0, 5, 5);
@@ -128,7 +128,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		startField.setColumns(6);
 		
 		//end label
-		JLabel endLabel = DefaultComponentFactory.getInstance().createLabel("End");
+		JLabel endLabel = new JLabel("End");
 		endLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_endLabel = new GridBagConstraints();
 		gbc_endLabel.insets = new Insets(0, 0, 5, 5);
@@ -217,11 +217,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		alarmValueField.setColumns(3);
 		
 		//pick what type the value should representent e.g. hours, minutes days.
-		valueTypePick = new JComboBox<String>();
+		String[] valueTypes = {"Minute", "Hour", "Day"};
+		valueTypePick = new JComboBox(valueTypes);
 		valueTypePick.setVisible(false);
-		valueTypePick.addItem("Minute");
-		valueTypePick.addItem("Hour");
-		valueTypePick.addItem("Day");
 		GridBagConstraints gbc_valueTypePick = new GridBagConstraints();
 		gbc_valueTypePick.anchor = GridBagConstraints.WEST;
 		gbc_valueTypePick.insets = new Insets(0, 0, 5, 5);
@@ -343,7 +341,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
-			;
 		
 	}
 	
