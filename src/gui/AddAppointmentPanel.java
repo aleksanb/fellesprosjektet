@@ -16,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -346,8 +347,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	}
 	
 	private void setAlarm(boolean bool) {
-		if(bool)
+		if(bool){
 			appointment.setAlarm(getAlarmValue());
+		}
 		else
 			appointment.setAlarm(null);
 	}
@@ -358,14 +360,14 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(value<0){
 			JOptionPane.showMessageDialog(this, "No negative numbers i alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
 			approved=false;
-			return appointment.getAlarm();
+			return appointment.getAlarm().getAlarmTime();
 		}
 		if(type.equals("Minute"))
-			alarm.set(GregorianCalendar.MINUTE,alarm.get(GregorianCalendar.MINUTE) - value);
+			alarm.set(Calendar.MINUTE,alarm.get(Calendar.MINUTE) - value);
 		else if(type.equals("Hour"))
-			alarm.set(GregorianCalendar.HOUR,alarm.get(GregorianCalendar.HOUR) - value);
+			alarm.set(Calendar.HOUR,alarm.get(Calendar.HOUR) - value);
 		else
-			alarm.set(GregorianCalendar.DATE,alarm.get(GregorianCalendar.DATE) - value);
+			alarm.set(Calendar.DATE,alarm.get(Calendar.DATE) - value);
 		return alarm;
 		
 	}

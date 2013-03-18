@@ -46,7 +46,8 @@ public class AlarmHandler implements Runnable{
 			throw new IllegalArgumentException("This appointment does not have an alarm");
 	}
 	public void addAppointments(ArrayList<Appointment> appointmentList){
-		for (Appointment appointment : appointments) {
+		appointments = new ArrayList<Appointment>();
+		for (Appointment appointment : appointmentList) {
 			if(appointment.hasAlarm())
 				appointments.add(appointment);
 		}
@@ -60,9 +61,19 @@ public class AlarmHandler implements Runnable{
 	@Override
 	public void run() {
 		// TODO here it checks for new alarms
+	while(!alarms.isEmpty()){
+		Alarm current = alarms.get(0);
+		long timeUntilNextAlarm = current.getMillis()-System.currentTimeMillis();
+		try {
+			Thread.sleep(timeUntilNextAlarm);
+		} catch (InterruptedException e) {
+			System.out.println("Something unexpected woke the alarm thread up");
+			e.printStackTrace();
+		}
+		soundAlarm(current);
+	}
 	}
 	private void soundAlarm(Alarm alarm){
 		aes.fireAlarmEvent(alarm);
 	}
-
 }

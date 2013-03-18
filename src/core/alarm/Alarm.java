@@ -6,6 +6,7 @@ public class Alarm {
 
 	private GregorianCalendar time;
 	private int id;
+	
 	public Alarm(GregorianCalendar alarmTime, int id) {
 		this.time=alarmTime;
 		this.id=id;
@@ -15,6 +16,9 @@ public class Alarm {
 	}
 	public GregorianCalendar getAlarmTime(){
 		return time;
+	}
+	public long getMillis(){
+		return time.getTimeInMillis();
 	}
 
 }

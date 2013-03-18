@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -77,7 +78,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 */
 	public CalendarProgram() {
 		//sets up a connection to the server
-		connectToServer();
+		//connectToServer();
 		
 		//TODO: load in appointments, look at the empty method
 		
@@ -99,6 +100,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	private ArrayList<Appointment> getAppointmentList() {
+		//TODO: make server fetch appointments
+		appointments = new ArrayList<Appointment>();
 		return appointments;
 		
 	}
@@ -210,7 +213,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	@Override
 	public void alarmEvent(Appointment appointment) {
-		// TODO handle the alarm
+		//TODO: format the message on the alarm
+		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 }
