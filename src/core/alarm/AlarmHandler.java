@@ -1,8 +1,7 @@
 package core.alarm;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +29,7 @@ public class AlarmHandler implements Runnable{
 			if(appointment.hasAlarm())
 				alarms.add(appointment.getAlarm());
 		}
+		Collections.sort(alarms,new alarmComparator());
 	}
 	//let client listen for alarm events
 	public void addAlarmEventListener(AlarmListener listener){
@@ -40,9 +40,10 @@ public class AlarmHandler implements Runnable{
 		if(app.hasAlarm()){
 			appointments.add(app);
 			alarms.add(app.getAlarm());
+			Collections.sort(alarms,new alarmComparator());
 		}
 		else
-			throw new IllegalArgumentException("This appoints does not have an alarm");
+			throw new IllegalArgumentException("This appointment does not have an alarm");
 	}
 	public void addAppointments(ArrayList<Appointment> appointmentList){
 		for (Appointment appointment : appointments) {
