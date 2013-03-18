@@ -14,6 +14,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import java.awt.Color;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.swing.JList;
@@ -21,11 +22,14 @@ import javax.swing.JList;
 import db.Appointment;
 import db.Factory;
 import db.Notification;
+import db.NotificationType;
 import core.CalendarProgram;
 import javax.swing.JComboBox;
 
 public class MenuPanel extends JPanel {
 	private JComboBox<Notification> notificationList;
+	private int selectedIndex;
+	ArrayList  selectedHistory = new ArrayList();
 	JLabel lblNotifications;
 	/**
 	 * Create the panel.
@@ -70,7 +74,7 @@ public class MenuPanel extends JPanel {
 		JButton btnLog = new JButton("Logout");
 		btnLog.addActionListener(new logoutListener(cp));
 		
-		lblNotifications = new JLabel("you do not have any notifications");
+		lblNotifications = new JLabel("you have 0 notifications");
 		GridBagConstraints gbc_lblNotifications = new GridBagConstraints();
 		gbc_lblNotifications.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNotifications.gridx = 2;
@@ -94,21 +98,28 @@ public class MenuPanel extends JPanel {
 		gbc_btnLog.gridx = 1;
 		gbc_btnLog.gridy = 13;
 		add(btnLog, gbc_btnLog);
+		Notification note = new Notification(-1, -1, NotificationType.WELCOME);
+		note.setMessage("Display Notifications");
+		notificationList.addItem(note);
 
 	}
 	public void addNotification(Notification notification){
-		notification.setMessage("Please attend meeting");
+		if(notification.getNotificationType() == NotificationType.CANCELLED){
+			notification.setMessage("Please attend meeting");
+		}
 		notificationList.addItem(notification);
-		notificationList.setSelectedIndex(-1);
 		update();
 	}
 	private void update() {
 		int antall = notificationList.getItemCount();
 		if(antall == 1){
-			lblNotifications.setText("you  have 1 notification");
+			lblNotifications.setText(("you have: 0 notification"));
+		}
+		else if(antall == 2){
+			lblNotifications.setText("you have: 1 notification");
 		}
 		else{
-			lblNotifications.setText("you have: " + Integer.toString(antall) + " notifications");
+			lblNotifications.setText("you have: " + Integer.toString(antall-1) + " notifications");
 		}
 	}
 	class logoutListener implements ActionListener{
@@ -148,6 +159,7 @@ public class MenuPanel extends JPanel {
 			if(index != -1 && index != 0){
 			notificationList.removeItem(note);
 			}
+			update();
 		}
 		
 	}
