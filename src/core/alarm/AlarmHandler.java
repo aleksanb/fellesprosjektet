@@ -15,28 +15,50 @@ import db.Appointment;
 public class AlarmHandler implements Runnable{
 
 	private AlarmEventSupport aes;
-	private ArrayList<GregorianCalendar> alarmList;
+	private ArrayList<Alarm> alarms;
 	private ArrayList<Appointment> appointments;
 	
+	//constructor gets called when client-program loads. gets appointments from server,extract the alarms from them.
 	public AlarmHandler(ArrayList<Appointment> appointments){
-		this.appointments=appointments;
+		addAppointments(appointments);
+		alarms = new ArrayList<Alarm>();
 		extractAlarms();
 		aes = new AlarmEventSupport(appointments);
 	}
 	private void extractAlarms() {
-		// TODO Auto-generated method stub
-		
+		for (Appointment appointment : appointments) {
+			if(appointment.hasAlarm())
+				alarms.add(appointment.getAlarm());
+		}
 	}
 	//let client listen for alarm events
-	public void addPropertyChangeListener(PropertyChangeListener listener){
-		aes.addPropertyChangeListener(listener);
+	public void addAlarmEventListener(AlarmListener listener){
+		aes.addAlarmEventListener(listener);
 	}
-	public void addAlarm(GregorianCalendar alarm){
-		alarmList.add(alarm);
+	//When someone makes an new/edits appointment
+	public void addAppointment(Appointment app){
+		if(app.hasAlarm()){
+			appointments.add(app);
+			alarms.add(app.getAlarm());
+		}
+		else
+			throw new IllegalArgumentException("This appoints does not have an alarm");
+	}
+	public void addAppointments(ArrayList<Appointment> appointmentList){
+		for (Appointment appointment : appointments) {
+			if(appointment.hasAlarm())
+				appointments.add(appointment);
+		}
+	}
+	//deletes an alarm
+	public void removeAppointment(Appointment app){
+		appointments.remove(app);
+		alarms.remove(app.getAlarm());
+		aes.removeAlarm(app.getAlarm());
 	}
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		// TODO here it checks for new alarms
 	}
 	private void soundAlarm(Alarm alarm){
 		aes.fireAlarmEvent(alarm);

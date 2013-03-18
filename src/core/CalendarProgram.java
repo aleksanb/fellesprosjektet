@@ -47,13 +47,14 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private ArrayList<Appointment> appointments;
 	
 	//tools
-	Thread alarmHandler;
+	Thread alarmHandlerThread;
 	
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
 	Properties prop;
+	private AlarmHandler alarmHandler;
 
 	/**
 	 * Launch the application.
@@ -80,11 +81,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		
 		//TODO: load in appointments, look at the empty method
 		
-		//get appointments and starts to check them in a new thread
-		alarmHandler = new Thread(new AlarmHandler(getAppointmentList()));
-		alarmHandler.start();
+		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
+		alarmHandler = new AlarmHandler(getAppointmentList());
+		alarmHandler.addAlarmEventListener(this);
+		alarmHandlerThread = new Thread(alarmHandler);
+		alarmHandlerThread.start();
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//TODO: possibly overide this method to also close threads
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -207,7 +210,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	@Override
 	public void alarmEvent(Appointment appointment) {
-		// TODO handle the alarm event
+		// TODO handle the alarm
 		
 	}
 }
