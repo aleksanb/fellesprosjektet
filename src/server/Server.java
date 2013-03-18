@@ -7,66 +7,55 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * It might just allow one connection atm
- * @author espen
- *
- */
 
-public class Server {
+public class Server implements Runnable{
 	
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	private ServerSocket server;
 	private Socket connection;
+	int connectionID;
 
-
+	public Server(Socket connection, int connectionID) {
+		this.connection=connection;
+		this.connectionID = connectionID;
+	}
 	//set up and run the server
-	public void startRunning(){
+	public void run(){
+		try {
+			setupStreams();
+		} catch (IOException e1) {
+			logConsole("Could not establish connection");
+			e1.printStackTrace();
+		}
 		try{
-			server = new ServerSocket(6789,100);
-			while(true){
-				try{
-					waitForConnection();
-					setupStreams();
-					whileRunning();
-				//when ending connection
-				}catch(EOFException e){
-					showMessage("\n Server ended the connection");
-				}finally{
-					closeApp();
-				}
-			}
+			whileRunning();
 		}catch(IOException e){
-			e.printStackTrace();
+			logConsole("Server ended the connection");
 		}
 	}
-	//wait for connection then display connection info
-	private void waitForConnection()throws IOException{
-		showMessage(" Waiting for someone to connect...\n");
-		connection = server.accept();
-		showMessage(" Now connected to"+connection.getInetAddress().getHostName());
-	}
+
 	//get stream to send and receive data
 	private void setupStreams()throws IOException{
+		//TODO: rewrite this method to handle gson
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
-		showMessage("\n Streams are now set up!\n");	
+		logConsole("Streams are now set up!");	
 	}
 	//after connection is setup 
 	private void whileRunning()throws IOException{
-		
+		boolean closeConnection = false;
 		do{
 			try{
-				;
+				logConsole((String)input.readObject());
 			}catch(Exception e){
-				;
+				logConsole("Error reading data");
 			}
-		}while(true/*end condition*/); 
+		}while(!closeConnection); 
+		closeApp();
 	}
 	private void closeApp(){
-		showMessage("\n Closing connections" );
+		logConsole("Closing connections" );
 		try{
 			output.close();
 			input.close();
@@ -77,7 +66,7 @@ public class Server {
 	}
 	
 	
-	public void showMessage(final String text){
-		System.out.println(text);
+	public void logConsole(String text){
+		System.out.println("SERVER "+connectionID+": " +text);
 	}
 }

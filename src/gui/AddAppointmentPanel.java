@@ -6,7 +6,6 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 
 import core.CalendarProgram;
 
@@ -17,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -47,15 +47,16 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private CalendarProgram cp;
 	private JCheckBox alarmBox;
 	private JTextField alarmValueField;
-	private JComboBox<String> valueTypePick;
+	private JComboBox valueTypePick;
 	private JLabel beforeStartLabel;
+	private MeetingPanel mp;
 	
 	/**
 	 * Create the panel.
 	 */
 	public AddAppointmentPanel(CalendarProgram cp) {
 		
-		//creates a default appiontment object based on today, with uniqe id
+		//creates a default appointment object based on today, with unique id
 		appointment = createAppointment();
 		//reference to the main program
 		this.cp=cp;
@@ -94,7 +95,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		titleField.setColumns(10);
 		
 		//start label
-		JLabel startLabel = DefaultComponentFactory.getInstance().createLabel("Start");
+		JLabel startLabel = new JLabel("Start");
 		startLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_startLabel = new GridBagConstraints();
 		gbc_startLabel.insets = new Insets(0, 0, 5, 5);
@@ -128,7 +129,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		startField.setColumns(6);
 		
 		//end label
-		JLabel endLabel = DefaultComponentFactory.getInstance().createLabel("End");
+		JLabel endLabel = new JLabel("End");
 		endLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_endLabel = new GridBagConstraints();
 		gbc_endLabel.insets = new Insets(0, 0, 5, 5);
@@ -217,11 +218,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		alarmValueField.setColumns(3);
 		
 		//pick what type the value should representent e.g. hours, minutes days.
-		valueTypePick = new JComboBox<String>();
+		String[] valueTypes = {"Minute", "Hour", "Day"};
+		valueTypePick = new JComboBox(valueTypes);
 		valueTypePick.setVisible(false);
-		valueTypePick.addItem("Minute");
-		valueTypePick.addItem("Hour");
-		valueTypePick.addItem("Day");
 		GridBagConstraints gbc_valueTypePick = new GridBagConstraints();
 		gbc_valueTypePick.anchor = GridBagConstraints.WEST;
 		gbc_valueTypePick.insets = new Insets(0, 0, 5, 5);
@@ -268,14 +267,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//unique for date+hours+minutes
 		String id = ""+today.DATE+today.HOUR+today.MINUTE;
-		int creatorUserId = getUser().getId();
+		/*int creatorUserId = getUser().getId();*/int creatorUserId=0;
 		
 		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
 	}
 
 
 	private User getUser() {
-		return new User();
+		//TODO: fix this
+		return null;
 	}
 
 
@@ -334,7 +334,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			
 			//if approved
 			if(approved)
-				; //TODO: save it/send it something
+				cp.addAppointment(appointment);
 			
 			//debug
 			System.out.println(appointment);
@@ -343,13 +343,13 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
-			;
 		
 	}
 	
 	private void setAlarm(boolean bool) {
-		if(bool)
+		if(bool){
 			appointment.setAlarm(getAlarmValue());
+		}
 		else
 			appointment.setAlarm(null);
 	}
@@ -360,14 +360,14 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(value<0){
 			JOptionPane.showMessageDialog(this, "No negative numbers i alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
 			approved=false;
-			return appointment.getAlarm();
+			return appointment.getAlarm().getAlarmTime();
 		}
 		if(type.equals("Minute"))
-			alarm.set(GregorianCalendar.MINUTE,alarm.get(GregorianCalendar.MINUTE) - value);
+			alarm.set(Calendar.MINUTE,alarm.get(Calendar.MINUTE) - value);
 		else if(type.equals("Hour"))
-			alarm.set(GregorianCalendar.HOUR,alarm.get(GregorianCalendar.HOUR) - value);
+			alarm.set(Calendar.HOUR,alarm.get(Calendar.HOUR) - value);
 		else
-			alarm.set(GregorianCalendar.DATE,alarm.get(GregorianCalendar.DATE) - value);
+			alarm.set(Calendar.DATE,alarm.get(Calendar.DATE) - value);
 		return alarm;
 		
 	}

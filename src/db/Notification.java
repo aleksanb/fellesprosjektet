@@ -8,18 +8,18 @@ public class Notification {
 	private String message;
 	
 
-	public Notification(int iserId, int appointmentId, NotificationType notificationType){
+	public Notification(int userId, int appointmentId, NotificationType notificationType){
 		this.userId = userId;
 		this.appointmentId = appointmentId;
 		this.notificationType = notificationType;	
 	}
 	
-	public String getMeassage() {
+	public String getMessage() {
 		return message;
 	}
 
-	public void setMeassage(String meassage) {
-		this.message = meassage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public int getUserId() {
