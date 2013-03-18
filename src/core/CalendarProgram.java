@@ -8,6 +8,9 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import core.alarm.AlarmHandler;
+import core.alarm.AlarmListener;
+
 import db.Appointment;
 import db.Notification;
 import db.NotificationType;
@@ -16,6 +19,8 @@ import gui.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,7 +34,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
-public class CalendarProgram extends JFrame {
+public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//gui
 	private JPanel contentPane;
@@ -39,10 +44,10 @@ public class CalendarProgram extends JFrame {
 	private CalendarPanel calendarPanel;
 	
 	//model
-	private Appointment[] appointments;
+	private ArrayList<Appointment> appointments;
 	
 	//tools
-	AlarmHandler alarmHandler;
+	Thread alarmHandler;
 	
 	//server
 	private ObjectOutputStream output;
@@ -72,10 +77,12 @@ public class CalendarProgram extends JFrame {
 	public CalendarProgram() {
 		//sets up a connection to the server
 		connectToServer();
-		//get alarmlist and put them in the class. 
-		alarmHandler = new AlarmHandler(getAlarmList());
 		
-		//TODO make a method that runs alarmHandler in a own thread.
+		//TODO: load in appointments, look at the empty method
+		
+		//get appointments and starts to check them in a new thread
+		alarmHandler = new Thread(new AlarmHandler(getAppointmentList()));
+		alarmHandler.start();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -88,9 +95,8 @@ public class CalendarProgram extends JFrame {
 		
 	}
 
-	private ArrayList<GregorianCalendar> getAlarmList() {
-		// TODO get the alarm list from server/db. Get user as a parameter to get the right ones
-		return null;
+	private ArrayList<Appointment> getAppointmentList() {
+		return appointments;
 		
 	}
 
@@ -197,5 +203,11 @@ public class CalendarProgram extends JFrame {
 			logConsole("Error sending data");
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void alarmEvent(Appointment appointment) {
+		// TODO handle the alarm event
+		
 	}
 }
