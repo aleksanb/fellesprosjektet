@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import core.CalendarProgram;
-import db.Factory;
 
 
 import java.awt.Color;
@@ -24,7 +23,6 @@ import java.util.Properties;
 public class LoginPanel extends JPanel {
 	private JTextField textField;
 	private JPasswordField passwordfield;
-	private Factory factory;
 	private CalendarProgram cp;
 
 

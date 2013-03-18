@@ -39,7 +39,7 @@ public class CalendarProgram extends JFrame {
 	private CalendarPanel calendarPanel;
 	
 	//model
-	private Appointment[] appointments;
+	private ArrayList<Appointment> appointments;
 	
 	//tools
 	AlarmHandler alarmHandler;
@@ -70,6 +70,9 @@ public class CalendarProgram extends JFrame {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
+		appointments = new ArrayList<Appointment>();
+		appointments.add(new Appointment(2, 1, "test", null,
+			null, "holla", false));
 		//sets up a connection to the server
 		connectToServer();
 		//get alarmlist and put them in the class. 
@@ -200,9 +203,9 @@ public class CalendarProgram extends JFrame {
 	}
 	
 	public Appointment getAppointment(int id){
-		for(int i=1; i<appointments.length; i++){
-			if(appointments[i].getId() == id){
-				return appointments[i];
+		for(int i=0; i<appointments.size(); i++){
+			if(appointments.get(i).getId() == id){
+				return appointments.get(i);
 			}
 		}
 		return null;
