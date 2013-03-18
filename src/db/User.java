@@ -3,17 +3,19 @@ package db;
 public class User {
 	private int id;
 	private String name;
-	private String password;
+	private String hashedPassword;
 	private String email;
 	
-	public User(int id, String name, String password, String email){
+	public User(int id, String name, String hashedPassword, String email){
 		this.id = id;
 		this.name = name;
-		this.password = password;
+		this.hashedPassword = hashedPassword;
 		this.email = email;
 	}
-	public User() {
-		// TODO Auto-generated constructor stub
+	public User(String name, String HashedPassword, String email) {
+		this.name = name;
+		this.hashedPassword = HashedPassword;
+		this.email = email;
 	}
 	public void setName(String name){
 		this.name = name;
@@ -21,11 +23,11 @@ public class User {
 	public String getName(){
 		return name;
 	}
-	public void setPassword(String password){
-		this.password = password;
+	public void setHashedPassword(String hashedPassword){
+		this.hashedPassword = hashedPassword;
 	}
 	public String getPassword(){
-		return password;
+		return hashedPassword;
 	}
 	public void setEmail(String email){
 		this.email = email;
@@ -36,4 +38,5 @@ public class User {
 	public int getId(){
 		return id;
 	}
+
 }
