@@ -273,7 +273,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 
 	private User getUser() {
-		return new User();
+		//TODO: fix this
+		return null;
 	}
 
 

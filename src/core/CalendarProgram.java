@@ -147,7 +147,12 @@ public class CalendarProgram extends JFrame {
 			createConnection();
 			setupStreams();
 		} catch (IOException e) {
-			logConsole("could not setup a connection.");
+			try {
+				logConsole("could not connect to server: "+InetAddress.getByName(prop.getProperty("ip")));
+			} catch (UnknownHostException e1) {
+				logConsole("Could not find server");
+				e1.printStackTrace();
+			}
 			e.printStackTrace();}
 	}
 
@@ -159,7 +164,6 @@ public class CalendarProgram extends JFrame {
 	}
 	//set up streams to send and receive data
 	private void setupStreams()throws IOException{
-		//TODO: rewrite this method to handle gson
 		output= new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
@@ -185,5 +189,13 @@ public class CalendarProgram extends JFrame {
 	}
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
+	}
+	public void sendDebug(String text) {
+		try {
+			output.writeObject(text);
+		} catch (IOException e) {
+			logConsole("Error sending data");
+			e.printStackTrace();
+		}
 	}
 }
