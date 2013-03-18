@@ -89,17 +89,20 @@ public class LoginPanel extends JPanel {
 	} 
 	class LoginAction implements ActionListener {
 		LoginPanel lp;
+		CalendarProgram cp;
 		public LoginAction(LoginPanel lp, CalendarProgram cp){
 			this.lp = lp;
+			this.cp = cp;
 		}
 		public void actionPerformed(ActionEvent e) {
 			if(cp.checkValid(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
+			}
+			cp.sendDebug("message from clients login button");
 		}
 	}
 
-}
 	 public static void main(String args[]) throws ClassNotFoundException, SQLException{
 		 	CalendarProgram cp = new CalendarProgram();
 			JFrame frame = new JFrame("...");

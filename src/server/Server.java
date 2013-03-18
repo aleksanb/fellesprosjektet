@@ -8,48 +8,32 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class Server {
+public class Server implements Runnable{
 	
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	private ServerSocket server;
 	private Socket connection;
+	int connectionID;
 
-
+	public Server(Socket connection, int connectionID) {
+		this.connection=connection;
+		this.connectionID = connectionID;
+	}
 	//set up and run the server
-	public void startRunning(){
+	public void run(){
+		try {
+			setupStreams();
+		} catch (IOException e1) {
+			logConsole("Could not establish connection");
+			e1.printStackTrace();
+		}
 		try{
-			server = new ServerSocket(6789,100);
-			while(true){
-				try{
-					waitForConnection();
-					setupStreams();
-					new Thread(new Runnable() {
-						@Override
-						public void run(){
-							try {
-								whileRunning();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-					}).start();
-				//when ending connection
-				}catch(EOFException e){
-					logConsole("Server ended the connection");
-				}
-			}
+			whileRunning();
 		}catch(IOException e){
-			e.printStackTrace();
+			logConsole("Server ended the connection");
 		}
 	}
-	//wait for connection then display connection info
-	private void waitForConnection()throws IOException{
-		logConsole("Waiting for someone to connect...");
-		connection = server.accept();
-		logConsole("Now connected to "+connection.getInetAddress().getHostName());
-	}
-	
+
 	//get stream to send and receive data
 	private void setupStreams()throws IOException{
 		//TODO: rewrite this method to handle gson
@@ -63,9 +47,9 @@ public class Server {
 		boolean closeConnection = false;
 		do{
 			try{
-				;
+				logConsole((String)input.readObject());
 			}catch(Exception e){
-				;
+				logConsole("Error reading data");
 			}
 		}while(!closeConnection); 
 		closeApp();
@@ -83,6 +67,6 @@ public class Server {
 	
 	
 	public void logConsole(String text){
-		System.out.println("SERVER: "+text);
+		System.out.println("SERVER "+connectionID+": " +text);
 	}
 }
