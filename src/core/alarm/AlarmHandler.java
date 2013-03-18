@@ -67,7 +67,7 @@ public class AlarmHandler implements Runnable{
 		try {
 			Thread.sleep(timeUntilNextAlarm);
 		} catch (InterruptedException e) {
-			System.out.println("Something unexpected woke the alarm thread up");
+			System.out.println("Something unexpected woke the alarm-thread up");
 			e.printStackTrace();
 		}
 		soundAlarm(current);

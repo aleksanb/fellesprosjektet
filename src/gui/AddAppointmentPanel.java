@@ -267,7 +267,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//unique for date+hours+minutes
 		String id = ""+today.DATE+today.HOUR+today.MINUTE;
-		int creatorUserId = getUser().getId();
+		/*int creatorUserId = getUser().getId();*/int creatorUserId=0;
 		
 		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
 	}
@@ -334,7 +334,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			
 			//if approved
 			if(approved)
-				; //TODO: save it/send it something
+				cp.addAppointment(appointment);
 			
 			//debug
 			System.out.println(appointment);

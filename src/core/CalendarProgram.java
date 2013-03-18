@@ -78,7 +78,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 */
 	public CalendarProgram() {
 		//sets up a connection to the server
-		//connectToServer();
+		connectToServer();
 		
 		//TODO: load in appointments, look at the empty method
 		
@@ -209,6 +209,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			logConsole("Error sending data");
 			e.printStackTrace();
 		}
+	}
+	public void addAppointment(Appointment app){
+		appointments.add(app);
+		if(app.hasAlarm())
+			alarmHandler.addAppointment(app);
+			System.out.println(alarmHandlerThread.interrupted());
+			
 	}
 
 	@Override
