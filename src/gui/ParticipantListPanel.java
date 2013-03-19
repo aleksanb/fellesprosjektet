@@ -3,6 +3,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
@@ -10,54 +11,67 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import db.User;
 
 
-public class ParticipantListPanel {  
-   public static void main(String args[]) {
-      JFrame frame = new JFrame("Participants");
-      Dimension d = new Dimension(200,200);
-      frame.setSize(d);
-      frame.setResizable(false);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      JList list = new JList(new DefaultListModel());
-      list.setCellRenderer(new CheckListRenderer());
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user1));
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user2));
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user3));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      list.addMouseListener(new MouseAdapter() {
-         public void mouseClicked(MouseEvent event) {
-            JList list = (JList) event.getSource();
-            
-            // Get index of item clicked
-            
-            int index = list.locationToIndex(event.getPoint());
-            CheckListItem item = (CheckListItem)
-               list.getModel().getElementAt(index);
-            
-            // Toggle selected state
-            
-            item.setSelected(! item.isSelected());
-            
-            // Repaint cell
-            
-            list.repaint(list.getCellBounds(index, index));
-         }
-      });   
+public class ParticipantListPanel extends JList<CheckListItem> { 
+	
+	DefaultListModel<CheckListItem> model;
+	static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	
+	public ParticipantListPanel() {
+		model = new DefaultListModel<CheckListItem>();
+		setModel(model);
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setCellRenderer(new CheckListRenderer());
+		addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent event) {
+				JList list = (JList) event.getSource();
+				
+				// Get index of item clicked
+				
+				int index = list.locationToIndex(event.getPoint());
+				CheckListItem item = (CheckListItem)
+						list.getModel().getElementAt(index);
+				
+				// Toggle selected state
+				
+				item.setSelected(! item.isSelected());
+				
+				// Repaint cell
+				
+				list.repaint(list.getCellBounds(index, index));
+			}
+		});   
+		
+	}
+	
+	public static void main(String args[]) {
+		
+		ParticipantListPanel participants = new ParticipantListPanel();
+		participants.getModel().addElement(new CheckListItem(user1));
+		participants.getModel().addElement(new CheckListItem(user2));
+		participants.getModel().addElement(new CheckListItem(user3));
 
-      frame.getContentPane().add(new JScrollPane(list));
-      frame.pack();
-      frame.setVisible(true);
+		JFrame frame = new JFrame("Participants");
+		Dimension d = new Dimension(400,400);
+		frame.setSize(d);
+		frame.getContentPane().add(new JScrollPane(participants));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
    }
 
-	public ParticipantListPanel getParticipantList() {
-		// TODO Auto-generated method stub
+	public ParticipantListPanel getParticipantList() {					//Må fikses
 		return null;
+	}
+
+	public DefaultListModel getModel() {
+		return model;
 	}
 }
 class CheckListItem {

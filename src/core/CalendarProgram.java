@@ -13,8 +13,10 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
 import db.Appointment;
+import db.ClientFactory;
 import db.Notification;
 import db.NotificationType;
+import db.User;
 
 import gui.*;
 import java.awt.GridBagLayout;
@@ -47,15 +49,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//model
 	private HashMap<Integer, Appointment> appointments;
+	private User currentUser;
 	
 	//tools
-	Thread alarmHandlerThread;
+	private Thread alarmHandlerThread;
+	private ClientFactory clientFactory = new ClientFactory();
 	
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
-	Properties prop;
+	private Properties prop;
 	private AlarmHandler alarmHandler;
 
 	/**
@@ -79,15 +83,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 */
 	public CalendarProgram() {
 		appointments = new HashMap<Integer, Appointment>();
-		appointments.add(new Appointment(2, 1, "test", null,
-			null, "holla", false));
 		//sets up a connection to the server
 		connectToServer();
 		
 		//TODO: load in appointments, look at the empty method
 		
 		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
-		alarmHandler = new AlarmHandler(getAppointmentList());
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());
 		alarmHandler.addAlarmEventListener(this);
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
@@ -125,7 +127,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	public boolean checkValid(String userName, String password) {
-		return true;
+		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
+		if(temp != null){
+			currentUser = temp;
+			return true;
+		}
+		return false;
 	}
 	
 	public void displayMainProgram(){
