@@ -95,6 +95,9 @@ public class Appointment {
 	public void setEnd(Date date){
 		end.setTime(date);
 	}
+	public int getWeek(){
+		return start.get(GregorianCalendar.WEEK_OF_YEAR);
+	}
 	public Alarm getAlarm() {
 		return alarm;
 	}
