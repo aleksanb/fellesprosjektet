@@ -13,8 +13,10 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
 import db.Appointment;
+import db.ClientFactory;
 import db.Notification;
 import db.NotificationType;
+import db.User;
 
 import gui.*;
 import java.awt.GridBagLayout;
@@ -33,6 +35,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
@@ -45,16 +48,18 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private CalendarPanel calendarPanel;
 	
 	//model
-	private ArrayList<Appointment> appointments;
+	private HashMap<Integer, Appointment> appointments;
+	private User currentUser;
 	
 	//tools
-	Thread alarmHandlerThread;
+	private Thread alarmHandlerThread;
+	private ClientFactory clientFactory = new ClientFactory();
 	
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
-	Properties prop;
+	private Properties prop;
 	private AlarmHandler alarmHandler;
 
 	/**
@@ -77,16 +82,14 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
-		appointments = new ArrayList<Appointment>();
-		appointments.add(new Appointment(2, 1, "test", null,
-			null, "holla", false));
+		appointments = new HashMap<Integer, Appointment>();
 		//sets up a connection to the server
 		connectToServer();
 		
 		//TODO: load in appointments, look at the empty method
 		
 		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
-		alarmHandler = new AlarmHandler(getAppointmentList());
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());
 		alarmHandler.addAlarmEventListener(this);
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
@@ -102,12 +105,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		
 	}
 
-	private ArrayList<Appointment> getAppointmentList() {
+	//private ArrayList<Appointment> getAppointmentList() {
 		//TODO: make server fetch appointments
-		appointments = new ArrayList<Appointment>();
-		return appointments;
+		//appointments = new ArrayList<Integer, Appointment>();
+		//return appointments;
 		
-	}
+	//}
 
 	public void displayLogin() {
 		menuPanel.setVisible(false);
@@ -124,7 +127,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	public boolean checkValid(String userName, String password) {
-		return true;
+		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
+		if(temp != null){
+			currentUser = temp;
+			return true;
+		}
+		return false;
 	}
 	
 	public void displayMainProgram(){
@@ -215,27 +223,21 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	
 	public void addAppointment(Appointment app){
-		appointments.add(app);
+		appointments.put(app.getId(), app);
 		if(app.hasAlarm()){
 			alarmHandler.addAppointment(app);
 			alarmHandlerThread.interrupt();
 			System.out.println("Thread: "+alarmHandlerThread.interrupted());
-		}
-			
+		}		
 	}
-
+		
+	public Appointment getAppointment(int id){
+		return appointments.get(id);
+	}
 	@Override
 	public void alarmEvent(Appointment appointment) {
 		//TODO: format the message on the alarm
 		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
 	}
-	
-	public Appointment getAppointment(int id){
-		for(int i=0; i<appointments.size(); i++){
-			if(appointments.get(i).getId() == id){
-				return appointments.get(i);
-			}
-		}
-		return null;
-	}
+
 }
