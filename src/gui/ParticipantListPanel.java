@@ -18,33 +18,17 @@ import db.User;
 
 public class ParticipantListPanel extends JList<CheckListItem> { 
 	
-	JList<CheckListItem> participants;
 	DefaultListModel<CheckListItem> model;
-	User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 	
 	public ParticipantListPanel() {
 		model = new DefaultListModel<CheckListItem>();
-		participants = new JList<CheckListItem>(model);
-		participants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		model.addElement(new CheckListItem(user1));
-		model.addElement(new CheckListItem(user2));
-		model.addElement(new CheckListItem(user3));
-		
-	}
-	
-	public static void main(String args[]) {
-		
-		ParticipantListPanel participants = new ParticipantListPanel();
-		DefaultListModel model = new DefaultListModel();
-		participants.setModel(model);
-		JFrame frame = new JFrame("Participants");
-		Dimension d = new Dimension(400,400);
-		frame.setSize(d);
-		frame.getContentPane().add(new JScrollPane(participants));
-		participants.setCellRenderer(new CheckListRenderer());
-		participants.addMouseListener(new MouseAdapter() {
+		setModel(model);
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setCellRenderer(new CheckListRenderer());
+		addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
 				JList list = (JList) event.getSource();
 				
@@ -63,6 +47,20 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				list.repaint(list.getCellBounds(index, index));
 			}
 		});   
+		
+	}
+	
+	public static void main(String args[]) {
+		
+		ParticipantListPanel participants = new ParticipantListPanel();
+		participants.getModel().addElement(new CheckListItem(user1));
+		participants.getModel().addElement(new CheckListItem(user2));
+		participants.getModel().addElement(new CheckListItem(user3));
+
+		JFrame frame = new JFrame("Participants");
+		Dimension d = new Dimension(400,400);
+		frame.setSize(d);
+		frame.getContentPane().add(new JScrollPane(participants));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
