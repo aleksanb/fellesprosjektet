@@ -21,7 +21,6 @@ import java.util.Properties;
 import javax.swing.JList;
 
 import db.Appointment;
-import db.Factory;
 import db.Notification;
 import db.NotificationType;
 import core.CalendarProgram;
@@ -176,7 +175,7 @@ public class MenuPanel extends JPanel {
 			if(index != -1 && index != 0){
 				notificationList.removeItem(note);
 				notificationList.setSelectedIndex(0);
-				//Her må det legges inn en referanse til en metode som setter appointmenten notificationen som fjaernes refererer til aktiv i kalenderen
+				//Her mï¿½ det legges inn en referanse til en metode som setter appointmenten notificationen som fjaernes refererer til aktiv i kalenderen
 			}
 			update();
 		}
