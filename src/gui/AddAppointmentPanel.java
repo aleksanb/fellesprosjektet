@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 
 import core.CalendarProgram;
+import core.alarm.AlarmHandler;
 
 import db.Appointment;
 import db.User;
@@ -16,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -266,14 +268,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//unique for date+hours+minutes
 		String id = ""+today.DATE+today.HOUR+today.MINUTE;
-		int creatorUserId = getUser().getId();
+		/*int creatorUserId = getUser().getId();*/int creatorUserId=0;
 		
 		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
 	}
 
 
 	private User getUser() {
-		return new User();
+		//TODO: fix this
+		return null;
 	}
 
 
@@ -332,7 +335,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			
 			//if approved
 			if(approved)
-				; //TODO: save it/send it something
+				cp.addAppointment(appointment);
 			
 			//debug
 			System.out.println(appointment);
@@ -345,8 +348,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	}
 	
 	private void setAlarm(boolean bool) {
-		if(bool)
+		if(bool){
 			appointment.setAlarm(getAlarmValue());
+		}
 		else
 			appointment.setAlarm(null);
 	}
@@ -357,14 +361,14 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(value<0){
 			JOptionPane.showMessageDialog(this, "No negative numbers i alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
 			approved=false;
-			return appointment.getAlarm();
+			return appointment.getAlarm().getAlarmTime();
 		}
 		if(type.equals("Minute"))
-			alarm.set(GregorianCalendar.MINUTE,alarm.get(GregorianCalendar.MINUTE) - value);
+			alarm.set(Calendar.MINUTE,alarm.get(Calendar.MINUTE) - value);
 		else if(type.equals("Hour"))
-			alarm.set(GregorianCalendar.HOUR,alarm.get(GregorianCalendar.HOUR) - value);
+			alarm.set(Calendar.HOUR,alarm.get(Calendar.HOUR) - value);
 		else
-			alarm.set(GregorianCalendar.DATE,alarm.get(GregorianCalendar.DATE) - value);
+			alarm.set(Calendar.DATE,alarm.get(Calendar.DATE) - value);
 		return alarm;
 		
 	}

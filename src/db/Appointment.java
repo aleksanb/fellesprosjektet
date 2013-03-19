@@ -3,6 +3,8 @@ package db;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import core.alarm.Alarm;
+
 /**
  * 
  * @author Espen
@@ -16,14 +18,14 @@ import java.util.GregorianCalendar;
 
 public class Appointment {
 
-	int id;
-	int creatorUserId ;
-	String title;
-	GregorianCalendar start;
-	GregorianCalendar end;
-	String description;
-	boolean isMeeting;
-	GregorianCalendar alarm;
+	private int id;
+	private int creatorUserId ;
+	private String title;
+	private GregorianCalendar start;
+	private GregorianCalendar end;
+	private String description;
+	private boolean isMeeting;
+	private Alarm alarm;
 	
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
@@ -92,12 +94,12 @@ public class Appointment {
 	public void setEnd(Date date){
 		end.setTime(date);
 	}
-	public GregorianCalendar getAlarm() {
+	public Alarm getAlarm() {
 		return alarm;
 	}
 
-	public void setAlarm(GregorianCalendar alarm) {
-		this.alarm = alarm;
+	public void setAlarm(GregorianCalendar alarmTime) {
+		this.alarm = new Alarm(alarmTime,id);
 	}
 	@Override
 	public String toString() {
@@ -105,8 +107,12 @@ public class Appointment {
 				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
 				+ "\n description: " + description + "\n isMeeting: " + isMeeting;
 		if(alarm!=null) 
-			out+="\n Alarm: " + alarm.getTime();
+			out+="\n Alarm: " + alarm.getAlarmTime().getTime();
 		return out;
+	}
+
+	public boolean hasAlarm() {
+		return alarm!=null;
 	}
 	
 	
