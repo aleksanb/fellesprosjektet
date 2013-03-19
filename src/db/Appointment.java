@@ -110,7 +110,7 @@ public class Appointment {
 		return this.participants;
 	}
 	
-	public void addParticipants(User user){
+	public void addParticipant(User user){
 		this.participants.add(user);
 	}
 	

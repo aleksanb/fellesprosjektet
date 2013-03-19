@@ -16,11 +16,8 @@ import java.util.ArrayList;
 public class MeetingPanel extends JPanel {
 	
 	private MeetingPoint[] places = {};
-	private JComboBox comboBox;
-	/**
-	 * @wbp.nonvisual location=35,61
-	 */
-	private final ParticipantListPanel participantListPanel = new ParticipantListPanel();
+	protected JComboBox comboBox;
+	protected ParticipantListPanel participantListPanel;
 	
 	
 	public MeetingPanel() {
@@ -28,7 +25,7 @@ public class MeetingPanel extends JPanel {
 		gridBagLayout.columnWidths = new int[]{0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblNewLabel = new JLabel("Participants");
@@ -38,6 +35,14 @@ public class MeetingPanel extends JPanel {
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		add(lblNewLabel, gbc_lblNewLabel);
+		
+		participantListPanel = new ParticipantListPanel();
+		GridBagConstraints gbc_participantListPanel = new GridBagConstraints();
+		gbc_participantListPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_participantListPanel.fill = GridBagConstraints.BOTH;
+		gbc_participantListPanel.gridx = 0;
+		gbc_participantListPanel.gridy = 1;
+		add(participantListPanel, gbc_participantListPanel);
 		
 		JLabel lblPlace = new JLabel("Place");
 		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
