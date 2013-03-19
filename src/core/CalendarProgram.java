@@ -14,7 +14,6 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
 import db.Appointment;
-import db.ClientFactory;
 import db.Notification;
 import db.NotificationType;
 import db.User;
