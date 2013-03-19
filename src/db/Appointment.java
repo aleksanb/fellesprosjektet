@@ -6,13 +6,6 @@ import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-/**
- * 
- * @author Espen
-**/
-
-
-
 public class Appointment {
 
 	private int id;

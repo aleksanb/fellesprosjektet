@@ -1,10 +1,8 @@
 package server;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -13,7 +11,8 @@ import com.google.gson.JsonSyntaxException;
 
 import db.Action;
 import db.ActionObject;
-import db.ServerFactory;
+import db.Appointment;
+import server.ServerFactory;
 import db.User;
 
 
@@ -138,6 +137,14 @@ public class Server implements Runnable{
 			}
 			break;
 		case GET:
+			break;
+		case GET_ALL_APPOINTMENTS:
+			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
+			User appslookup = gson.fromJson(alo.get(0).toString(), User.class);
+			ArrayList<Appointment> sqld_apps = sf.allAppointments(appslookup);
+			//TODO: add event listener
+			System.out.println("sending appointments " + sqld_apps + " back to login");
+			output.writeObject(sqld_apps);
 			break;
 		case INSERT:
 			break;

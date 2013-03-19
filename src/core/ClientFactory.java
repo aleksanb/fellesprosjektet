@@ -1,4 +1,4 @@
-package db;
+package core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +8,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+
+import db.Action;
+import db.Appointment;
+import db.JsonFactory;
+import db.User;
 
 public class ClientFactory {
 	//server
@@ -102,6 +109,9 @@ public class ClientFactory {
 		
 		return login;
 	}
+	public void getAllEvents(User u){
+		String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
+	}
 	
 	public static void main(String args[]) {
 		ClientFactory fc = new ClientFactory();
@@ -112,5 +122,31 @@ public class ClientFactory {
 	
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
+	}
+
+	public HashMap<Integer, Appointment> loadAppointments(User u) {
+		HashMap<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
+		
+		//sets identifying message for the data
+		String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
+		try {
+			//sends the data as a json string to server
+			output.writeObject(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("waiting for response");
+		try {
+			//return arraylist from server
+			ArrayList<Appointment> temp = (ArrayList<Appointment>) input.readObject();
+			for (Appointment app : temp) {
+				appointments.put(app.getId(), app);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return appointments;
 	}
 }

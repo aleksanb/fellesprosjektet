@@ -1,4 +1,4 @@
-package db;
+package server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,14 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.sql.PreparedStatement;
+
+import db.Appointment;
+import db.User;
+
 
 public class ServerFactory {
 	// Database connection
@@ -32,13 +38,14 @@ public class ServerFactory {
 			e.printStackTrace();
 		}	
 	}
-	
 	public static void main(String args[]) {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
-		String result = sf.login(new User("aleksander", "email", "passord"));
+//		String result = sf.login(new User("aleksander", "email", "passord"));
+		ArrayList<Appointment> result = sf.allAppointments(new User(1,"","",""));
 		System.out.println(result);
 	}
+	
 	
 	public String login(User u) {
 		PreparedStatement prest;
@@ -67,26 +74,6 @@ public class ServerFactory {
 			System.out.println("something fucked up");
 		}
 		return rslt;
-	}
-	
-	public boolean checkValid(String username, String password) throws ClassNotFoundException, SQLException {
-		
-		PreparedStatement prest;	
-		db.initialize();
-		
-		System.out.println("preparing to check");
-		
-		prest = db.preparedStatement("SELECT COUNT(*) FROM sids.user (name, hashedPassword) VALUES (?, ?)");
-		prest.setString(1, username);
-		prest.setString(2, password);
-		
-		ResultSet rs = prest.executeQuery();
-		int users = rs.getInt(1);
-		
-		db.close();
-		
-		return (users == 1)? true : false;
-		
 	}
 	
 	public User createUser(String name, String password, String email) throws ClassNotFoundException, SQLException {
@@ -118,6 +105,39 @@ public class ServerFactory {
 			return null;
 		}
 		
+	}
+
+	public ArrayList<Appointment> allAppointments(User u) {
+		PreparedStatement prest;
+		String rslt = "null";
+		ResultSet rs;
+		ArrayList<Appointment> results = new ArrayList<>();
+		try {
+			System.out.println("preparing to check user");
+			db.initialize();
+			//send query to db
+			prest = db.preparedStatement("SELECT * FROM sids.appointment WHERE creatorUserId=?;");
+			prest.setInt(1, u.getId());
+			System.out.println(prest);
+			//returns query
+			rs = prest.executeQuery();
+			GregorianCalendar start;
+			GregorianCalendar end;
+			//makes query to a appointment object
+			while (rs.next()) {
+				start = new GregorianCalendar();
+				start.setTime(rs.getTimestamp("start"));
+				end = new GregorianCalendar();
+				end.setTime(rs.getTimestamp("end"));
+				results.add(new Appointment(rs.getInt("id"), rs.getInt("creatorUserId"), rs.getString("title"), start, end, rs.getString("description"), rs.getBoolean("isMeeting")));
+				}
+			db.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up");
+		}
+		return results;
 	}
 	
 }
