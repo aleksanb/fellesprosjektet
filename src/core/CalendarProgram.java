@@ -13,8 +13,10 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
 import db.Appointment;
+import db.ClientFactory;
 import db.Notification;
 import db.NotificationType;
+import db.User;
 
 import gui.*;
 import java.awt.GridBagLayout;
@@ -46,15 +48,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//model
 	private ArrayList<Appointment> appointments;
+	private User currentUser;
 	
 	//tools
-	Thread alarmHandlerThread;
+	private Thread alarmHandlerThread;
+	private ClientFactory clientFactory = new ClientFactory();
 	
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
-	Properties prop;
+	private Properties prop;
 	private AlarmHandler alarmHandler;
 
 	/**
@@ -124,7 +128,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	public boolean checkValid(String userName, String password) {
-		return true;
+		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
+		if(temp != null){
+			currentUser = temp;
+			return true;
+		}
+		return false;
 	}
 	
 	public void displayMainProgram(){
