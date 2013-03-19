@@ -49,7 +49,7 @@ public class MeetingPanel extends JPanel {
 		add(comboBox, gbc_comboBox);
 	}
 	
-	public ParticipantList getParticipants(){
+	public ParticipantListPanel getParticipants(){
 		return this.participantListPanel.getParticipantList();
 	}
 	
