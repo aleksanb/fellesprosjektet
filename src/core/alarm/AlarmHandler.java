@@ -55,32 +55,31 @@ public class AlarmHandler implements Runnable{
 		while(true){
 			//if there is an appointment in the list
 			if(!appointments.isEmpty()){
-			current = appointments.pop();
+			current = appointments.peek();
 			timeUntilNextAlarm = current.getAlarm().getMillis()-System.currentTimeMillis();
-			System.out.println("new alarm");
+//			System.out.println("new alarm");
 			}
 			//if the list is empty it will sleep for 5 seconds and then begin at the start of the while-loop.
 			else{
-				System.out.println("no alarm, waiting 5 seconds");
+//				System.out.println("no alarm, waiting 5 seconds");
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
-					System.out.println("interupted in standby sleep");
-					e.printStackTrace();
+//					System.out.println("interupted in standby sleep");
+//					e.printStackTrace();
 				}
 				continue;
 			}
 			//will sleep until next alarm. An interuption will wake it
 			try {
-				System.out.println("new alarm, sleeping for " + (timeUntilNextAlarm/1000)+" seconds");
+//				System.out.println("new alarm, sleeping for " + (timeUntilNextAlarm/1000)+" seconds");
 				Thread.sleep(timeUntilNextAlarm);
 			} catch (InterruptedException e) {
-				System.out.println("Alarmthread interupted");
-				e.printStackTrace();
+//				System.out.println("Interupted in waiting-for-alarm-sleep");
+//				e.printStackTrace();
 				continue;
 			}
-			soundAlarm(current);
-//			alarms.remove(current);
+			soundAlarm(appointments.pop());
 		}
 	}
 	private void soundAlarm(Appointment alarm){
