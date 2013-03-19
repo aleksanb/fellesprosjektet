@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.jdesktop.swingx.JXDatePicker;
 
+import sun.security.krb5.internal.CredentialsUtil;
+
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 
@@ -267,7 +269,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		
 		//unique for date+hours+minutes
-		String id = ""+today.DATE+today.HOUR+today.MINUTE;
+		String id = ""+today.get(Calendar.DATE)+today.get(Calendar.HOUR)+today.get(Calendar.MINUTE)+today.get(Calendar.SECOND);
 		/*int creatorUserId = getUser().getId();*/int creatorUserId=0;
 		
 		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
@@ -303,6 +305,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//add Appointment
 		if(event.getActionCommand().equals("Add")){
+			
+			//start with a fresh instance
+			appointment = createAppointment();
 			
 			//set title
 			appointment.setTitle(titleField.getText());
