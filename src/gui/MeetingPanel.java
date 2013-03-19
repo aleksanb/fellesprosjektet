@@ -8,8 +8,10 @@ import java.awt.GridBagConstraints;
 import javax.swing.JComboBox;
 
 import db.MeetingPoint;
+import db.User;
 
 import java.awt.Insets;
+import java.util.ArrayList;
 
 public class MeetingPanel extends JPanel {
 	
@@ -53,7 +55,7 @@ public class MeetingPanel extends JPanel {
 		add(comboBox, gbc_comboBox);
 	}
 	
-	public ParticipantListPanel getParticipants(){
+	public ArrayList<User> getParticipants(){
 		return this.participantListPanel.getParticipantList();
 	}
 	
