@@ -1,5 +1,6 @@
 package db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -8,11 +9,7 @@ import core.alarm.Alarm;
 /**
  * 
  * @author Espen
- *
- *Kan vi bruke klassen GregorianCalendar istedet for "Date" til � lagre dato-objekter?
- *"Date" brukes mest til � sette dato inn i en database tror jeg?
- *n�r vi gj�r det kan vi istedet bruke gregorianCalendar.getTime()
- */
+**/
 
 
 
@@ -26,6 +23,8 @@ public class Appointment {
 	private String description;
 	private boolean isMeeting;
 	private Alarm alarm;
+	private ArrayList<User> participants;
+	private MeetingPoint place;
 	
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
@@ -37,6 +36,8 @@ public class Appointment {
 		this.end = end;
 		this.description = description;
 		this.isMeeting = isMeeting;
+		participants = new ArrayList<User>();
+		place = null;
 	}
 	
 	public int getId() {
@@ -104,6 +105,24 @@ public class Appointment {
 	public void setAlarm(GregorianCalendar alarmTime) {
 		this.alarm = new Alarm(alarmTime,id);
 	}
+	
+	public ArrayList<User> getParticipants(){
+		return this.participants;
+	}
+	
+	public void addParticipants(User user){
+		this.participants.add(user);
+	}
+	
+	public MeetingPoint getPlace(){
+		return this.place;
+	}
+	
+	public void setPlace(MeetingPoint place){
+		this.place = place;
+	}
+	
+	
 	@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
