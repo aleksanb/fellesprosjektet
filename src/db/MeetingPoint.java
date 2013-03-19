@@ -10,7 +10,6 @@ public class MeetingPoint {
 		this.name = name;
 		this.capacity = capacity;
 	}
-
 	public int getId() {
 		return id;
 	}
@@ -25,5 +24,10 @@ public class MeetingPoint {
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+	@Override
+	public String toString() {
+		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
+				+ capacity + "]";
 	}
 }
