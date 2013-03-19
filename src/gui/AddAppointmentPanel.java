@@ -448,8 +448,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		CalendarProgram cp = null;
-		frame.getContentPane().add(new AddAppointmentPanel(cp));
+		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram()));
 		frame.pack();
         frame.setSize (800,500);
         frame.setVisible(true);
