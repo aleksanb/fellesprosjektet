@@ -1,5 +1,6 @@
 package gui;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -12,9 +13,12 @@ import java.awt.Insets;
 
 public class MeetingPanel extends JPanel {
 	
-	private final ParticipantListPanel participantListPanel = new ParticipantListPanel();
 	private MeetingPoint[] places = {};
 	private JComboBox comboBox;
+	/**
+	 * @wbp.nonvisual location=35,61
+	 */
+	private final ParticipantListPanel participantListPanel = new ParticipantListPanel();
 	
 	
 	public MeetingPanel() {
@@ -55,6 +59,15 @@ public class MeetingPanel extends JPanel {
 	
 	public MeetingPoint getMeetingPoint(){
 		return (MeetingPoint) comboBox.getSelectedItem();
+	}
+	
+	public static void main(String[] args){
+		JFrame frame = new JFrame();
+		MeetingPanel mp = new MeetingPanel();
+		frame.getContentPane().add(mp);
+		frame.pack();
+		frame.setSize(300, 100);
+		frame.setVisible(true);
 	}
 
 }
