@@ -5,17 +5,6 @@ import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-/**
- * 
- * @author Espen
- *
- *Kan vi bruke klassen GregorianCalendar istedet for "Date" til � lagre dato-objekter?
- *"Date" brukes mest til � sette dato inn i en database tror jeg?
- *n�r vi gj�r det kan vi istedet bruke gregorianCalendar.getTime()
- */
-
-
-
 public class Appointment {
 
 	private int id;
