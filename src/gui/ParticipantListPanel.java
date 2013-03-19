@@ -45,8 +45,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
 				
 				// Toggle selected state
-				
-				item.setSelected(! item.isSelected());
+
+				item.setSelected(! item.isSelected());					
+
 				
 				if(item.isSelected() == true) {
 					addParticipant(item.getUser());
@@ -59,7 +60,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));
+				list.repaint(list.getCellBounds(index, index));					
 			}
 		});   
 		
