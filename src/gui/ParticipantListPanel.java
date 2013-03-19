@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
@@ -19,44 +21,57 @@ import db.User;
 public class ParticipantListPanel extends JList<CheckListItem> { 
 	
 	DefaultListModel<CheckListItem> model;
-	static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	ArrayList<User> participantList;
+	/*static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 	static User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
 	
 	public ParticipantListPanel() {
 		model = new DefaultListModel<CheckListItem>();
+		participantList = new ArrayList<User>();
 		setModel(model);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setCellRenderer(new CheckListRenderer());
 		addMouseListener(new MouseAdapter() {
+			
+			// Handle selection and adding users to the list of participants.
+			
 			public void mouseClicked(MouseEvent event) {
 				JList list = (JList) event.getSource();
 				
 				// Get index of item clicked
 				
 				int index = list.locationToIndex(event.getPoint());
-				CheckListItem item = (CheckListItem)
-						list.getModel().getElementAt(index);
+				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
 				
 				// Toggle selected state
+
+				item.setSelected(! item.isSelected());					
+
 				
-				item.setSelected(! item.isSelected());
+				if(item.isSelected() == true) {
+					addParticipant(item.getUser());
+					System.out.println(participantList);
+				}
+				if(item.isSelected() == false) {
+					removeParticipant(item.getUser());
+					System.out.println(participantList);
+				}
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));
+				list.repaint(list.getCellBounds(index, index));					
 			}
 		});   
 		
 	}
-	
+
 	public static void main(String args[]) {
 		
 		ParticipantListPanel participants = new ParticipantListPanel();
-		participants.getModel().addElement(new CheckListItem(user1));
+		/*participants.getModel().addElement(new CheckListItem(user1));
 		participants.getModel().addElement(new CheckListItem(user2));
-		participants.getModel().addElement(new CheckListItem(user3));
-
+		participants.getModel().addElement(new CheckListItem(user3));*/
 		JFrame frame = new JFrame("Participants");
 		Dimension d = new Dimension(400,400);
 		frame.setSize(d);
@@ -64,16 +79,23 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
-   }
-
-	public ParticipantListPanel getParticipantList() {					//Må fikses
-		return null;
+	}
+	
+	public void addParticipant(User user) {
+		participantList.add(user);
+	}
+	public void removeParticipant(User user) {
+		participantList.remove(user);
 	}
 
 	public DefaultListModel getModel() {
 		return model;
 	}
+	public ArrayList<User> getParticipantList() {
+		return participantList;
+	}
 }
+
 class CheckListItem {
 	protected User user;
 	protected boolean isSelected = false;
@@ -91,6 +113,9 @@ class CheckListItem {
 	}
 	public String toString() {
 		return user.getName();
+	}
+	public User getUser() {
+		return user;
 	}
 }
 

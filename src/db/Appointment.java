@@ -1,5 +1,6 @@
 package db;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -15,6 +16,8 @@ public class Appointment {
 	private String description;
 	private boolean isMeeting;
 	private Alarm alarm;
+	private ArrayList<User> participants;
+	private MeetingPoint place;
 	
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
@@ -26,6 +29,8 @@ public class Appointment {
 		this.end = end;
 		this.description = description;
 		this.isMeeting = isMeeting;
+		participants = new ArrayList<User>();
+		place = null;
 	}
 	
 	public int getId() {
@@ -83,6 +88,9 @@ public class Appointment {
 	public void setEnd(Date date){
 		end.setTime(date);
 	}
+	public int getWeek(){
+		return start.get(GregorianCalendar.WEEK_OF_YEAR);
+	}
 	public Alarm getAlarm() {
 		return alarm;
 	}
@@ -90,6 +98,24 @@ public class Appointment {
 	public void setAlarm(GregorianCalendar alarmTime) {
 		this.alarm = new Alarm(alarmTime,id);
 	}
+	
+	public ArrayList<User> getParticipants(){
+		return this.participants;
+	}
+	
+	public void addParticipant(User user){
+		this.participants.add(user);
+	}
+	
+	public MeetingPoint getPlace(){
+		return this.place;
+	}
+	
+	public void setPlace(MeetingPoint place){
+		this.place = place;
+	}
+	
+	
 	@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
