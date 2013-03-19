@@ -1,4 +1,4 @@
-package db;
+package server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.sql.PreparedStatement;
+
+import db.User;
+
 
 public class ServerFactory {
 	// Database connection
@@ -70,26 +73,6 @@ public class ServerFactory {
 			System.out.println("something fucked up");
 		}
 		return rslt;
-	}
-	
-	public boolean checkValid(String username, String password) throws ClassNotFoundException, SQLException {
-		
-		PreparedStatement prest;	
-		db.initialize();
-		
-		System.out.println("preparing to check");
-		
-		prest = db.preparedStatement("SELECT COUNT(*) FROM sids.user (name, hashedPassword) VALUES (?, ?)");
-		prest.setString(1, username);
-		prest.setString(2, password);
-		
-		ResultSet rs = prest.executeQuery();
-		int users = rs.getInt(1);
-		
-		db.close();
-		
-		return (users == 1)? true : false;
-		
 	}
 	
 	public User createUser(String name, String password, String email) throws ClassNotFoundException, SQLException {

@@ -1,4 +1,4 @@
-package db;
+package core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +11,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+
+import db.Action;
+import db.JsonFactory;
+import db.User;
 
 public class ClientFactory {
 	//server
