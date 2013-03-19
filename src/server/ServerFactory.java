@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.sql.PreparedStatement;
 
 import db.Appointment;
+import db.MeetingPoint;
 import db.User;
 
 
@@ -44,6 +45,8 @@ public class ServerFactory {
 //		String result = sf.login(new User("aleksander", "email", "passord"));
 		ArrayList<Appointment> result = sf.allAppointments(new User(1,"","",""));
 		System.out.println(result);
+//		System.out.println(result.get(1).getParticipants());
+//		System.out.println(result.get(1).getPlace());
 	}
 	
 	
@@ -109,35 +112,94 @@ public class ServerFactory {
 
 	public ArrayList<Appointment> allAppointments(User u) {
 		PreparedStatement prest;
-		String rslt = "null";
-		ResultSet rs;
-		ArrayList<Appointment> results = new ArrayList<>();
+		ResultSet apps;
+		ArrayList<Appointment> results = new ArrayList<Appointment>();
 		try {
 			System.out.println("preparing to check user");
-			db.initialize();
 			//send query to db
+			db.initialize();
 			prest = db.preparedStatement("SELECT * FROM sids.appointment WHERE creatorUserId=?;");
 			prest.setInt(1, u.getId());
 			System.out.println(prest);
 			//returns query
-			rs = prest.executeQuery();
+			apps = prest.executeQuery();
 			GregorianCalendar start;
 			GregorianCalendar end;
 			//makes query to a appointment object
-			while (rs.next()) {
+			while (apps.next()) {
 				start = new GregorianCalendar();
-				start.setTime(rs.getTimestamp("start"));
+				start.setTime(apps.getTimestamp("start"));
 				end = new GregorianCalendar();
-				end.setTime(rs.getTimestamp("end"));
-				results.add(new Appointment(rs.getInt("id"), rs.getInt("creatorUserId"), rs.getString("title"), start, end, rs.getString("description"), rs.getBoolean("isMeeting")));
+				end.setTime(apps.getTimestamp("end"));
+				Appointment temp = new Appointment(apps.getInt("id"), apps.getInt("creatorUserId"), apps.getString("title"), start, end, apps.getString("description"), apps.getBoolean("isMeeting"));
+				if(temp.isMeeting()){
+					temp.setParticipants(getParticipants(temp));
+					temp.setPlace(getMeetingPoint(temp));
 				}
+				results.add(temp);
+			}
 			db.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("something fucked up");
+			System.out.println("something fucked up while getting appointments");
 		}
 		return results;
+	}
+	private MeetingPoint getMeetingPoint(Appointment app) throws ClassNotFoundException, SQLException {
+		DBConnection conn = new DBConnection(p);
+		PreparedStatement prest;
+		ResultSet mPoint;
+		MeetingPoint results=null;
+		try {
+			System.out.println("preparing to check appointment for the meeting place");
+			//send query to db
+			conn.initialize();
+			prest = conn.preparedStatement("SELECT meetingpoint.id,name,capacity FROM " +
+					"((sids.appointment JOIN sids.appointment_meetingpoint ON appointment.id=?)JOIN sids.meetingpoint ON meetingpoint.id=meetingpointId);");
+			prest.setInt(1, app.getId());
+			System.out.println(prest);
+			//returns query
+			mPoint = prest.executeQuery();
+			//makes query to a MeetingPoint object
+			while (mPoint.next()) {
+				results = new MeetingPoint(mPoint.getInt("id"), mPoint.getString("name"), mPoint.getInt("capacity"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up while getting meeting place");
+		}
+		System.out.println(results);
+		conn.close();
+		return results;
+	}
+	private ArrayList<User> getParticipants(Appointment app) throws ClassNotFoundException, SQLException{
+		DBConnection conn = new DBConnection(p);
+		PreparedStatement prest;
+		ResultSet ppants;
+		ArrayList<User> results = new ArrayList<User>();
+		try {
+			System.out.println("preparing to check appointment for participants");
+			//send query to db
+			conn.initialize();
+			prest = conn.preparedStatement("SELECT user.id, name, email, hashedPassword " +
+					"FROM ((sids.appointment JOIN sids.user_appointment ON appointment.id=?)JOIN sids.user ON user.id=userId);");
+			prest.setInt(1, app.getId());
+			System.out.println(prest);
+			//returns query
+			ppants = prest.executeQuery();
+			//makes query to a list of User
+			while (ppants.next()) {
+				results.add(new User(ppants.getInt("id"), ppants.getString("name"), ppants.getString("email"), ppants.getString("hashedPassword")));
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up while getting participants");
+		}
+		System.out.println(results);
+		conn.close();
+		return results;		
 	}
 	
 }
