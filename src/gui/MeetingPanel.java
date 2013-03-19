@@ -28,42 +28,45 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	private ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 	
 	public MeetingPanel() {
-		
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[]{74, 97, 279, 0};
+		gridBagLayout.rowHeights = new int[]{16, 145, 16, 27, 29, 0};
+		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblNewLabel = new JLabel("Participants");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.gridwidth = 2;
 		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		add(lblNewLabel, gbc_lblNewLabel);
 		
 		plp = new ParticipantListPanel();
-		GridBagConstraints gbc_participantListPanel = new GridBagConstraints();
-		gbc_participantListPanel.insets = new Insets(0, 0, 5, 0);
-		gbc_participantListPanel.fill = GridBagConstraints.BOTH;
-		gbc_participantListPanel.gridx = 0;
-		gbc_participantListPanel.gridy = 1;
-		add(plp, gbc_participantListPanel);
+		GridBagConstraints gbc_plp = new GridBagConstraints();
+		gbc_plp.fill = GridBagConstraints.BOTH;
+		gbc_plp.insets = new Insets(0, 0, 5, 0);
+		gbc_plp.gridwidth = 3;
+		gbc_plp.gridx = 0;
+		gbc_plp.gridy = 1;
+		add(plp, gbc_plp);
 		
 		JLabel lblPlace = new JLabel("Place");
 		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
+		gbc_lblPlace.gridwidth = 2;
 		gbc_lblPlace.anchor = GridBagConstraints.WEST;
-		gbc_lblPlace.insets = new Insets(0, 0, 5, 0);
+		gbc_lblPlace.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPlace.gridx = 0;
 		gbc_lblPlace.gridy = 2;
 		add(lblPlace, gbc_lblPlace);
 		
 		comboBox = new JComboBox<MeetingPoint>();
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridwidth = 2;
 		gbc_comboBox.gridx = 0;
 		gbc_comboBox.gridy = 3;
 		add(comboBox, gbc_comboBox);
@@ -71,11 +74,11 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		JButton findButton = new JButton("Find Place");
 		findButton.addActionListener(this);
 		findButton.setActionCommand("Cancel");
-		GridBagConstraints gbc_btnFindPlace = new GridBagConstraints();
-		gbc_btnFindPlace.insets = new Insets(0, 0, 5, 0);
-		gbc_btnFindPlace.gridx = 0;
-		gbc_btnFindPlace.gridy = 4;
-		add(findButton, gbc_btnFindPlace);
+		GridBagConstraints gbc_findButton = new GridBagConstraints();
+		gbc_findButton.insets = new Insets(0, 0, 5, 0);
+		gbc_findButton.gridx = 2;
+		gbc_findButton.gridy = 3;
+		add(findButton, gbc_findButton);
 		
 		
 	}
