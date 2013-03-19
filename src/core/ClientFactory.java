@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import db.Action;
+import db.Appointment;
 import db.JsonFactory;
 import db.User;
 

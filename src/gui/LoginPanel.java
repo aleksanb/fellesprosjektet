@@ -97,7 +97,6 @@ public class LoginPanel extends JPanel {
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			}
-			cp.sendDebug("message from clients login button");
 		}
 	}
 

@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.sql.PreparedStatement;
 
+import db.Appointment;
 import db.User;
 
 
