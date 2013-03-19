@@ -119,6 +119,7 @@ public class Appointment {
 		this.place = place;
 	}
 	
+	
 	@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
