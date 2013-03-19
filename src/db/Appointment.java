@@ -108,6 +108,9 @@ public class Appointment implements Serializable {
 	public void addParticipant(User user){
 		this.participants.add(user);
 	}
+	public void setParticipants(ArrayList<User> participants){
+		this.participants=participants;
+	}
 	
 	public MeetingPoint getPlace(){
 		return this.place;
