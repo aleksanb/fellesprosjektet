@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 
 import core.CalendarProgram;
+import core.alarm.AlarmHandler;
 
 import db.Appointment;
 import db.User;

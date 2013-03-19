@@ -216,9 +216,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	public void addAppointment(Appointment app){
 		appointments.add(app);
-		if(app.hasAlarm())
+		if(app.hasAlarm()){
 			alarmHandler.addAppointment(app);
-			System.out.println(alarmHandlerThread.interrupted());
+			alarmHandlerThread.interrupt();
+			System.out.println("Thread: "+alarmHandlerThread.interrupted());
+		}
 			
 	}
 
