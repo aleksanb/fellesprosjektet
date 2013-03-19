@@ -1,13 +1,15 @@
 package db;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-public class Appointment {
+public class Appointment implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private int creatorUserId ;
 	private String title;
