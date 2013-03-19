@@ -34,6 +34,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Properties;
@@ -53,7 +54,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//tools
 	private Thread alarmHandlerThread;
-	private ClientFactory clientFactory = new ClientFactory();
+	private ClientFactory cf;
 	
 	//server
 	private ObjectOutputStream output;
@@ -86,13 +87,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		//sets up a connection to the server
 		connectToServer();
 		
-		//TODO: load in appointments, look at the empty method
-		
-		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
-		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());
-		alarmHandler.addAlarmEventListener(this);
-		alarmHandlerThread = new Thread(alarmHandler);
-		alarmHandlerThread.start();
+		//tool for talking with server
+		cf = new ClientFactory();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//TODO: possibly overide this method to also close threads
 		setBounds(100, 100, 450, 300);
@@ -126,8 +122,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		aap.setBackground(Color.LIGHT_GRAY);
 	}
 
-	public boolean checkValid(String userName, String password) {
-		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
+	public boolean logIn(String userName, char[] password) {
+		User temp = cf.login(new User(0,userName,"eigil@gmail.com",Arrays.toString(password)));
 		if(temp != null){
 			currentUser = temp;
 			return true;
@@ -140,17 +136,29 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}
+	//called when user logs inn
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		contentPane.add(menuPanel, BorderLayout.WEST);
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
 		calendarPanel = new CalendarPanel();
 		calendarPanel.setBackground(Color.RED);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
+		
+		loadAppointments();
+		alarmSetup();
+	}
+	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
+	private void alarmSetup() {
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());//TODO: make alarmhandler compatible with hashmap
+		alarmHandler.addAlarmEventListener(this);
+		alarmHandlerThread = new Thread(alarmHandler);
+		alarmHandlerThread.start();
+		
+	}
+
+	//when program starts it sets the appointment field to what is recieves from server
+	private void loadAppointments() {
+		appointments = cf.loadAppointments(currentUser);
 		
 	}
 

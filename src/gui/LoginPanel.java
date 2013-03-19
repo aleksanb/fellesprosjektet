@@ -93,7 +93,7 @@ public class LoginPanel extends JPanel {
 			this.cp = cp;
 		}
 		public void actionPerformed(ActionEvent e) {
-			if(cp.checkValid(textField.getText(),passwordfield.getText())){
+			if(cp.logIn(textField.getText(),passwordfield.getPassword())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			}
