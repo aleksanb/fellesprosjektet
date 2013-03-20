@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import db.AbstractModel;
 import db.Action;
-import db.ActionObject;
 import db.Appointment;
-import server.ServerFactory;
 import db.User;
 
 
@@ -22,7 +18,6 @@ public class Server implements Runnable{
 	private ObjectInputStream input;
 	private Socket connection;
 	
-	private Gson gson;
 	boolean closeConnection;
 	private ServerFactory sf;
 	int connectionID;
@@ -62,7 +57,9 @@ public class Server implements Runnable{
 			try{
 				handleShit();
 			}catch(Exception e){
-				logConsole("Error reading data");
+				e.printStackTrace();
+				logConsole(e.getMessage());
+				closeConnection();
 			}
 		}while(!closeConnection); 
 		closeApp();
@@ -75,78 +72,76 @@ public class Server implements Runnable{
 			connection.close();
 		}catch(IOException e){
 			e.printStackTrace();
+			closeConnection();
 		}
 	}
 	
 	private void closeConnection() {
-		closeConnection = false;
+		closeConnection = true;
 	}
-	
 	
 	public void logConsole(String text){
 		System.out.println("SERVER "+connectionID+": " +text);
 	}
 	
 	private void handleShit() throws ClassNotFoundException, JsonSyntaxException, IOException {
-		//System.out.println("vi er i handleShit");
-		String incoming = (String) input.readObject();
-		System.out.println("incoming is " + incoming);
-		gson = new Gson();
-		ActionObject ao = gson.fromJson(incoming, ActionObject.class);
-		Action action = ao.getAction();
-		Class<?> cl = Class.forName(ao.getCl());
-		//System.out.println("stage 2");
-		//System.out.println(cl);
+
+		AbstractModel am = (AbstractModel) input.readObject();
+		Class<? extends AbstractModel> cl = am.getClass();
+		Action action = am.getAction();
+		System.out.println("Read object!"+am.toString());
 		
-		ArrayList<Object> alo = ao.getAlObject();
-		for ( int i = 0; i < alo.size(); i++ ) {
-			System.out.println(alo.get(i));
-		}
-		ArrayList<Object> alu = new ArrayList<Object>();
-		/*System.out.println(("created arrayLists"));
-		for (int i = 0; i < alo.size(); i++) {
-			//System.out.println(Integer.toString(i) + "th iteration");
-			System.out.println("attempting to add" + alo.get(i));
-			System.out.println(gson.fromJson(alo.get(i).toString(), cl).toString());
-			alu.add(gson.fromJson(alo.get(i).toString(), cl));
-			System.out.println("added " + alo.get(i).toString());
-		}*/
-		//System.out.println("stage 3");
-		//System.out.println(cl.toString().split("\\.")[1]);
-		String sql;
-		System.out.println("switching");
+//		Class cl = am.getClass();
+//		Action action = am.getAction();
 		switch(action) {
 		case LOGIN:
 			System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
-			User lookup = gson.fromJson(alo.get(0).toString(), User.class);
-			String sqld_user = sf.login(lookup);
+			User l_callback = sf.login((User) am);
+			output.writeObject(l_callback);
+			System.out.println("wrote " + l_callback.getName() + " back to client");
+			/*User lookup = gson.fromJson(alo.get(0).toString(), User.class);
+			User l_u_callback = sf.login(lookup);
 			// add event listener
-			System.out.println("sending user " + sqld_user + " back to login");
-			output.writeObject(sqld_user);
+			System.out.println("sending user " + l_u_callback.getName() + " back to login");
+			output.writeObject(l_u_callback);*/
 			break;
 		case LOGOUT:
 			System.out.println("logging out. Going down with the ship cap'n");
-			System.out.println("Logging out " + (alo.get(0)));
+			//System.out.println("Logging out " + (alo.get(0)));
 			// remove event listeners
 			closeConnection();
 			break;
 			
 		case DELETE:
-			for (int i = 0; i < alu.size(); i++) {
-				sql = "DELETE FROM sids." + cl + "where sids." + cl + "==" + alu.get(i);
-			}
+			/*for (int i = 0; i < alu.size(); i++) {
+				System.out.println("DELETE FROM sids." + cl + "where sids." + cl + "==" + alu.get(i));
+			}*/
 			break;
 		case GET:
+			/*if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt get request for en appointment!");
+			}*/
 			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
-			User appslookup = gson.fromJson(alo.get(0).toString(), User.class);
-			ArrayList<Appointment> sqld_apps = sf.allAppointments(appslookup);
+			//ArrayList<Appointment> sqld_apps = sf.allAppointments(appslookup);
 			//TODO: add event listener
-			System.out.println("sending appointments " + sqld_apps + " back to login");
-			output.writeObject(sqld_apps);
+			//System.out.println("sending appointments " + sqld_apps + " back to login");
+			//output.writeObject(sqld_apps);
 			break;
 		case INSERT:
+			if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt insert request for en appointment!");
+				//System.out.println(gson.fromJson(alo.get(0), classOfT));
+				//User lookup = gson.fromJson(alo.get(0).toString(), User.class);
+				//System.out.println(insert);
+				//Appointment insert = gson.fromJson(alo.get(0).toString(), Appointment.class);
+				System.out.println("vi har fatt en "+ am.getClass());
+				//Appointment i_u_callback = sf.insertAppointment(insert);
+				//System.out.println("returned from sf with " + i_u_callback);
+				output.writeObject(am);
+				System.out.println("sent back appointment");
+			}
 			break;
 		case NOTIFICATION:
 			break;
@@ -157,5 +152,4 @@ public class Server implements Runnable{
 			break;
 		}
 	}
-	
 }

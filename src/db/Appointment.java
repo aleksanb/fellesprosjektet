@@ -8,8 +8,8 @@ import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-public class Appointment implements Serializable {
-
+public class Appointment implements AbstractModel, Serializable {
+	private Action action;
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private int creatorUserId ;
@@ -20,7 +20,7 @@ public class Appointment implements Serializable {
 	private boolean isMeeting;
 	private Alarm alarm;
 	private ArrayList<User> participants;
-	private MeetingPoint place;
+	private MeetingPoint meetingPoint;
 	
 	public Appointment(User creatorusUserId){
 		id=0;
@@ -34,6 +34,7 @@ public class Appointment implements Serializable {
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
+		this.action = null;
 		this.id = id;
 		this.creatorUserId = creatorUserId;
 		this.title = title;
@@ -42,7 +43,11 @@ public class Appointment implements Serializable {
 		this.description = description;
 		this.isMeeting = isMeeting;
 		participants = new ArrayList<User>();
-		place = null;
+		meetingPoint = null;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public int getId() {
@@ -122,16 +127,15 @@ public class Appointment implements Serializable {
 		this.participants=participants;
 	}
 	
-	public MeetingPoint getPlace(){
-		return this.place;
+	public MeetingPoint getMeetingPoint(){
+		return this.meetingPoint;
 	}
 	
-	public void setPlace(MeetingPoint place){
-		this.place = place;
+	public void setMeetingPoint(MeetingPoint meetingPoint){
+		this.meetingPoint = meetingPoint;
 	}
 	
-	
-	@Override
+	/*@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
 				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
@@ -139,9 +143,18 @@ public class Appointment implements Serializable {
 		if(alarm!=null) 
 			out+="\n Alarm: " + alarm.getAlarmTime().getTime();
 		return out;
-	}
+	}*/
 
 	public boolean hasAlarm() {
 		return alarm!=null;
+	}
+	@Override
+	public void setAction(Action action) {
+		this.action = action;
+		
+	}
+	@Override
+	public Action getAction() {
+		return this.action;
 	}
 }
