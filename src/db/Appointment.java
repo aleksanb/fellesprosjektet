@@ -1,23 +1,16 @@
 package db;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-/**
- * 
- * @author Espen
- *
- *Kan vi bruke klassen GregorianCalendar istedet for "Date" til � lagre dato-objekter?
- *"Date" brukes mest til � sette dato inn i en database tror jeg?
- *n�r vi gj�r det kan vi istedet bruke gregorianCalendar.getTime()
- */
-
-
-
-public class Appointment {
-
+public class Appointment implements AbstractModel, Serializable {
+	private Action action;
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private int creatorUserId ;
 	private String title;
@@ -26,10 +19,24 @@ public class Appointment {
 	private String description;
 	private boolean isMeeting;
 	private Alarm alarm;
+	private ArrayList<User> participants;
+	private MeetingPoint place;
+	private AppointmentType appointmentType;
+	private MeetingPoint meetingPoint;
 	
+	public Appointment(User creatorusUserId){
+		id=0;
+		this.creatorUserId=creatorUserId;
+		title="";
+		start=new GregorianCalendar();
+		end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
+		description="";
+		isMeeting=false;
+	}
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
+		this.action = null;
 		this.id = id;
 		this.creatorUserId = creatorUserId;
 		this.title = title;
@@ -37,8 +44,24 @@ public class Appointment {
 		this.end = end;
 		this.description = description;
 		this.isMeeting = isMeeting;
+		participants = new ArrayList<User>();
+		place = null;
+		appointmentType = AppointmentType.OK;
+		meetingPoint = null;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
+	public AppointmentType getAppointmentType() {
+		return appointmentType;
+	}
+
+	public void setAppointmentType(AppointmentType appointmentType) {
+		this.appointmentType = appointmentType;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -94,6 +117,12 @@ public class Appointment {
 	public void setEnd(Date date){
 		end.setTime(date);
 	}
+	public int getWeek(){
+		return start.get(GregorianCalendar.WEEK_OF_YEAR);
+	}
+	public int getYear(){
+		return start.get(GregorianCalendar.YEAR);
+	}
 	public Alarm getAlarm() {
 		return alarm;
 	}
@@ -101,6 +130,26 @@ public class Appointment {
 	public void setAlarm(GregorianCalendar alarmTime) {
 		this.alarm = new Alarm(alarmTime,id);
 	}
+	
+	public ArrayList<User> getParticipants(){
+		return this.participants;
+	}
+	
+	public void addParticipant(User user){
+		this.participants.add(user);
+	}
+	public void setParticipants(ArrayList<User> participants){
+		this.participants=participants;
+	}
+	
+	public MeetingPoint getMeetingPoint(){
+		return this.meetingPoint;
+	}
+	
+	public void setMeetingPoint(MeetingPoint meetingPoint){
+		this.meetingPoint = meetingPoint;
+	}
+	
 	@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
@@ -114,7 +163,26 @@ public class Appointment {
 	public boolean hasAlarm() {
 		return alarm!=null;
 	}
-	
-	
-	
+	@Override
+	public void setAction(Action action) {
+		this.action = action;
+		
+	}
+	@Override
+	public Action getAction() {
+		return this.action;
+	}
+
+	@Override
+	public <T> T getCopy() {
+		Appointment app = new Appointment(this.id,this.creatorUserId,this.title,this.start,this.end,this.description,this.isMeeting);
+		if(this.hasAlarm())
+			app.setAlarm(this.alarm.getAlarmTime());
+		if(this.isMeeting){
+			app.setMeetingPoint(this.meetingPoint);
+			app.setParticipants(this.participants);
+		}
+		//TODO: bruke this.clone() ?
+		return (T) app; 
+	}
 }

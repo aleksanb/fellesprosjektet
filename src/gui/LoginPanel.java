@@ -17,6 +17,8 @@ import core.CalendarProgram;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -32,7 +34,7 @@ public class LoginPanel extends JPanel {
 	public LoginPanel(CalendarProgram cp) {
 		this.cp = cp;
 		setBackground(new Color(255, 153, 0));
-		setBackground(Color.MAGENTA); 
+		setBackground(Color.PINK); 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{30, 50, 206, 0};
 		gridBagLayout.rowHeights = new int[]{30, 20, 20, 23, 0, 0, 0};
@@ -73,6 +75,7 @@ public class LoginPanel extends JPanel {
 		gbc_passwordfield.gridy = 3;
 		add(passwordfield, gbc_passwordfield);
 		passwordfield.setColumns(25);
+		passwordfield.addKeyListener(new KeyAction(this, cp));
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new LoginAction(this, cp));
@@ -84,21 +87,55 @@ public class LoginPanel extends JPanel {
 		gbc_btnLogin.gridy = 4;
 		add(btnLogin, gbc_btnLogin);
 
-	} 
+	}
+	
+	
+	
 	class LoginAction implements ActionListener {
 		LoginPanel lp;
 		CalendarProgram cp;
+		
 		public LoginAction(LoginPanel lp, CalendarProgram cp){
 			this.lp = lp;
 			this.cp = cp;
 		}
+		
 		public void actionPerformed(ActionEvent e) {
-			if(cp.checkValid(textField.getText(),passwordfield.getText())){
+			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
+			if(cp.logIn(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			}
-			cp.sendDebug("message from clients login button");
 		}
+	}
+	
+	private class KeyAction implements KeyListener{
+		
+		LoginPanel lp;
+		CalendarProgram cp;
+		
+		public KeyAction(LoginPanel lp, CalendarProgram cp){
+			this.lp = lp;
+			this.cp = cp;
+		}
+		
+		public void keyPressed(KeyEvent e) {
+		}
+
+		public void keyReleased(KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				if(cp.logIn(textField.getText(),passwordfield.getText())){
+					lp.setVisible(false);
+					cp.CreateMainProgram();
+				}
+			}
+		
+		}
+
+		public void keyTyped(KeyEvent e) {
+			
+		}
+		
 	}
 
 	 public static void main(String args[]) throws ClassNotFoundException, SQLException{

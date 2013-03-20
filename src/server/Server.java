@@ -1,19 +1,36 @@
 package server;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import db.AbstractModel;
+import db.Action;
+import db.Appointment;
+import db.User;
 
 public class Server implements Runnable{
 	
+	//Network
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
+	
+	//Recieve, send, local vairables
+	private AbstractModel am;
+	private ServerFactory sf;
 	int connectionID;
+	
+	//Flow logic
+	boolean closeConnection;
+	boolean close;
+	
+	//lists
+	Set<User> onlineUsers= new HashSet<User>();
 
 	public Server(Socket connection, int connectionID) {
 		this.connection=connection;
@@ -44,12 +61,15 @@ public class Server implements Runnable{
 	}
 	//after connection is setup 
 	private void whileRunning()throws IOException{
-		boolean closeConnection = false;
+		closeConnection = false;
+		sf = new ServerFactory();
 		do{
 			try{
-				logConsole((String)input.readObject());
+				handleShit();
 			}catch(Exception e){
-				logConsole("Error reading data");
+				e.printStackTrace();
+				logConsole(e.getMessage());
+				closeConnection();
 			}
 		}while(!closeConnection); 
 		closeApp();
@@ -62,11 +82,91 @@ public class Server implements Runnable{
 			connection.close();
 		}catch(IOException e){
 			e.printStackTrace();
+			closeConnection();
 		}
 	}
 	
+	private void closeConnection() {
+		closeConnection = true;
+	}
 	
 	public void logConsole(String text){
 		System.out.println("SERVER "+connectionID+": " +text);
+	}
+	
+	private void handleShit() throws ClassNotFoundException, IOException {
+
+		close = false;
+		am = (AbstractModel) input.readObject();
+		Class<? extends AbstractModel> cl = am.getClass();
+		Action action = am.getAction();
+		System.out.println("Read object!"+ am.toString());
+		System.out.println("And action is:"+action);
+		
+		switch(action) {
+		case LOGIN:
+			//System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
+			User l_callback = null;
+			try {
+				l_callback = sf.login((User) am);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				output.writeObject(l_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("wrote " + l_callback + " back to client");
+			break;
+		case DISCONNECT:
+			//System.out.println("User " + ((User) am).getName() + "Wishes to disconnect");
+			System.out.println("logging out. Going down with the ship cap'n");
+			close = true;
+			break;
+			
+		case DELETE:
+			break;
+		case GET:
+			break;
+		case GET_ALL_APPOINTMENTS:
+			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
+			ArrayList<Appointment> g_a_a_callback = sf.getAllAppointments((User) am);
+			output.writeObject(g_a_a_callback);
+			System.out.println("sent back appointments");
+			break;
+		case GET_ALL_USERS:
+			System.out.println("Vi vil ha alle brukerne!");
+			ArrayList<User> g_a_u_callback = sf.getAllUsers();
+			output.writeObject(g_a_u_callback);
+			System.out.println("Sending back users" + g_a_u_callback);
+			break;
+		case INSERT:
+			if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt insert request for en appointment!");
+				Appointment i_u_callback = sf.insertAppointment( (Appointment) am);
+				output.writeObject(i_u_callback);
+				System.out.println("sent back appointment");
+			}
+			break;
+		case NOTIFICATION:
+			break;
+		case UPDATE:
+			if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt update request for en appointment!");
+				Appointment u_u_callback = sf.updateAppointment( (Appointment) am);
+				output.writeObject(u_u_callback);
+				System.out.println("sent back appointment");
+			}
+			break;
+		default:
+			System.out.println("action did not match any enum");
+			break;
+		}
+		
+		if (close) {
+			closeConnection();
+		}
+		
 	}
 }

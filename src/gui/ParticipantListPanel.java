@@ -3,6 +3,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
@@ -11,55 +14,102 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+
+import core.CalendarProgram;
+import db.Action;
 import db.User;
 
 
-public class ParticipantListPanel {  
-   public static void main(String args[]) {
-      JFrame frame = new JFrame("Participants");
-      Dimension d = new Dimension(200,200);
-      frame.setSize(d);
-      frame.setResizable(false);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-      JList list = new JList(new DefaultListModel());
-      list.setCellRenderer(new CheckListRenderer());
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user1));
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user2));
-      ((DefaultListModel)list.getModel()).addElement(new CheckListItem(user3));
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      list.addMouseListener(new MouseAdapter() {
-         public void mouseClicked(MouseEvent event) {
-            JList list = (JList) event.getSource();
-            
-            // Get index of item clicked
-            
-            int index = list.locationToIndex(event.getPoint());
-            CheckListItem item = (CheckListItem)
-               list.getModel().getElementAt(index);
-            
-            // Toggle selected state
-            
-            item.setSelected(! item.isSelected());
-            
-            // Repaint cell
-            
-            list.repaint(list.getCellBounds(index, index));
-         }
-      });   
+public class ParticipantListPanel extends JList<CheckListItem> { 
+	
+	DefaultListModel<CheckListItem> model;
+	ArrayList<User> participantList;
+	CalendarProgram cp;
+	
+	public ParticipantListPanel(CalendarProgram cp) {
+		this.cp = cp;
+		model = new DefaultListModel<CheckListItem>();
+		participantList = new ArrayList<User>();
+		setModel(model);
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setCellRenderer(new CheckListRenderer());
+		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+		getModel().addElement(new CheckListItem(user1));
+		
+		addMouseListener(new MouseAdapter() {
+			
+			// Handle selection and adding users to the list of participants.
+			
+			public void mouseClicked(MouseEvent event) {
+				JList list = (JList) event.getSource();
+				
+				// Get index of item clicked
+				
+				int index = list.locationToIndex(event.getPoint());
+				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
+				
+				// Toggle selected state
 
-      frame.getContentPane().add(new JScrollPane(list));
-      frame.pack();
-      frame.setVisible(true);
-   }
+				item.setSelected(! item.isSelected());					
 
-	public ParticipantListPanel getParticipantList() {
-		// TODO Auto-generated method stub
-		return null;
+				
+				if(item.isSelected() == true) {
+					addParticipant(item.getUser());
+					System.out.println(participantList);
+				}
+				if(item.isSelected() == false) {
+					removeParticipant(item.getUser());
+					System.out.println(participantList);
+				}
+				
+				// Repaint cell
+				
+				list.repaint(list.getCellBounds(index, index));	
+			}
+		});   
+		
+	}
+
+	public static void main(String args[]) {
+		
+		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
+		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
+		participants.getModel().addElement(new CheckListItem(user1));
+		participants.getModel().addElement(new CheckListItem(user2));
+		participants.getModel().addElement(new CheckListItem(user3));
+		JFrame frame = new JFrame("Participants");
+		Dimension d = new Dimension(400,400);
+		frame.setSize(d);
+		frame.getContentPane().add(new JScrollPane(participants));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	public void addParticipant(User user) {
+		participantList.add(user);
+	}
+	public void removeParticipant(User user) {
+		participantList.remove(user);
+	}
+
+	public DefaultListModel<CheckListItem> getModel() {
+		return model;
+	}
+	
+	public void setModel(DefaultListModel<CheckListItem> model) {
+		this.model = model;
+	}
+	public ArrayList<User> getParticipantList() {
+		return participantList;
+	}
+	public void makeCheckListItem(User user) {
+		getModel().addElement(new CheckListItem(user));
 	}
 }
+
 class CheckListItem {
 	protected User user;
 	protected boolean isSelected = false;
@@ -77,6 +127,9 @@ class CheckListItem {
 	}
 	public String toString() {
 		return user.getName();
+	}
+	public User getUser() {
+		return user;
 	}
 }
 

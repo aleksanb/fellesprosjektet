@@ -1,6 +1,7 @@
 package core;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -12,49 +13,41 @@ import javax.swing.border.EmptyBorder;
 import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
+import db.Action;
 import db.Appointment;
+import db.AppointmentType;
+import db.CalendarModel;
+import core.ClientFactory;
 import db.Notification;
 import db.NotificationType;
+import db.User;
 
 import gui.*;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Properties;
+import java.util.HashMap;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//gui
 	private JPanel contentPane;
 	private AddAppointmentPanel aap;
+	private EditAppointmentPanel eap;
 	private LoginPanel loginPanel;
 	private MenuPanel menuPanel;
 	private CalendarPanel calendarPanel;
 	
 	//model
-	private ArrayList<Appointment> appointments;
+	private HashMap<Integer, Appointment> appointments;
+	private User currentUser;
 	
 	//tools
-	Thread alarmHandlerThread;
+	private Thread alarmHandlerThread;
+	private ClientFactory cf;
 	
-	//server
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
-	private Socket connection;
-	Properties prop;
+	//Alarm
 	private AlarmHandler alarmHandler;
 
 	/**
@@ -65,6 +58,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			public void run() {
 				try {
 					CalendarProgram frame = new CalendarProgram();
+					frame.setSize(1200, 600);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,19 +71,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
-		appointments = new ArrayList<Appointment>();
-		appointments.add(new Appointment(2, 1, "test", null,
-			null, "holla", false));
+		
+		System.out.println("creating main program");
+		
+		appointments = new HashMap<Integer, Appointment>();
+
 		//sets up a connection to the server
-		connectToServer();
+		//connectToServer();
+
 		
-		//TODO: load in appointments, look at the empty method
-		
-		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
-		alarmHandler = new AlarmHandler(getAppointmentList());
-		alarmHandler.addAlarmEventListener(this);
-		alarmHandlerThread = new Thread(alarmHandler);
-		alarmHandlerThread.start();
+		//tool for talking with server
+		cf = new ClientFactory();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//TODO: possibly overide this method to also close threads
 		setBounds(100, 100, 450, 300);
@@ -102,13 +94,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		
 	}
 
-	private ArrayList<Appointment> getAppointmentList() {
-		//TODO: make server fetch appointments
-		appointments = new ArrayList<Appointment>();
-		return appointments;
-		
-	}
-
 	public void displayLogin() {
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
@@ -118,13 +103,21 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void createAppointmentPanel(){
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
-		aap = new AddAppointmentPanel(this);
+		aap = new AddAppointmentPanel(this,new Appointment(currentUser));
 		contentPane.add(aap, BorderLayout.CENTER);
 		aap.setBackground(Color.LIGHT_GRAY);
 	}
 
-	public boolean checkValid(String userName, String password) {
-		return true;
+	public boolean logIn(String userName, String password) {
+		System.out.println("trying to log in");
+		User temp = cf.sendAction(new User(0,userName,"eigil@gmail.com",password), Action.LOGIN);
+		System.out.println("got return value " + temp);
+		if(temp != null){
+			System.out.println("*** Got valid login ***");
+			currentUser = temp;
+			return true;
+		}
+		return false;
 	}
 	
 	public void displayMainProgram(){
@@ -132,70 +125,69 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}
+	//called when user logs inn
+	// added some appointments and notifications for testing. Unpossible to do in main...
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
+		
+		/*GregorianCalendar gc = new GregorianCalendar();
+		GregorianCalendar gc1 = new GregorianCalendar();
+		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
+		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc1.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		Appointment app = new Appointment(1, 2, "hallais", gc1, gc, "halla", true);
+		app.setAppointmentType(AppointmentType.NEEDSATTENTION);
+		addNotification(new Notification(1, app, NotificationType.CANCELLED));
+		
+		GregorianCalendar gc2 = new GregorianCalendar();
+		GregorianCalendar gc3 = new GregorianCalendar();
+		gc2.set(GregorianCalendar.HOUR_OF_DAY, 7);
+		gc2.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc3.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc2.set(GregorianCalendar.DAY_OF_WEEK, 5);
+		gc3.set(GregorianCalendar.DAY_OF_WEEK, 5);
+		Appointment app1 = new Appointment(2, 3, "halla", gc2, gc3, "halla", true);
+		app1.setAppointmentType(AppointmentType.DELETED);
+		addNotification(new Notification(2, app1, NotificationType.CANCELLED));*/
+		
 		contentPane.add(menuPanel, BorderLayout.WEST);
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		calendarPanel = new CalendarPanel();
+
+		calendarPanel = new CalendarPanel(this);
 		calendarPanel.setBackground(Color.RED);
+		//calendarPanel.addAppointmentToModel(app);
+		//calendarPanel.addAppointmentToModel(app1);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
+		ArrayList<Appointment> appointments = cf.sendAction(currentUser, Action.GET_ALL_APPOINTMENTS);
+		calendarPanel.setUserAndAppointments(currentUser,appointments);
+		//loadAppointments();
+		alarmSetup();
+	}
+
+	private void addNotification(Notification notification) {
+		menuPanel.addNotification(notification);
 		
 	}
-
-	private void connectToServer() {
-		File file = new File("resources/server.properties");
-		prop = new Properties();
-		//load in adress and port from server.properties
-		try { prop.load(new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-			logConsole("Could not find file");
-			e.printStackTrace();
-		} catch (IOException e) {
-			logConsole("Could not read from file");
-			e.printStackTrace();}
-		//connect to server
-		try { 
-			createConnection();
-			setupStreams();
-		} catch (IOException e) {
-			try {
-				logConsole("could not connect to server: "+InetAddress.getByName(prop.getProperty("ip")));
-			} catch (UnknownHostException e1) {
-				logConsole("Could not find server");
-				e1.printStackTrace();
-			}
-			e.printStackTrace();}
+	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
+	private void alarmSetup() {
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>(appointments.values()));
+		alarmHandler.addAlarmEventListener(this);
+		alarmHandlerThread = new Thread(alarmHandler);
+		alarmHandlerThread.start();
 	}
 
-	//create the connection to the server
-	private void createConnection() throws IOException {
-		logConsole("Attempting connection...");
-		connection = new Socket(InetAddress.getByName(prop.getProperty("ip")),Integer.parseInt(prop.getProperty("port")));
-		logConsole("Connected to "+ connection.getInetAddress().getHostName());
-	}
-	//set up streams to send and receive data
-	private void setupStreams()throws IOException{
-		output= new ObjectOutputStream(connection.getOutputStream());
-		output.flush();
-		input = new ObjectInputStream(connection.getInputStream());
-		logConsole("connection established");
-	}
+
+	//when program starts it sets the appointment field to what is recieves from server
+	/*private void loadAppointments() {
+		//appointments = cf.loadAppointments(currentUser);
+		
+	}*/
+
+	/*public void logout(){
+		cf.logout(currentUser);
+	}*/
 	
-	public void logout(){
-		saveDataFromSession();
-		//TODO: use this method when log out button is pushed
-		try {
-			output.close();
-			input.close();
-			connection.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logConsole("connection closed");
+	public void updateAppointment(Appointment appointment){
+		cf.sendAction(appointment, Action.UPDATE);
 	}
 
 	private void saveDataFromSession() {
@@ -205,35 +197,55 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
 	}
-	public void sendDebug(String text) {
-		try {
-			output.writeObject(text);
-		} catch (IOException e) {
-			logConsole("Error sending data");
-			e.printStackTrace();
-		}
-	}
 	
 	public void addAppointment(Appointment app){
-		appointments.add(app);
-		if(app.hasAlarm())
+		//userf.create
+		calendarPanel.addAppointmentToModel(app);
+		appointments.put(app.getId(), app);
+		if(app.hasAlarm()){
 			alarmHandler.addAppointment(app);
-			System.out.println(alarmHandlerThread.interrupted());
-			
+			alarmHandlerThread.interrupt();
+			System.out.println("Thread: "+alarmHandlerThread.interrupted());
+		}		
 	}
-
+		
 	@Override
 	public void alarmEvent(Appointment appointment) {
-		//TODO: format the message on the alarm
-		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
+		String timeToAlarm = ""+new Date(appointment.getStart().getTimeInMillis()-appointment.getAlarm().getAlarmTime().getTimeInMillis());
+		JOptionPane.showMessageDialog(this, "You have appointment: "+appointment.getTitle()+" in: "+timeToAlarm,"Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
 	}
-	
-	public Appointment getAppointment(int id){
-		for(int i=0; i<appointments.size(); i++){
-			if(appointments.get(i).getId() == id){
-				return appointments.get(i);
-			}
-		}
+	public User getUser(){
+		return currentUser;
+	}
+
+	public void setFocusInCalendar(Notification note) {
+		calendarPanel.setFocusToAppointment(note.getAppointment());
+	}
+
+	public void createEditAppointmentPanel(Appointment appointment) {
+		menuPanel.setVisible(false);
+		calendarPanel.setVisible(false);
+		eap = new EditAppointmentPanel(this,appointment);
+		contentPane.add(eap, BorderLayout.CENTER);
+		eap.setBackground(Color.LIGHT_GRAY);
+	}
+
+	public void setEditButtonEnabled() {
+		menuPanel.setEditButtonEnabled();
+		
+	}
+	public void setEditButtonDisabled() {
+		menuPanel.setEditButtonDisabled();
+		
+	}
+
+	public Appointment getSelectedAppointment() {
+		return calendarPanel.getSelectedEvent().getModel();
+	}
+
+	public ArrayList<User> getUsers() {
+		cf.sendAction(new User(), Action.GET_ALL_USERS);
 		return null;
 	}
+
 }

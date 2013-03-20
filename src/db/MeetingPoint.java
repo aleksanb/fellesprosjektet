@@ -1,6 +1,9 @@
 package db;
 
-public class MeetingPoint {
+import java.io.Serializable;
+
+public class MeetingPoint implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
 	private int capacity;
@@ -10,7 +13,6 @@ public class MeetingPoint {
 		this.name = name;
 		this.capacity = capacity;
 	}
-
 	public int getId() {
 		return id;
 	}
@@ -25,5 +27,10 @@ public class MeetingPoint {
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+	@Override
+	public String toString() {
+		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
+				+ capacity + "]";
 	}
 }
