@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import db.AbstractModel;
 import db.Action;
@@ -26,6 +28,9 @@ public class Server implements Runnable{
 	//Flow logic
 	boolean closeConnection;
 	boolean close;
+	
+	//lists
+	Set<User> onlineUsers= new HashSet<User>();
 
 	public Server(Socket connection, int connectionID) {
 		this.connection=connection;

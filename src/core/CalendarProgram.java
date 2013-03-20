@@ -185,6 +185,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	/*public void logout(){
 		cf.logout(currentUser);
 	}*/
+	
+	public void updateAppointment(Appointment appointment){
+		cf.sendAction(appointment, Action.UPDATE);
+	}
 
 	private void saveDataFromSession() {
 		// TODO: save stuff and things so it dont get lost before the program shuts down
