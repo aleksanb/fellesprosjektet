@@ -24,7 +24,7 @@ public class Appointment implements AbstractModel, Serializable {
 	private AppointmentType appointmentType;
 	private MeetingPoint meetingPoint;
 	
-	public Appointment(User creatorusUserId){
+	/*public Appointment(User creatorusUserId){
 		id=0;
 		this.creatorUserId=creatorUserId;
 		title="";
@@ -32,7 +32,7 @@ public class Appointment implements AbstractModel, Serializable {
 		end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
 		description="";
 		isMeeting=false;
-	}
+	}*/
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
