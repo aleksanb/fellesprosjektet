@@ -9,13 +9,12 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Properties;
 
+import db.AbstractModel;
 import db.Action;
 import db.Appointment;
-import db.MeetingPoint;
 import db.User;
 
 public class ClientFactory {
@@ -64,6 +63,17 @@ public class ClientFactory {
 		logConsole("connection established");
 	}
 	
+	private void closeConnection() {
+		try {
+			output.close();
+			input.close();
+			connection.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("connection closed");
+	}
+	
 	// :D :D :D :D :D :D
 	// Here come the class methods
 	// :D :D :D :D :D :D 
@@ -91,23 +101,33 @@ public class ClientFactory {
 		return callback;
 	}
 	
-	public void logout(User u){
+	public  <T extends AbstractModel, R> R sendAction(T t, Action action) {
+		R callback = null;
+		T clone = t.getCopy();
+		clone.setAction(action);
+		
+		// Send object
 		try {
-			output.writeObject(u);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			output.close();
-			input.close();
-			connection.close();
+			output.writeObject(clone);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("connection closed");
+		
+		// Recieve object if nessecary
+		if (!action.equals(Action.DISCONNECT)) {
+			try {
+				callback = (R) input.readObject();	
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return callback;
 	}
-	
+
 	public User login(User u) {
+		u.setAction(Action.LOGIN);
 		User callback = null;
 		try {
 			output.writeObject(u);
@@ -126,6 +146,24 @@ public class ClientFactory {
 		return callback;
 	}
 	
+	public void logout(User u){
+		u.setAction(Action.DISCONNECT);
+		System.out.println(u.getAction());
+		try {
+			output.writeObject(u);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			output.close();
+			input.close();
+			connection.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("connection closed");
+	}
+	
 	public void getAllEvents(User u){
 		//TODO: implement
 		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
@@ -137,14 +175,10 @@ public class ClientFactory {
 
 	public HashMap<Integer, Appointment> loadAppointments(User u) {
 		HashMap<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
-		
-		//sets identifying message for the data
-		//TODO: Rewrite so send object, not JSON
-		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
-		String json = "fix";
+		u.setAction(Action.GET_ALL);
 		try {
 			//sends the data as a json string to server
-			output.writeObject(json);
+			output.writeObject(u);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -164,22 +198,45 @@ public class ClientFactory {
 	}
 	
 	public static void main(String args[]) {
-		//ClientFactory cf = new ClientFactory();
+		ClientFactory cf = new ClientFactory();
 		
-		// test insert appointment
-		/*
-		Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
+		//test insert appointment
+		
+//		Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
+//		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
+		
+		// Test login+logout
+		User u = new User(0, "aleksander", "yolo", "passord");
+		
+		//System.out.println(login);
+//		Appointment ap = cf.sendAction(a, Action.INSERT);
+//		System.out.println(ap);
+		User login = cf.sendAction(u, Action.LOGIN);
+		System.out.println("returned with " + login.getName());
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		cf.sendAction(u, Action.DISCONNECT);
+		System.out.println("sending logout");
+		//System.out.println("logged out");
+		//System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
+
+		//System.out.println(cf.output);
+		/*Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
 		a.setAction(Action.INSERT);
 		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
 		Appointment success = cf.addAppointment(a);
-		System.out.println(success.getId());
-		*/
-		// Test login+logout
-		/*User u = new User(0, "aleksander", "yolo", "passord");
-		u.setAction(Action.LOGIN);
-		User login = fc.login(u);
-		System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
-		fc.logout(u);*/
+		System.out.println(success.getId());*/
+		
+		
+		//Action a = cf.sendAction(u, Action.LOGOUT);
+		//cf.sendAction(u, Action.LOGOUT);
+		//System.out.println("logout returned ");
+		//cf.closeConnection();
 
 	}
 }
