@@ -18,6 +18,7 @@ import db.Appointment;
 import db.User;
 
 public class ClientFactory {
+	
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
@@ -78,29 +79,6 @@ public class ClientFactory {
 	// Here come the class methods
 	// :D :D :D :D :D :D 
 	
-	public Appointment addAppointment(Appointment appointment) {
-		
-		System.out.println("sending appointmnent to server");
-		Appointment callback = null;
-		try {
-			output.writeObject(appointment);
-			System.out.println("wrote object");
-			output.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("waiting for response");
-		try {
-			callback = (Appointment) input.readObject();
-			System.out.println("we have read callback");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return callback;
-	}
-	
 	public  <T extends AbstractModel, R> R sendAction(T t, Action action) {
 		R callback = null;
 		T clone = t.getCopy();
@@ -126,40 +104,28 @@ public class ClientFactory {
 		return callback;
 	}
 	
-	public void getAllEvents(User u){
-		//TODO: implement
-		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
-	}
-	
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
 	}
-
-	public HashMap<Integer, Appointment> loadAppointments(User u) {
-		HashMap<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
-		u.setAction(Action.GET_ALL);
-		try {
-			//sends the data as a json string to server
-			output.writeObject(u);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("waiting for response");
-		try {
-			//return arraylist from server
-			ArrayList<Appointment> temp = (ArrayList<Appointment>) input.readObject();
-			for (Appointment app : temp) {
-				appointments.put(app.getId(), app);
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return appointments;
-	}
 	
 	public static void main(String args[]) {
+		
+		// Alle verdier returnerer enten null eller et gyldig objekt hvis ting gikk bra
+		//
+		// login user
+		// User u = new User(0, "aleksander", "yolo", "passord");
+		//
+		// logout user
+		// cf.sendAction(u, Action.DISCONNECT);
+		//
+		// get all user appointments
+		// ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
+		// 
+		// create appointment
+		// Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
+		// a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
+		// Appointment success = cf.sendAction(a, Action.INSERT);
+		
 		ClientFactory cf = new ClientFactory();
 		
 		//test insert appointment
@@ -175,12 +141,10 @@ public class ClientFactory {
 //		System.out.println(ap);
 		User login = cf.sendAction(u, Action.LOGIN);
 		System.out.println("returned with " + login.getName());
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		System.out.println("get appointments");
+		ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
+		System.out.println(appointments.size());
 		
 		cf.sendAction(u, Action.DISCONNECT);
 		System.out.println("sending logout");
@@ -189,7 +153,6 @@ public class ClientFactory {
 
 		//System.out.println(cf.output);
 		/*Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
-		a.setAction(Action.INSERT);
 		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
 		Appointment success = cf.addAppointment(a);
 		System.out.println(success.getId());*/
