@@ -150,7 +150,7 @@ public class Appointment implements AbstractModel, Serializable {
 		this.meetingPoint = meetingPoint;
 	}
 	
-	/*@Override
+	@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
 				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
@@ -158,7 +158,7 @@ public class Appointment implements AbstractModel, Serializable {
 		if(alarm!=null) 
 			out+="\n Alarm: " + alarm.getAlarmTime().getTime();
 		return out;
-	}*/
+	}
 
 	public boolean hasAlarm() {
 		return alarm!=null;
@@ -171,5 +171,18 @@ public class Appointment implements AbstractModel, Serializable {
 	@Override
 	public Action getAction() {
 		return this.action;
+	}
+
+	@Override
+	public <T> T getCopy() {
+		Appointment app = new Appointment(this.id,this.creatorUserId,this.title,this.start,this.end,this.description,this.isMeeting);
+		if(this.hasAlarm())
+			app.setAlarm(this.alarm.getAlarmTime());
+		if(this.isMeeting){
+			app.setMeetingPoint(this.meetingPoint);
+			app.setParticipants(this.participants);
+		}
+		//TODO: bruke this.clone() ?
+		return (T) app; 
 	}
 }

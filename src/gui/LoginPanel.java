@@ -93,7 +93,8 @@ public class LoginPanel extends JPanel {
 			this.cp = cp;
 		}
 		public void actionPerformed(ActionEvent e) {
-			if(cp.logIn(textField.getText(),passwordfield.getPassword())){
+			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
+			if(cp.logIn(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			}

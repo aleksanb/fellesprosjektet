@@ -10,9 +10,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Collections;
 import java.sql.PreparedStatement;
 
+import db.AbstractModel;
 import db.Appointment;
 import db.MeetingPoint;
 import db.User;
@@ -43,20 +46,26 @@ public class ServerFactory {
 	public static void main(String args[]) {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
+		
+		System.out.println(sf.getAllUsers());
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
-		Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
+		Appointment a = new Appointment(18, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
+		a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));
+//		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
+		/*Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
 		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
 		
 		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
-		boolean result = sf.deleteAppointment(a);
+//		boolean result = sf.deleteAppointment(a);
 		//System.out.println(a.getMeetingPoint().getId());
 		//User result = sf.login(new User("aleksander", "email", "passord"));
-	//	Appointment result = sf.insertAppointment(a);
+//		Appointment result = sf.insertAppointment(a);
 //		String result = sf.login(new User("aleksander", "email", "passord"));
+		Appointment result = sf.updateAppointment(a);
 		System.out.println(result);
 //		System.out.println(result.get(1).getParticipants());
-//		System.out.println(result.get(1).getPlace());
+//		System.out.println(result.get(1).getPlace()); */
 	}
 	
 	public User login(User u) {
@@ -117,8 +126,30 @@ public class ServerFactory {
 		}
 		
 	}
+	
+	public ArrayList<User> getAllUsers() {
+		PreparedStatement prest;
+		ResultSet users;
+		ArrayList<User> results = new ArrayList<User>();
+		User temp;
+		try {
+			System.out.println("preparing to get users");
+			db.initialize();
+			prest = db.preparedStatement("Select * FROM sids.user");
+			users = prest.executeQuery();
+			
+			while (users.next()) {
+				temp = new User(users.getInt("id"), users.getString("name"), users.getString("email"), users.getString("hashedPassword"));
+				results.add(temp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("fucked up while getting users");
+		}
+		return results;
+	}
 
-	public ArrayList<Appointment> allAppointments(User u) {
+	public ArrayList<Appointment> getAllAppointments(User u) {
 		PreparedStatement prest;
 		ResultSet apps;
 		ArrayList<Appointment> results = new ArrayList<Appointment>();
@@ -192,7 +223,7 @@ public class ServerFactory {
 			//send query to db
 			conn.initialize();
 			prest = conn.preparedStatement("SELECT user.id, name, email, hashedPassword " +
-					"FROM ((sids.appointment JOIN sids.user_appointment ON appointment.id=?)JOIN sids.user ON user.id=userId);");
+					"FROM ((sids.appointment JOIN sids.user_appointment ON appointment.id=appointmentId)JOIN sids.user ON user.id=userId) WHERE appointment.id=?;");
 			prest.setInt(1, app.getId());
 			System.out.println(prest);
 			//returns query
@@ -291,9 +322,7 @@ public class ServerFactory {
 		PreparedStatement prest;
 		int mPoint;
 	
-		try {
-
-			
+		try {		
 			System.out.println("preparing to check delete appointment from user_appointment");
 			//send query to db
 			db.initialize();
@@ -304,7 +333,6 @@ public class ServerFactory {
 			//returns query
 			System.out.println("preparing to check delete appointment from appointment_meetingpoint");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment_meetingpoint WHERE ? = appointmentId;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
@@ -312,12 +340,13 @@ public class ServerFactory {
 			
 			System.out.println("preparing to check delete appointment");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment WHERE id = ?;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
 			//returns query
 			mPoint = prest.executeUpdate();
+			
+			db.close();
 			
 			//makes query for deleting appointments from user_appointment, appointment_meetingpoint and appointment
 	
@@ -339,9 +368,90 @@ public class ServerFactory {
 		
 	}
 	
-	public boolean editAppointment(Appointment appointment) {
-		return false;
+	private boolean editUser(User am) {
+		PreparedStatement prest;
 		
+		return false;
+	}
+	public Appointment updateAppointment(Appointment appointment) {
+		PreparedStatement prest;
+		ResultSet generatedKeys;
+		try {
+			db.initialize();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+				if (appointment.isMeeting()) { 
+					//retreives users from new and old version and put them into a set so they are unique
+					ArrayList<User> ppantsMaster = appointment.getParticipants();
+					ArrayList<User> ppantsOld = getParticipants(appointment);
+					HashSet<User> ppantsSet = new HashSet<>(ppantsMaster); ppantsSet.addAll(ppantsOld);
+					System.out.println("all users:" + ppantsSet);
+					for (User user : ppantsSet) {
+						if(ppantsMaster.contains(user)&& ppantsOld.contains(user))		//both have the user
+							//do nothing
+							break;
+						else if(ppantsMaster.contains(user)&& !ppantsOld.contains(user)){//master has user but not old
+							//insert user into participants
+							System.out.println("Inserting participant");
+							prest = db.preparedStatement("INSERT INTO sids.user_appointment (userId, appointmentId) VALUES (?, ?)");
+							prest.setInt(1, user.getId());
+							prest.setInt(2, appointment.getId());
+							System.out.println(prest);
+							prest.executeUpdate();
+						}
+						else{															//old has user, but not master
+							//delete user from participants
+							System.out.println("deleting participant");
+							prest = db.preparedStatement("DELETE FROM sids.user_appointment WHERE userId=? AND appointmentId=?");
+							prest.setInt(1, user.getId());
+							prest.setInt(2, appointment.getId());
+							System.out.println(prest);
+							prest.executeUpdate();
+						}
+					}
+					
+					// update room connection
+					System.out.println("updateing appointmentMeetingpoint");
+					prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
+					prest.setInt(2, appointment.getMeetingPoint().getId());
+					prest.setInt(1, appointment.getId());
+					System.out.println("updating appointmentMeetingPoint");
+					System.out.println(prest);
+					prest.executeUpdate();
+				}
+				// update appointment in database
+				prest = db.preparedStatement("UPDATE sids.appointment SET title=?, start=?, end=?, description=?, isMeeting=?"+
+						" WHERE id=?");
+				prest.setString(1, appointment.getTitle());
+				prest.setTimestamp(2, new Timestamp(appointment.getStart().getTimeInMillis()));
+				prest.setTimestamp(3, new Timestamp(appointment.getEnd().getTimeInMillis()));
+				prest.setString(4, appointment.getDescription());
+				prest.setBoolean(5, appointment.isMeeting());
+				prest.setInt(6, appointment.getId());
+				System.out.println("executing appointment update");
+				System.out.println(prest);
+				prest.executeUpdate();
+				
+				
+			System.out.println("finished updating");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("problem getting participants");
+			e.printStackTrace();
+		}
+
+		try {
+			db.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appointment;
 	}
 	
 	public User logOut(User user) {

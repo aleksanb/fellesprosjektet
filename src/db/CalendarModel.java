@@ -83,4 +83,16 @@ public class CalendarModel implements Serializable {
 			}
 		}
 	}
+
+	public void setAppointmentFromList(ArrayList<Appointment> appointments) {
+		for(Appointment appointment : appointments){
+			System.out.println("appointment");
+			System.out.println(appointment.getWeek());
+			System.out.println(appointment.getYear());
+			System.out.println(appointment.getStart().getTime());
+			System.out.println(appointment.getEnd().getTime());
+			addAppointment(appointment);
+		}
+		
+	}
 }
