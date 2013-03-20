@@ -299,10 +299,10 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
-			/*ArrayList<User> users = cp.getUsers();
+			ArrayList<User> users = cp.getUsers();
 			System.out.println(users);
 			for (int i = 0; i <= users.size(); i++) {
-				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));*/
+				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));
 		}
 		
 		//add Appointment
@@ -362,6 +362,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
 		}
+	}
 		
 	private void setAlarm(boolean bool) {
 		if(bool){

@@ -33,9 +33,6 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 		setModel(model);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setCellRenderer(new CheckListRenderer());
-		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-		getModel().addElement(new CheckListItem(user1));
-		
 		addMouseListener(new MouseAdapter() {
 			
 			// Handle selection and adding users to the list of participants.
