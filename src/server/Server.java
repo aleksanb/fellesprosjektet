@@ -25,17 +25,16 @@ public class Server implements Runnable{
 	private AbstractModel am;
 	private ServerFactory sf;
 	int connectionID;
+	private ServerProgram sp;
 	
 	//Flow logic
 	boolean closeConnection;
 	boolean close;
-	
-	//lists
-	HashMap<Integer,User> onlineUsers= new HashMap<Integer,User>();
 
-	public Server(Socket connection, int connectionID) {
+	public Server(Socket connection, int connectionID,ServerProgram sp) {
 		this.connection=connection;
 		this.connectionID = connectionID;
+		this.sp=sp;
 	}
 	//set up and run the server
 	public void run(){
@@ -115,7 +114,7 @@ public class Server implements Runnable{
 			}
 			//adds user to servers list of online users
 			if(l_callback != null)
-				onlineUsers.put(l_callback.getId(),l_callback);
+				sp.addOnlineUserConnection(l_callback,connection);
 			
 			try {
 				output.writeObject(l_callback);
@@ -129,7 +128,7 @@ public class Server implements Runnable{
 			System.out.println("logging out. Going down with the ship cap'n");
 			
 			//remove user from list of online users
-			onlineUsers.remove(((User) am).getId());
+			sp.removeOnlineUsers(((User) am).getId());
 			close = true;
 			break;
 			
@@ -158,6 +157,7 @@ public class Server implements Runnable{
 			}
 			break;
 		case NOTIFICATION:
+			//receive
 			break;
 		case UPDATE:
 			if ( cl.equals(Appointment.class)) {
