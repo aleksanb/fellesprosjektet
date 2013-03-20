@@ -2,6 +2,7 @@ package db;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -21,6 +22,15 @@ public class Appointment implements Serializable {
 	private ArrayList<User> participants;
 	private MeetingPoint place;
 	
+	public Appointment(User creatorusUserId){
+		id=0;
+		this.creatorUserId=creatorUserId;
+		title="";
+		start=new GregorianCalendar();
+		end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
+		description="";
+		isMeeting=false;
+	}
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
