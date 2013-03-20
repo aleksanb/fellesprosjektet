@@ -26,9 +26,10 @@ public class AppointmentView extends JComponent {
 	private Appointment model;
 	private Color color;
 	private boolean selected;
+	private boolean hasListener;
 
 	public AppointmentView() {
-		color = Color.LIGHT_GRAY;
+		color = Color.green;
 		selected = false;
 	}
 	
@@ -73,8 +74,8 @@ public class AppointmentView extends JComponent {
 			g.drawRoundRect(0, 0, getBounds().width, getBounds().height - 1, 10, 10);
 			g.drawRoundRect(1, 1, getBounds().width - 2, getBounds().height - 3, 10, 10);
 		}
-		g.drawString("møte", 4, g.getFont().getSize() + 4);
-		g.drawString("alfred", 4, g.getFont().getSize() * 2 + 4);
+		g.drawString(model.getTitle(), 4, g.getFont().getSize() + 4);
+		g.drawString(model.getDescription(), 4, g.getFont().getSize() * 2 + 4);
 	}
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
@@ -83,5 +84,12 @@ public class AppointmentView extends JComponent {
 			frame.getContentPane().add(ev);
 			frame.pack();
 			frame.setVisible(true);
-		}  
+		}
+
+	public void setHasListener(boolean hasListener) {
+		this.hasListener = hasListener;
+	}
+	public boolean getHasListener() {
+		return this.hasListener;
+	}  
 }

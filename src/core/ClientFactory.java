@@ -9,11 +9,13 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Properties;
 
 import db.Action;
 import db.Appointment;
+import db.MeetingPoint;
 import db.User;
 
 public class ClientFactory {
@@ -69,7 +71,6 @@ public class ClientFactory {
 	public Appointment addAppointment(Appointment appointment) {
 		
 		System.out.println("sending appointmnent to server");
-		//String json = jf.generateJsonCommand(Action.INSERT, appointment);
 		Appointment callback = null;
 		try {
 			output.writeObject(appointment);
@@ -91,7 +92,6 @@ public class ClientFactory {
 	}
 	
 	public void logout(User u){
-		//TODO: use this method when log out button is pushed
 		try {
 			output.writeObject(u);
 		} catch (IOException e1) {
@@ -125,18 +125,10 @@ public class ClientFactory {
 		
 		return callback;
 	}
+	
 	public void getAllEvents(User u){
 		//TODO: implement
 		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
-	}
-	
-	public static void main(String args[]) {
-		ClientFactory fc = new ClientFactory();
-		User u = new User(0, "aleksander", "yolo", "passord");
-		u.setAction(Action.LOGIN);
-		User login = fc.login(u);
-		System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
-		fc.logout(u);
 	}
 	
 	private void logConsole(String text){
@@ -169,5 +161,25 @@ public class ClientFactory {
 			e.printStackTrace();
 		}
 		return appointments;
+	}
+	
+	public static void main(String args[]) {
+		//ClientFactory cf = new ClientFactory();
+		
+		// test insert appointment
+		/*
+		Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
+		a.setAction(Action.INSERT);
+		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
+		Appointment success = cf.addAppointment(a);
+		System.out.println(success.getId());
+		*/
+		// Test login+logout
+		/*User u = new User(0, "aleksander", "yolo", "passord");
+		u.setAction(Action.LOGIN);
+		User login = fc.login(u);
+		System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
+		fc.logout(u);*/
+
 	}
 }

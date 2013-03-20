@@ -20,6 +20,8 @@ public class Appointment implements AbstractModel, Serializable {
 	private boolean isMeeting;
 	private Alarm alarm;
 	private ArrayList<User> participants;
+	private MeetingPoint place;
+	private AppointmentType appointmentType;
 	private MeetingPoint meetingPoint;
 	
 	public Appointment(User creatorusUserId){
@@ -43,6 +45,8 @@ public class Appointment implements AbstractModel, Serializable {
 		this.description = description;
 		this.isMeeting = isMeeting;
 		participants = new ArrayList<User>();
+		place = null;
+		appointmentType = AppointmentType.OK;
 		meetingPoint = null;
 	}
 
@@ -50,6 +54,14 @@ public class Appointment implements AbstractModel, Serializable {
 		this.id = id;
 	}
 	
+	public AppointmentType getAppointmentType() {
+		return appointmentType;
+	}
+
+	public void setAppointmentType(AppointmentType appointmentType) {
+		this.appointmentType = appointmentType;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -107,6 +119,9 @@ public class Appointment implements AbstractModel, Serializable {
 	}
 	public int getWeek(){
 		return start.get(GregorianCalendar.WEEK_OF_YEAR);
+	}
+	public int getYear(){
+		return start.get(GregorianCalendar.YEAR);
 	}
 	public Alarm getAlarm() {
 		return alarm;
