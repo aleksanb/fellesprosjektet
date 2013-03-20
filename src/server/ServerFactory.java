@@ -68,13 +68,13 @@ public class ServerFactory {
 			prest = db.preparedStatement("SELECT * FROM sids.user WHERE sids.user.name = ? AND sids.user.hashedPassword = ? LIMIT 1;");
 			prest.setString(1, u.getName());
 			prest.setString(2, u.getPassword());
-			System.out.println(prest);
 			
 			ResultSet rs = prest.executeQuery();
 			
 			while (rs.next()) {
 				result = new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("hashedPassword"));
 			}
+			System.out.println("found user " + result.getName());
 				
 			db.close();
 			
