@@ -13,6 +13,8 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
 import db.Appointment;
+import db.AppointmentType;
+import db.CalendarModel;
 import db.ClientFactory;
 import db.Notification;
 import db.NotificationType;
@@ -43,6 +45,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	//gui
 	private JPanel contentPane;
 	private AddAppointmentPanel aap;
+	private EditAppointmentPanel eap;
 	private LoginPanel loginPanel;
 	private MenuPanel menuPanel;
 	private CalendarPanel calendarPanel;
@@ -70,6 +73,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			public void run() {
 				try {
 					CalendarProgram frame = new CalendarProgram();
+					frame.setSize(1200, 600);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -127,12 +131,14 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	public boolean checkValid(String userName, String password) {
+		return true;
+		/*
 		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
 		if(temp != null){
 			currentUser = temp;
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 	
 	public void displayMainProgram(){
@@ -142,15 +148,39 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
+		
+		GregorianCalendar gc = new GregorianCalendar();
+		GregorianCalendar gc1 = new GregorianCalendar();
+		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
+		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc1.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		Appointment app = new Appointment(1, 2, "hallais", gc, gc1, "halla", true);
+		app.setAppointmentType(AppointmentType.NEEDSATTENTION);
+		addNotification(new Notification(1, app, NotificationType.CANCELLED));
+		
+		GregorianCalendar gc2 = new GregorianCalendar();
+		GregorianCalendar gc3 = new GregorianCalendar();
+		gc2.set(GregorianCalendar.HOUR_OF_DAY, 7);
+		gc2.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc3.set(GregorianCalendar.WEEK_OF_YEAR, 5);
+		gc2.set(GregorianCalendar.DAY_OF_WEEK, 5);
+		gc3.set(GregorianCalendar.DAY_OF_WEEK, 5);
+		Appointment app1 = new Appointment(2, 3, "halla", gc3, gc2, "halla", true);
+		app1.setAppointmentType(AppointmentType.DELETED);
+		addNotification(new Notification(2, app1, NotificationType.CANCELLED));
+		
 		contentPane.add(menuPanel, BorderLayout.WEST);
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		menuPanel.addNotification(new Notification(1, 2, NotificationType.CANCELLED));
-		calendarPanel = new CalendarPanel();
+
+		calendarPanel = new CalendarPanel(this);
 		calendarPanel.setBackground(Color.RED);
+		calendarPanel.addAppointmentToModel(app);
+		calendarPanel.addAppointmentToModel(app1);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
+		
+	}
+
+	private void addNotification(Notification notification) {
+		menuPanel.addNotification(notification);
 		
 	}
 
@@ -223,6 +253,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	
 	public void addAppointment(Appointment app){
+		//userf.create
+		calendarPanel.addAppointmentToModel(app);
 		appointments.put(app.getId(), app);
 		if(app.hasAlarm()){
 			alarmHandler.addAppointment(app);
@@ -231,13 +263,36 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		}		
 	}
 		
-	public Appointment getAppointment(int id){
-		return appointments.get(id);
-	}
 	@Override
 	public void alarmEvent(Appointment appointment) {
 		//TODO: format the message on the alarm
 		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void setFocusInCalendar(Notification note) {
+		calendarPanel.setFocusToAppointment(note.getAppointment());
+	}
+
+	public void createEditAppointmentPanel(Appointment appointment) {
+		menuPanel.setVisible(false);
+		calendarPanel.setVisible(false);
+		eap = new EditAppointmentPanel(this);
+		eap.setAppoitment(appointment);
+		contentPane.add(eap, BorderLayout.CENTER);
+		eap.setBackground(Color.LIGHT_GRAY);
+	}
+
+	public void setEditButtonEnabled() {
+		menuPanel.setEditButtonEnabled();
+		
+	}
+	public void setEditButtonDisabled() {
+		menuPanel.setEditButtonDisabled();
+		
+	}
+
+	public Appointment getSelectedAppointment() {
+		return calendarPanel.getSelectedEvent().getModel();
 	}
 
 }
