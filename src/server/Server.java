@@ -137,6 +137,12 @@ public class Server implements Runnable{
 		case NOTIFICATION:
 			break;
 		case UPDATE:
+			if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt update request for en appointment!");
+				Appointment u_u_callback = sf.updateAppointment( (Appointment) am);
+				output.writeObject(u_u_callback);
+				System.out.println("sent back appointment");
+			}
 			break;
 		default:
 			System.out.println("action did not match any enum");
