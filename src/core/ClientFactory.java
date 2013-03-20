@@ -125,44 +125,6 @@ public class ClientFactory {
 		}
 		return callback;
 	}
-
-	public User login(User u) {
-		u.setAction(Action.LOGIN);
-		User callback = null;
-		try {
-			output.writeObject(u);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("waiting for response");
-		try {
-			callback = (User) input.readObject();	
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return callback;
-	}
-	
-	public void logout(User u){
-		u.setAction(Action.DISCONNECT);
-		System.out.println(u.getAction());
-		try {
-			output.writeObject(u);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			output.close();
-			input.close();
-			connection.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("connection closed");
-	}
 	
 	public void getAllEvents(User u){
 		//TODO: implement
