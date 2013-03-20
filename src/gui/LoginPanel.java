@@ -32,7 +32,7 @@ public class LoginPanel extends JPanel {
 	public LoginPanel(CalendarProgram cp) {
 		this.cp = cp;
 		setBackground(new Color(255, 153, 0));
-		setBackground(Color.MAGENTA); 
+		setBackground(Color.PINK); 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{30, 50, 206, 0};
 		gridBagLayout.rowHeights = new int[]{30, 20, 20, 23, 0, 0, 0};
