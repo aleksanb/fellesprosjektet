@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
 import db.User;
-
 
 public class Server implements Runnable{
 	
