@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
+import db.Action;
 import db.Appointment;
 import db.AppointmentType;
 import db.CalendarModel;
@@ -236,6 +237,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	public Appointment getSelectedAppointment() {
 		return calendarPanel.getSelectedEvent().getModel();
+	}
+
+	public ArrayList<User> getUsers() {
+		cf.sendAction(new User(), Action.GET_ALL_USERS);
+		return null;
 	}
 
 }
