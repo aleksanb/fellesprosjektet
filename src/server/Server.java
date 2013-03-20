@@ -14,13 +14,19 @@ import db.User;
 
 public class Server implements Runnable{
 	
+	//Network
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
 	
-	boolean closeConnection;
+	//Recieve, send, local vairables
+	private AbstractModel am;
 	private ServerFactory sf;
 	int connectionID;
+	
+	//Flow logic
+	boolean closeConnection;
+	boolean close;
 
 	public Server(Socket connection, int connectionID) {
 		this.connection=connection;
@@ -86,46 +92,41 @@ public class Server implements Runnable{
 	
 	private void handleShit() throws ClassNotFoundException, JsonSyntaxException, IOException {
 
-		AbstractModel am = (AbstractModel) input.readObject();
+		close = false;
+		am = (AbstractModel) input.readObject();
 		Class<? extends AbstractModel> cl = am.getClass();
 		Action action = am.getAction();
-		System.out.println("Read object!"+am.toString());
+		System.out.println("Read object!"+ am.toString());
+		System.out.println("And action is:"+action);
 		
 		switch(action) {
 		case LOGIN:
-			System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
-			User l_callback = sf.login((User) am);
-			output.writeObject(l_callback);
-			System.out.println("wrote " + l_callback.getName() + " back to client");
-			/*User lookup = gson.fromJson(alo.get(0).toString(), User.class);
-			User l_u_callback = sf.login(lookup);
-			// add event listener
-			System.out.println("sending user " + l_u_callback.getName() + " back to login");
-			output.writeObject(l_u_callback);*/
+			//System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
+			User l_callback = null;
+			try {
+				l_callback = sf.login((User) am);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				output.writeObject(l_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("wrote " + l_callback + " back to client");
 			break;
-		case LOGOUT:
+		case DISCONNECT:
+			//System.out.println("User " + ((User) am).getName() + "Wishes to disconnect");
 			System.out.println("logging out. Going down with the ship cap'n");
-			//System.out.println("Logging out " + (alo.get(0)));
-			// remove event listeners
-			closeConnection();
+			close = true;
 			break;
 			
 		case DELETE:
-			/*for (int i = 0; i < alu.size(); i++) {
-				System.out.println("DELETE FROM sids." + cl + "where sids." + cl + "==" + alu.get(i));
-			}*/
 			break;
 		case GET:
-			/*if ( cl.equals(Appointment.class)) {
-				System.out.println("Vi har fatt get request for en appointment!");
-			}*/
 			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
-			//ArrayList<Appointment> sqld_apps = sf.allAppointments(appslookup);
-			//TODO: add event listener
-			//System.out.println("sending appointments " + sqld_apps + " back to login");
-			//output.writeObject(sqld_apps);
 			break;
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
@@ -143,5 +144,10 @@ public class Server implements Runnable{
 			System.out.println("action did not match any enum");
 			break;
 		}
+		
+		if (close) {
+			closeConnection();
+		}
+		
 	}
 }
