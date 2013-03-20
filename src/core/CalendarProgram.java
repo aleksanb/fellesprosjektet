@@ -169,7 +169,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
 	private void alarmSetup() {
-		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());//TODO: make alarmhandler compatible with hashmap
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>(appointments.values()));
 		alarmHandler.addAlarmEventListener(this);
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
