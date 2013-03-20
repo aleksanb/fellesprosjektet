@@ -1,7 +1,9 @@
 package db;
 
-public class Notification {
-	
+import java.io.Serializable;
+
+public class Notification implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int userId;
 	private Appointment appointment;
 	private NotificationType notificationType;

@@ -1,4 +1,4 @@
-package db;
+package core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,19 +8,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
+
+import db.Action;
+import db.Appointment;
+import db.User;
 
 public class ClientFactory {
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket connection;
-	private JsonFactory jf;
 	Properties prop;
 	
 	public ClientFactory() {
 		connectToServer();
-		jf = new JsonFactory();
 	}
 	
 	private void connectToServer() {
@@ -58,12 +62,38 @@ public class ClientFactory {
 		logConsole("connection established");
 	}
 	
+	// :D :D :D :D :D :D
+	// Here come the class methods
+	// :D :D :D :D :D :D 
+	
+	public Appointment addAppointment(Appointment appointment) {
+		
+		System.out.println("sending appointmnent to server");
+		//String json = jf.generateJsonCommand(Action.INSERT, appointment);
+		Appointment callback = null;
+		try {
+			output.writeObject(appointment);
+			System.out.println("wrote object");
+			output.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("waiting for response");
+		try {
+			callback = (Appointment) input.readObject();
+			System.out.println("we have read callback");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return callback;
+	}
+	
 	public void logout(User u){
 		//TODO: use this method when log out button is pushed
-		System.out.println("Going down with the ship, captain!");
-		String json = jf.generateJsonCommand(Action.LOGOUT, u);
 		try {
-			output.writeObject(json);
+			output.writeObject(u);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -78,39 +108,66 @@ public class ClientFactory {
 	}
 	
 	public User login(User u) {
-		String json = jf.generateJsonCommand(Action.LOGIN, u);
-		//String callback = "false";
-		User login = null;
+		User callback = null;
 		try {
-			output.writeObject(json);
+			output.writeObject(u);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println("waiting for response");
 		try {
-			String temp = (String) input.readObject();
-			if (temp.equals("null")) {
-				return null;
-			} else {
-				login = jf.generateUser(temp);				
-			}
+			callback = (User) input.readObject();	
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return login;
+		return callback;
+	}
+	public void getAllEvents(User u){
+		//TODO: implement
+		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
 	}
 	
 	public static void main(String args[]) {
 		ClientFactory fc = new ClientFactory();
-		User login = fc.login(new User("aleksander", "yolo", "passord"));
+		User u = new User(0, "aleksander", "yolo", "passord");
+		u.setAction(Action.LOGIN);
+		User login = fc.login(u);
 		System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
-		fc.logout(new User("aleksander", "stuff", "passord"));
+		fc.logout(u);
 	}
 	
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
+	}
+
+	public HashMap<Integer, Appointment> loadAppointments(User u) {
+		HashMap<Integer, Appointment> appointments = new HashMap<Integer, Appointment>();
+		
+		//sets identifying message for the data
+		//TODO: Rewrite so send object, not JSON
+		//String json = jf.generateJsonCommand(Action.GET_ALL_APPOINTMENTS, u);
+		String json = "fix";
+		try {
+			//sends the data as a json string to server
+			output.writeObject(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("waiting for response");
+		try {
+			//return arraylist from server
+			ArrayList<Appointment> temp = (ArrayList<Appointment>) input.readObject();
+			for (Appointment app : temp) {
+				appointments.put(app.getId(), app);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return appointments;
 	}
 }

@@ -1,20 +1,15 @@
 package db;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import core.alarm.Alarm;
 
-/**
- * 
- * @author Espen
-**/
-
-
-
-public class Appointment {
-
+public class Appointment implements AbstractModel, Serializable {
+	private Action action;
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private int creatorUserId ;
 	private String title;
@@ -26,10 +21,12 @@ public class Appointment {
 	private ArrayList<User> participants;
 	private MeetingPoint place;
 	private AppointmentType appointmentType;
+	private MeetingPoint meetingPoint;
 	
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
+		this.action = null;
 		this.id = id;
 		this.creatorUserId = creatorUserId;
 		this.title = title;
@@ -40,6 +37,11 @@ public class Appointment {
 		participants = new ArrayList<User>();
 		place = null;
 		appointmentType = AppointmentType.OK;
+		meetingPoint = null;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public AppointmentType getAppointmentType() {
@@ -123,20 +125,22 @@ public class Appointment {
 		return this.participants;
 	}
 	
-	public void addParticipants(User user){
+	public void addParticipant(User user){
 		this.participants.add(user);
 	}
-	
-	public MeetingPoint getPlace(){
-		return this.place;
+	public void setParticipants(ArrayList<User> participants){
+		this.participants=participants;
 	}
 	
-	public void setPlace(MeetingPoint place){
-		this.place = place;
+	public MeetingPoint getMeetingPoint(){
+		return this.meetingPoint;
 	}
 	
+	public void setMeetingPoint(MeetingPoint meetingPoint){
+		this.meetingPoint = meetingPoint;
+	}
 	
-	@Override
+	/*@Override
 	public String toString() {
 		String out = "Appointment:\n id: " + id + "\n creatorUserId: " + creatorUserId
 				+ "\n title: " + title + "\n start: " + start.getTime() + "\n end: " + end.getTime()
@@ -144,10 +148,21 @@ public class Appointment {
 		if(alarm!=null) 
 			out+="\n Alarm: " + alarm.getAlarmTime().getTime();
 		return out;
-	}
+	}*/
 
 	public boolean hasAlarm() {
 		return alarm!=null;
+	}
+
+	@Override
+	public void setAction(Action action) {
+		this.action = action;
+		
+	}
+
+	@Override
+	public Action getAction() {
+		return this.action;
 	}
 	
 	

@@ -13,6 +13,7 @@ import core.CalendarProgram;
 import core.alarm.AlarmHandler;
 
 import db.Appointment;
+import db.MeetingPoint;
 import db.User;
 
 import java.awt.GridBagConstraints;
@@ -52,7 +53,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	private JTextField alarmValueField;
 	private JComboBox valueTypePick;
 	private JLabel beforeStartLabel;
-	private MeetingPanel mp;
+	private MeetingPanel meetingPanel;
 	
 	/**
 	 * Create the panel.
@@ -69,7 +70,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gridBagLayout.columnWidths = new int[] {0, 30, 136, -6};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		//Pick start
@@ -186,10 +187,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		addAppButton = new JButton("Add Appointment");
 		addAppButton.addActionListener(this);
 		
-		//checkbox for the meetings
-		JCheckBox meetingBox_1 = new JCheckBox("Meeting");
-		meetingBox_1.addActionListener(this);
-		
 		//checkbox for alarms
 		alarmBox = new JCheckBox("Alarm");
 		alarmBox.addActionListener(this);
@@ -232,12 +229,28 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		add(valueTypePick, gbc_valueTypePick);
 		
 		
-		meetingBox_1.setActionCommand("Meeting");
-		GridBagConstraints gbc_meetingBox_1 = new GridBagConstraints();
-		gbc_meetingBox_1.insets = new Insets(0, 0, 5, 5);
-		gbc_meetingBox_1.gridx = 0;
-		gbc_meetingBox_1.gridy = 8;
-		add(meetingBox_1, gbc_meetingBox_1);
+		//checkbox for the meetings
+		meetingBox = new JCheckBox("Meeting");
+		meetingBox.addActionListener(this);
+		meetingBox.setActionCommand("Meeting");
+		
+		GridBagConstraints gbc_meetingBox = new GridBagConstraints();
+		gbc_meetingBox.insets = new Insets(0, 0, 5, 5);
+		gbc_meetingBox.gridx = 0;
+		gbc_meetingBox.gridy = 8;
+		add(meetingBox, gbc_meetingBox);
+		
+		//Add and hide meetingPanel
+		meetingPanel = new MeetingPanel();
+		GridBagConstraints gbc_meetingPanel = new GridBagConstraints();
+		gbc_meetingPanel.gridwidth = 3;
+		gbc_meetingPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_meetingPanel.fill = GridBagConstraints.BOTH;
+		gbc_meetingPanel.gridx = 0;
+		gbc_meetingPanel.gridy = 9;
+		add(meetingPanel, gbc_meetingPanel);
+		meetingPanel.setVisible(false);
+		
 		
 		//add appointment
 		addAppButton.setActionCommand("Add");
@@ -264,7 +277,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 //		Date today = new Date();
 		GregorianCalendar today = new GregorianCalendar();
 		GregorianCalendar today2 = new GregorianCalendar();
-		//if unique id is needed we can use theese
+		//if unique id is needed we can use these
 //		long intID = today.getTimeInMillis();
 		
 		
@@ -299,9 +312,9 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			
 		
 		//add meeting options
-		if(event.getActionCommand().equals("Meeting"))
-			//TODO: make the other stuff appear and disappear
-			;
+		if(event.getActionCommand().equals("Meeting")){
+			meetingPanel.setVisible(meetingBox.isSelected());
+		}
 		
 		//add Appointment
 		if(event.getActionCommand().equals("Add")){
@@ -338,6 +351,15 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			if(alarmBox.isSelected())
 				setAlarm(true);
 			
+			//meeting
+			if(meetingBox.isSelected()){
+				appointment.setMeeting(true);
+				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				for(int i = 0; i < meetingPanel.plp.getParticipantList().size(); i++){
+					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
+				}
+			}
+			
 			//if approved
 			if(approved)
 				cp.addAppointment(appointment);
@@ -359,6 +381,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		else
 			appointment.setAlarm(null);
 	}
+	
 	private GregorianCalendar getAlarmValue() {
 		String type = (String) valueTypePick.getSelectedItem();
 		GregorianCalendar alarm = (GregorianCalendar) appointment.getStart().clone();
@@ -427,7 +450,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram()));
 		frame.pack();
-        frame.setSize (800,300);
+        frame.setSize (800,500);
         frame.setVisible(true);
 	}
 	

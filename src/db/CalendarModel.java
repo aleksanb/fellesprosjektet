@@ -2,13 +2,18 @@ package db;
 
 import gui.AppointmentView;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class CalendarModel {
+public class CalendarModel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private GregorianCalendar currentDate;
 	private int year;
 	private int week;

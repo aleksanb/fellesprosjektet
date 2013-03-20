@@ -22,9 +22,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	
 	DefaultListModel<CheckListItem> model;
 	ArrayList<User> participantList;
-	static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	/*static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 	static User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
 	
 	public ParticipantListPanel() {
 		model = new DefaultListModel<CheckListItem>();
@@ -45,8 +45,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
 				
 				// Toggle selected state
-				
-				item.setSelected(! item.isSelected());
+
+				item.setSelected(! item.isSelected());					
+
 				
 				if(item.isSelected() == true) {
 					addParticipant(item.getUser());
@@ -59,7 +60,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));
+				list.repaint(list.getCellBounds(index, index));					
 			}
 		});   
 		
@@ -68,9 +69,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	public static void main(String args[]) {
 		
 		ParticipantListPanel participants = new ParticipantListPanel();
-		participants.getModel().addElement(new CheckListItem(user1));
+		/*participants.getModel().addElement(new CheckListItem(user1));
 		participants.getModel().addElement(new CheckListItem(user2));
-		participants.getModel().addElement(new CheckListItem(user3));
+		participants.getModel().addElement(new CheckListItem(user3));*/
 		JFrame frame = new JFrame("Participants");
 		Dimension d = new Dimension(400,400);
 		frame.setSize(d);
@@ -89,6 +90,13 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 
 	public DefaultListModel getModel() {
 		return model;
+	}
+	
+	public void setModel(DefaultListModel<CheckListItem> model) {
+		this.model = model;
+	}
+	public ArrayList<User> getParticipantList() {
+		return participantList;
 	}
 }
 

@@ -1,6 +1,9 @@
 package db;
 
-public class Group {
+import java.io.Serializable;
+
+public class Group implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
 

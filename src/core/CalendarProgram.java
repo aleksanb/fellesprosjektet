@@ -1,6 +1,7 @@
 package core;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,30 +16,16 @@ import core.alarm.AlarmListener;
 import db.Appointment;
 import db.AppointmentType;
 import db.CalendarModel;
-import db.ClientFactory;
+import core.ClientFactory;
 import db.Notification;
 import db.NotificationType;
 import db.User;
 
 import gui.*;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Properties;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
 	
@@ -56,13 +43,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//tools
 	private Thread alarmHandlerThread;
-	private ClientFactory clientFactory = new ClientFactory();
+	private ClientFactory cf;
 	
-	//server
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
-	private Socket connection;
-	private Properties prop;
+	//Alarm
 	private AlarmHandler alarmHandler;
 
 	/**
@@ -87,16 +70,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 */
 	public CalendarProgram() {
 		appointments = new HashMap<Integer, Appointment>();
-		//sets up a connection to the server
-		connectToServer();
 		
-		//TODO: load in appointments, look at the empty method
-		
-		//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
-		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());
-		alarmHandler.addAlarmEventListener(this);
-		alarmHandlerThread = new Thread(alarmHandler);
-		alarmHandlerThread.start();
+		//tool for talking with server
+		cf = new ClientFactory();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//TODO: possibly overide this method to also close threads
 		setBounds(100, 100, 450, 300);
@@ -130,15 +106,19 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		aap.setBackground(Color.LIGHT_GRAY);
 	}
 
+	//TODO fiks en metode som fungerer ordentlig for innloggin
 	public boolean checkValid(String userName, String password) {
-		return true;
-		/*
-		User temp = clientFactory.login(new User(0,userName,"eigil@gmail.com",password));
+	User temp = cf.login(new User(0,userName,"eigil@gmail.com",password));
+	return true;
+	}
+
+	public boolean logIn(String userName, char[] password) {
+		User temp = cf.login(new User(0,userName,"eigil@gmail.com",Arrays.toString(password)));
 		if(temp != null){
 			currentUser = temp;
 			return true;
 		}
-		return false;*/
+		return false;
 	}
 	
 	public void displayMainProgram(){
@@ -146,6 +126,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}
+	//called when user logs inn
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		
@@ -177,63 +158,30 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		calendarPanel.addAppointmentToModel(app1);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
 		
+		loadAppointments();
+		alarmSetup();
 	}
 
 	private void addNotification(Notification notification) {
 		menuPanel.addNotification(notification);
 		
 	}
-
-	private void connectToServer() {
-		File file = new File("resources/server.properties");
-		prop = new Properties();
-		//load in adress and port from server.properties
-		try { prop.load(new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-			logConsole("Could not find file");
-			e.printStackTrace();
-		} catch (IOException e) {
-			logConsole("Could not read from file");
-			e.printStackTrace();}
-		//connect to server
-		try { 
-			createConnection();
-			setupStreams();
-		} catch (IOException e) {
-			try {
-				logConsole("could not connect to server: "+InetAddress.getByName(prop.getProperty("ip")));
-			} catch (UnknownHostException e1) {
-				logConsole("Could not find server");
-				e1.printStackTrace();
-			}
-			e.printStackTrace();}
+	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
+	private void alarmSetup() {
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());//TODO: make alarmhandler compatible with hashmap
+		alarmHandler.addAlarmEventListener(this);
+		alarmHandlerThread = new Thread(alarmHandler);
+		alarmHandlerThread.start();
 	}
 
-	//create the connection to the server
-	private void createConnection() throws IOException {
-		logConsole("Attempting connection...");
-		connection = new Socket(InetAddress.getByName(prop.getProperty("ip")),Integer.parseInt(prop.getProperty("port")));
-		logConsole("Connected to "+ connection.getInetAddress().getHostName());
+	//when program starts it sets the appointment field to what is recieves from server
+	private void loadAppointments() {
+		appointments = cf.loadAppointments(currentUser);
+		
 	}
-	//set up streams to send and receive data
-	private void setupStreams()throws IOException{
-		output= new ObjectOutputStream(connection.getOutputStream());
-		output.flush();
-		input = new ObjectInputStream(connection.getInputStream());
-		logConsole("connection established");
-	}
-	
+
 	public void logout(){
-		saveDataFromSession();
-		//TODO: use this method when log out button is pushed
-		try {
-			output.close();
-			input.close();
-			connection.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logConsole("connection closed");
+		cf.logout(currentUser);
 	}
 
 	private void saveDataFromSession() {
@@ -242,14 +190,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
-	}
-	public void sendDebug(String text) {
-		try {
-			output.writeObject(text);
-		} catch (IOException e) {
-			logConsole("Error sending data");
-			e.printStackTrace();
-		}
 	}
 	
 	public void addAppointment(Appointment app){
