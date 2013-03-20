@@ -46,6 +46,7 @@ public class ServerFactory {
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
 		Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
 		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
+		
 		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
 		boolean result = sf.deleteAppointment(a);
@@ -347,6 +348,8 @@ public class ServerFactory {
 		return user;
 		
 	}
+
+	
 	//Need method for something with the notifications. Not sure what, though.
 	
 }
