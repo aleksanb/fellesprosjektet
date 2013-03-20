@@ -44,13 +44,14 @@ public class ServerFactory {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
-		Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
+		Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
 		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
 		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
+		boolean result = sf.deleteAppointment(a);
 		//System.out.println(a.getMeetingPoint().getId());
 		//User result = sf.login(new User("aleksander", "email", "passord"));
-		Appointment result = sf.insertAppointment(a);
+	//	Appointment result = sf.insertAppointment(a);
 //		String result = sf.login(new User("aleksander", "email", "passord"));
 		System.out.println(result);
 //		System.out.println(result.get(1).getParticipants());
@@ -285,7 +286,55 @@ public class ServerFactory {
 	}
 	
 	public boolean deleteAppointment(Appointment appointment) {
-		return false;
+		
+		PreparedStatement prest;
+		int mPoint;
+	
+		try {
+
+			
+			System.out.println("preparing to check delete appointment from user_appointment");
+			//send query to db
+			db.initialize();
+			prest = db.preparedStatement("DELETE FROM sids.user_appointment WHERE ? = appointmentId;");
+			prest.setInt(1, appointment.getId());
+			System.out.println(prest);
+			mPoint = prest.executeUpdate();
+			//returns query
+			System.out.println("preparing to check delete appointment from appointment_meetingpoint");
+			//send query to db
+			db.initialize();
+			prest = db.preparedStatement("DELETE FROM sids.appointment_meetingpoint WHERE ? = appointmentId;");
+			prest.setInt(1, appointment.getId());
+			System.out.println(prest);
+			mPoint = prest.executeUpdate();
+			
+			System.out.println("preparing to check delete appointment");
+			//send query to db
+			db.initialize();
+			prest = db.preparedStatement("DELETE FROM sids.appointment WHERE id = ?;");
+			prest.setInt(1, appointment.getId());
+			System.out.println(prest);
+			//returns query
+			mPoint = prest.executeUpdate();
+			
+			//makes query for deleting appointments from user_appointment, appointment_meetingpoint and appointment
+	
+		}
+		
+		
+		catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up while deleting appointment");
+		}
+		
+		try {
+			db.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 		
 	}
 	
