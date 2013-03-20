@@ -290,6 +290,35 @@ public class ServerFactory {
 	}
 	
 	public boolean editAppointment(Appointment appointment) {
+		PreparedStatement prest;
+		ResultSet app;
+		MeetingPoint results=null;
+		try {
+			System.out.println("preparing to edit appointemnt");
+			//send query to db
+			db.initialize();
+			prest = db.preparedStatement("SELECT meetingpoint.id,name,capacity FROM " +
+					"((sids.appointment JOIN sids.appointment_meetingpoint ON appointment.id=?)JOIN sids.meetingpoint ON meetingpoint.id=meetingpointId);");
+			prest.setInt(1, appointment.getId());
+			System.out.println(prest);
+			//returns query
+			prest.executeUpdate();
+			app = prest.executeQuery();
+			//makes query to a MeetingPoint object
+			while (app.next()) {
+				results = new MeetingPoint(app.getInt("id"), app.getString("name"), app.getInt("capacity"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up while getting meeting place");
+		}
+		System.out.println(results);
+		try {
+			db.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 		
 	}
