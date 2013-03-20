@@ -16,6 +16,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
 import core.CalendarProgram;
+import db.Action;
 import db.User;
 
 
@@ -32,6 +33,12 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 		setModel(model);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setCellRenderer(new CheckListRenderer());
+		ArrayList<User> users = cp.getUsers();
+		
+		for (int i = 0; i <= users.size(); i++) {
+			getModel().addElement(new CheckListItem(users.get(i)));
+		}
+		
 		addMouseListener(new MouseAdapter() {
 			
 			// Handle selection and adding users to the list of participants.
@@ -61,8 +68,6 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				// Repaint cell
 				
 				list.repaint(list.getCellBounds(index, index));	
-				
-				/**TODO: Call method for returning all users and call makeCheckListItem() for every user in the arraylist.**/
 			}
 		});   
 		
