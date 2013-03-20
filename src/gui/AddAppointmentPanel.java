@@ -338,7 +338,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
-				appointment.setPlace((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
 				for(int i = 0; i < meetingPanel.plp.getParticipantList().size(); i++){
 					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
 				}
