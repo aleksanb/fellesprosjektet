@@ -60,7 +60,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));					
+				list.repaint(list.getCellBounds(index, index));	
+				
+				/**TODO: Call method for returning all users and call makeCheckListItem() for every user in the arraylist.**/
 			}
 		});   
 		
