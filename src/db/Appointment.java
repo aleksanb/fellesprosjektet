@@ -25,6 +25,7 @@ public class Appointment {
 	private Alarm alarm;
 	private ArrayList<User> participants;
 	private MeetingPoint place;
+	private AppointmentType appointmentType;
 	
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
@@ -38,8 +39,17 @@ public class Appointment {
 		this.isMeeting = isMeeting;
 		participants = new ArrayList<User>();
 		place = null;
+		appointmentType = AppointmentType.OK;
 	}
 	
+	public AppointmentType getAppointmentType() {
+		return appointmentType;
+	}
+
+	public void setAppointmentType(AppointmentType appointmentType) {
+		this.appointmentType = appointmentType;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -97,6 +107,9 @@ public class Appointment {
 	}
 	public int getWeek(){
 		return start.get(GregorianCalendar.WEEK_OF_YEAR);
+	}
+	public int getYear(){
+		return start.get(GregorianCalendar.YEAR);
 	}
 	public Alarm getAlarm() {
 		return alarm;
