@@ -46,10 +46,15 @@ public class ServerFactory {
 	public static void main(String args[]) {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
+		
+		System.out.println(sf.getAllUsers());
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
 		Appointment a = new Appointment(18, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
 		a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));
 //		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
+		/*Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
+		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
+		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
 //		boolean result = sf.deleteAppointment(a);
 		//System.out.println(a.getMeetingPoint().getId());
@@ -59,7 +64,7 @@ public class ServerFactory {
 		Appointment result = sf.updateAppointment(a);
 		System.out.println(result);
 //		System.out.println(result.get(1).getParticipants());
-//		System.out.println(result.get(1).getPlace());
+//		System.out.println(result.get(1).getPlace()); */
 	}
 	
 	public User login(User u) {
@@ -120,8 +125,30 @@ public class ServerFactory {
 		}
 		
 	}
+	
+	public ArrayList<User> getAllUsers() {
+		PreparedStatement prest;
+		ResultSet users;
+		ArrayList<User> results = new ArrayList<User>();
+		User temp;
+		try {
+			System.out.println("preparing to get users");
+			db.initialize();
+			prest = db.preparedStatement("Select * FROM sids.user");
+			users = prest.executeQuery();
+			
+			while (users.next()) {
+				temp = new User(users.getInt("id"), users.getString("name"), users.getString("email"), users.getString("hashedPassword"));
+				results.add(temp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("fucked up while getting users");
+		}
+		return results;
+	}
 
-	public ArrayList<Appointment> allAppointments(User u) {
+	public ArrayList<Appointment> getAllAppointments(User u) {
 		PreparedStatement prest;
 		ResultSet apps;
 		ArrayList<Appointment> results = new ArrayList<Appointment>();
@@ -294,9 +321,7 @@ public class ServerFactory {
 		PreparedStatement prest;
 		int mPoint;
 	
-		try {
-
-			
+		try {		
 			System.out.println("preparing to check delete appointment from user_appointment");
 			//send query to db
 			db.initialize();
@@ -307,7 +332,6 @@ public class ServerFactory {
 			//returns query
 			System.out.println("preparing to check delete appointment from appointment_meetingpoint");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment_meetingpoint WHERE ? = appointmentId;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
@@ -315,12 +339,13 @@ public class ServerFactory {
 			
 			System.out.println("preparing to check delete appointment");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment WHERE id = ?;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
 			//returns query
 			mPoint = prest.executeUpdate();
+			
+			db.close();
 			
 			//makes query for deleting appointments from user_appointment, appointment_meetingpoint and appointment
 	

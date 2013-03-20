@@ -13,8 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+
+import core.CalendarProgram;
 import db.User;
 
 
@@ -22,11 +23,10 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	
 	DefaultListModel<CheckListItem> model;
 	ArrayList<User> participantList;
-	/*static User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	static User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
-	static User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
+	CalendarProgram cp;
 	
-	public ParticipantListPanel() {
+	public ParticipantListPanel(CalendarProgram cp) {
+		this.cp = cp;
 		model = new DefaultListModel<CheckListItem>();
 		participantList = new ArrayList<User>();
 		setModel(model);
@@ -60,7 +60,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));					
+				list.repaint(list.getCellBounds(index, index));	
+				
+				/**TODO: Call method for returning all users and call makeCheckListItem() for every user in the arraylist.**/
 			}
 		});   
 		
@@ -68,10 +70,13 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 
 	public static void main(String args[]) {
 		
-		ParticipantListPanel participants = new ParticipantListPanel();
-		/*participants.getModel().addElement(new CheckListItem(user1));
+		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
+		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
+		participants.getModel().addElement(new CheckListItem(user1));
 		participants.getModel().addElement(new CheckListItem(user2));
-		participants.getModel().addElement(new CheckListItem(user3));*/
+		participants.getModel().addElement(new CheckListItem(user3));
 		JFrame frame = new JFrame("Participants");
 		Dimension d = new Dimension(400,400);
 		frame.setSize(d);
@@ -88,7 +93,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 		participantList.remove(user);
 	}
 
-	public DefaultListModel getModel() {
+	public DefaultListModel<CheckListItem> getModel() {
 		return model;
 	}
 	
@@ -97,6 +102,9 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	}
 	public ArrayList<User> getParticipantList() {
 		return participantList;
+	}
+	public void makeCheckListItem(User user) {
+		getModel().addElement(new CheckListItem(user));
 	}
 }
 
