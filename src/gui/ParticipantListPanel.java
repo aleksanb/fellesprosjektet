@@ -14,6 +14,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+
+import core.CalendarProgram;
 import db.User;
 
 
@@ -21,8 +23,10 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	
 	DefaultListModel<CheckListItem> model;
 	ArrayList<User> participantList;
+	CalendarProgram cp;
 	
-	public ParticipantListPanel() {
+	public ParticipantListPanel(CalendarProgram cp) {
+		this.cp = cp;
 		model = new DefaultListModel<CheckListItem>();
 		participantList = new ArrayList<User>();
 		setModel(model);
@@ -64,7 +68,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 
 	public static void main(String args[]) {
 		
-		ParticipantListPanel participants = new ParticipantListPanel();
+		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
 		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/

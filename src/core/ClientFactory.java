@@ -126,7 +126,9 @@ public class ClientFactory {
 		// a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
 		// Appointment success = cf.sendAction(a, Action.INSERT);
 		
+		
 		ClientFactory cf = new ClientFactory();
+		ArrayList<User> users = cf.sendAction(new User(), Action.GET_ALL_USERS);
 		
 		//test insert appointment
 		
