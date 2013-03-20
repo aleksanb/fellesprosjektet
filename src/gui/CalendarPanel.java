@@ -24,7 +24,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
+import core.CalendarProgram;
+
+import db.Appointment;
+import db.AppointmentType;
 import db.CalendarModel;
+import db.NotificationType;
 
 public class CalendarPanel extends JPanel implements MouseListener {
 
@@ -37,12 +42,13 @@ public class CalendarPanel extends JPanel implements MouseListener {
 			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
 	
 	private CalendarModel model;
+	private CalendarProgram cp;
 	
 	private JPanel dayLine;
 	private JPanel panel;
 	private JScrollPane calendarScroller;
 	
-	private ArrayList<AppointmentView> visibleEvents;
+	private ArrayList<AppointmentView> visibleAppointments;
 	private AppointmentView selectedEvent;
 	
 	private JLabel weekLabel;
@@ -54,9 +60,14 @@ public class CalendarPanel extends JPanel implements MouseListener {
 
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
-			CalendarPanel cp = new CalendarPanel();
-			cp.addToCalendar(new AppointmentView(), 2, 2, 1, 2);
-			frame.getContentPane().add(cp);
+			CalendarPanel cp = new CalendarPanel(null);
+			GregorianCalendar gc = new GregorianCalendar();
+			GregorianCalendar gc1 = new GregorianCalendar();
+			gc1.set(GregorianCalendar.HOUR_OF_DAY, 23);
+			Appointment a = new Appointment(1, 2, "halla", gc,
+					gc1, "halla", true);
+			cp.addAppointmentToModel(a);
+;			frame.getContentPane().add(cp);
 			frame.pack();
 			frame.setSize(1024, 576);
 			frame.setVisible(true);
@@ -64,21 +75,14 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	/**
 	 * Create the application.
 	 */
-	public CalendarPanel() {
+	public CalendarPanel(CalendarProgram cp) {
 
+		this.cp = cp;
 		
 		setSize(800, 400);
 		setLayout(null);
 		
 		model = new CalendarModel();
-		
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
 		
 		panel = new JPanel() {
 			@Override
@@ -115,7 +119,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		calendarScroller.setViewport(viewPort);
 		add(calendarScroller);
 
-		visibleEvents = new ArrayList<AppointmentView>();
+		visibleAppointments = new ArrayList<AppointmentView>();
 		selectedEvent = null;
 		
 		weekLabel = new JLabel("Uke: " + model.getWeek());
@@ -142,13 +146,13 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		nextWeek.addMouseListener(this);
 		nextWeek.setIcon(new ImageIcon("resources/ArrowRight.png"));
 		nextWeek.setVisible(true);
-		nextWeek.setBounds(getWidth() - 80, getHeight() / 2 - 25, 70, 50);
+		nextWeek.setBounds(getWidth() - 80, getHeight() / 3 - 25, 70, 50);
 		add(nextWeek);
 
 		previousWeek = new JLabel();
 		previousWeek.addMouseListener(this);
 		previousWeek.setIcon(new ImageIcon("resources/ArrowLeft.png"));
-		previousWeek.setBounds(10, getHeight() / 2 - 25, 70, 50);
+		previousWeek.setBounds(10, getHeight() / 3 - 25, 70, 50);
 		add(previousWeek);
 
 		updateCalendar();
@@ -189,14 +193,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 				dayLine.add(dateLabel);
 			}
 		}
-
-		try {
-			dates = (new SimpleDateFormat("yyyy w u")).parse(model.getYear() + " " + model.getWeek() + " " + 4);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
 		weekLabel.setText("Uke: " + (new SimpleDateFormat("w")).format(dates));
-		
 		calendarScroller.setColumnHeaderView(dayLine);
 		
 		for(int i = 0; i < hours.length; i++) {
@@ -206,10 +203,10 @@ public class CalendarPanel extends JPanel implements MouseListener {
 			addToCalendar(label, 0, i, 1, 1);
 		}
 		
-		visibleEvents = new ArrayList<AppointmentView>();
-		
-		for(AppointmentView e : model.getEvents()) {
-			addEvent(e);
+		visibleAppointments = new ArrayList<AppointmentView>();
+		ArrayList<AppointmentView> modelevents = model.getEvents();
+		for(AppointmentView e : modelevents) {
+			addAppointment(e);
 		}
 		
 		calendarScroller.repaint();
@@ -220,19 +217,40 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		panel.add(comp);
 	}
 	
-	public void addEvent(AppointmentView appointmentView) {
+	public void addAppointment(AppointmentView appointmentView) {
 		Date start = appointmentView.getModel().getStartAsDate();
 		Date end = appointmentView.getModel().getEndAsDate();
 		int eventWeek = appointmentView.getModel().getWeek();
+		AppointmentType appointmentType = appointmentView.getModel().getAppointmentType();
+		if(appointmentType == AppointmentType.OK ){
+			appointmentView.setColor(Color.GREEN);
+		}
+		else if(appointmentType == AppointmentType.NEEDSATTENTION){
+			appointmentView.setColor(Color.ORANGE);
+		}
+		else{
+			appointmentView.setColor(Color.RED);
+		}
+		if(appointmentView.getHasListener()== false){
+			appointmentView.addMouseListener(this);
+			appointmentView.setHasListener(true);
+		}
 		if(eventWeek != model.getWeek()) {
 			return;
 		}
 		int day = start.getDay();
 		int hour = start.getHours();
 		int duration = end.getHours() - start.getHours();
-		appointmentView.addMouseListener(this);
-		visibleEvents.add(appointmentView);
+		visibleAppointments.add(appointmentView);
 		addToCalendar(appointmentView, day, hour, 1, duration);
+	}
+	public void addAppointmentToModel(Appointment appointment){
+		AppointmentView appointmentView = new AppointmentView(appointment);
+		model.addAppointmentView(appointmentView);
+		appointmentView.addMouseListener(this);
+		appointmentView.setHasListener(true);
+		updateCalendar();
+		addAppointment(appointmentView);
 	}
 
 	public CalendarModel getModel() {
@@ -269,8 +287,9 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		cp.setEditButtonDisabled();
 		selectedEvent = null;
-		for(AppointmentView ev : visibleEvents) {
+		for(AppointmentView ev : visibleAppointments) {
 			ev.setSelected(false);
 		}
 		if(e.getComponent() == previousWeek) {
@@ -280,10 +299,49 @@ public class CalendarPanel extends JPanel implements MouseListener {
 			model.setWeek(model.getWeek() + 1);
 		}
 		else if(e.getComponent() instanceof AppointmentView) {
-			((AppointmentView)e.getComponent()).setSelected(true);
 			selectedEvent = (AppointmentView)e.getComponent();
+			((AppointmentView)e.getComponent()).setSelected(true);
+			AppointmentType appointmentType = selectedEvent.getModel().getAppointmentType();
+
+			if(appointmentType == AppointmentType.OK ){
+				cp.setEditButtonEnabled();
+				System.out.println("Ok");
+			}
+			else if(appointmentType == AppointmentType.NEEDSATTENTION){
+				cp.setEditButtonEnabled();
+				System.out.println("Attention");
+			}
+			else{
+				System.out.println("DEleted");
+				model.removeAppointment(selectedEvent.getModel());
+			}
+			//TODO skrive kode for behandling av hva som skjer når man klikker på et event delegering til menupanel
 		}
 		updateCalendar();
 	}
-
+	public void setFocusToAppointment(Appointment app){
+		ArrayList<Appointment> appointments = getAppointmentList();
+		if(appointments.contains(app)){
+			model.setWeek(app.getWeek());
+			model.setYear(app.getYear());
+		}
+		updateCalendar();
+		for(AppointmentView ev : visibleAppointments) {
+			if(ev.getModel() == app){
+				ev.setSelected(true);
+			}
+			else{
+				ev.setSelected(false);
+			}
+		}
+	}
+	private ArrayList<Appointment> getAppointmentList() {
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		ArrayList<AppointmentView> appointmentView = model.getEvents();
+		for(int i = 0; i < appointmentView.size(); i++){
+			Appointment a = appointmentView.get(i).getModel();
+			appointments.add(a);
+		}
+		return appointments;
+	}
 }
