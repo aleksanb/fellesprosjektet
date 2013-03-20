@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import db.AbstractModel;
 import db.Action;
@@ -125,6 +126,9 @@ public class Server implements Runnable{
 			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
+			ArrayList<Appointment> g_a_callback = sf.getAllAppointments((User) am);
+			output.writeObject(g_a_callback);
+			System.out.println("sent back appointments");
 			break;
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
