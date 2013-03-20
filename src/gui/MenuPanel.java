@@ -203,7 +203,6 @@ public class MenuPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			cp.createEditAppointmentPanel(cp.getSelectedAppointment());
-			System.out.println("du er kul");
 		}
 		
 	}
