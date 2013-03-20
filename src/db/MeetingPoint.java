@@ -13,7 +13,6 @@ public class MeetingPoint implements Serializable {
 		this.name = name;
 		this.capacity = capacity;
 	}
-
 	public int getId() {
 		return id;
 	}
@@ -28,5 +27,10 @@ public class MeetingPoint implements Serializable {
 	}
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+	@Override
+	public String toString() {
+		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
+				+ capacity + "]";
 	}
 }

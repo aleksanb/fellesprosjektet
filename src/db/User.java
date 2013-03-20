@@ -18,6 +18,12 @@ public class User implements AbstractModel, Serializable {
 		this.email = "too.leqit@to.quit";
 	}
 	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email
+				+ ", hashedPassword=" + hashedPassword + "]";
+	}
+
 	public User(int id, String name, String email, String hashedPassword){
 		this.action = null;
 		this.id = id;

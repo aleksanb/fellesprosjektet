@@ -113,6 +113,9 @@ public class Appointment implements AbstractModel, Serializable {
 	public void addParticipant(User user){
 		this.participants.add(user);
 	}
+	public void setParticipants(ArrayList<User> participants){
+		this.participants=participants;
+	}
 	
 	public MeetingPoint getMeetingPoint(){
 		return this.meetingPoint;

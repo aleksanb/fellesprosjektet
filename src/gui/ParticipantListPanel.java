@@ -91,6 +91,10 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	public DefaultListModel getModel() {
 		return model;
 	}
+	
+	public void setModel(DefaultListModel<CheckListItem> model) {
+		this.model = model;
+	}
 	public ArrayList<User> getParticipantList() {
 		return participantList;
 	}

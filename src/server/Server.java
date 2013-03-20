@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import db.AbstractModel;
 import db.Action;
-import db.ActionObject;
 import db.Appointment;
 import db.User;
 
@@ -22,7 +18,6 @@ public class Server implements Runnable{
 	private ObjectInputStream input;
 	private Socket connection;
 	
-	private Gson gson;
 	boolean closeConnection;
 	private ServerFactory sf;
 	int connectionID;
@@ -126,6 +121,13 @@ public class Server implements Runnable{
 			/*if ( cl.equals(Appointment.class)) {
 				System.out.println("Vi har fatt get request for en appointment!");
 			}*/
+			break;
+		case GET_ALL_APPOINTMENTS:
+			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
+			//ArrayList<Appointment> sqld_apps = sf.allAppointments(appslookup);
+			//TODO: add event listener
+			//System.out.println("sending appointments " + sqld_apps + " back to login");
+			//output.writeObject(sqld_apps);
 			break;
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
