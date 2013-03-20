@@ -117,7 +117,7 @@ public class ServerFactory {
 		
 	}
 
-	public ArrayList<Appointment> allAppointments(User u) {
+	public ArrayList<Appointment> getAllAppointments(User u) {
 		PreparedStatement prest;
 		ResultSet apps;
 		ArrayList<Appointment> results = new ArrayList<Appointment>();
@@ -290,9 +290,7 @@ public class ServerFactory {
 		PreparedStatement prest;
 		int mPoint;
 	
-		try {
-
-			
+		try {		
 			System.out.println("preparing to check delete appointment from user_appointment");
 			//send query to db
 			db.initialize();
@@ -303,7 +301,6 @@ public class ServerFactory {
 			//returns query
 			System.out.println("preparing to check delete appointment from appointment_meetingpoint");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment_meetingpoint WHERE ? = appointmentId;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
@@ -311,12 +308,13 @@ public class ServerFactory {
 			
 			System.out.println("preparing to check delete appointment");
 			//send query to db
-			db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.appointment WHERE id = ?;");
 			prest.setInt(1, appointment.getId());
 			System.out.println(prest);
 			//returns query
 			mPoint = prest.executeUpdate();
+			
+			db.close();
 			
 			//makes query for deleting appointments from user_appointment, appointment_meetingpoint and appointment
 	
