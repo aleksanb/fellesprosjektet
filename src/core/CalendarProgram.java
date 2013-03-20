@@ -70,7 +70,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
+
 		appointments = new HashMap<Integer, Appointment>();
+
+		//sets up a connection to the server
+		//connectToServer();
+
 		
 		//tool for talking with server
 		cf = new ClientFactory();
@@ -168,6 +173,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
 	}
+
 
 	//when program starts it sets the appointment field to what is recieves from server
 	private void loadAppointments() {
