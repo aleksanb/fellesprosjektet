@@ -245,8 +245,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 
 	public ArrayList<User> getUsers() {
-		cf.sendAction(new User(), Action.GET_ALL_USERS);
-		return null;
+		return cf.sendAction(new User(), Action.GET_ALL_USERS);
 	}
 
 }
