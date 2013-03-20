@@ -3,14 +3,14 @@ package db;
 public class Notification {
 	
 	private int userId;
-	private int appointmentId;
+	private Appointment appointment;
 	private NotificationType notificationType;
 	private String message;
 	
 
-	public Notification(int userId, int appointmentId, NotificationType notificationType){
+	public Notification(int userId, Appointment appointment, NotificationType notificationType){
 		this.userId = userId;
-		this.appointmentId = appointmentId;
+		this.appointment = appointment;
 		this.notificationType = notificationType;	
 	}
 	
@@ -30,12 +30,12 @@ public class Notification {
 		this.userId = userId;
 	}
 
-	public int getAppointmentId() {
-		return appointmentId;
+	public Appointment getAppointment() {
+		return appointment;
 	}
 
 	public void setAppointmentId(int appointmentId) {
-		this.appointmentId = appointmentId;
+		this.appointment = appointment;
 	}
 
 	public NotificationType getNotificationType() {
