@@ -126,6 +126,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		calendarPanel.setVisible(true);
 	}
 	//called when user logs inn
+	// added some appointments and notifications for testing. Unpossible to do in main...
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		
@@ -134,7 +135,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
 		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
 		gc1.set(GregorianCalendar.WEEK_OF_YEAR, 5);
-		Appointment app = new Appointment(1, 2, "hallais", gc, gc1, "halla", true);
+		Appointment app = new Appointment(1, 2, "hallais", gc1, gc, "halla", true);
 		app.setAppointmentType(AppointmentType.NEEDSATTENTION);
 		addNotification(new Notification(1, app, NotificationType.CANCELLED));
 		
@@ -145,7 +146,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		gc3.set(GregorianCalendar.WEEK_OF_YEAR, 5);
 		gc2.set(GregorianCalendar.DAY_OF_WEEK, 5);
 		gc3.set(GregorianCalendar.DAY_OF_WEEK, 5);
-		Appointment app1 = new Appointment(2, 3, "halla", gc3, gc2, "halla", true);
+		Appointment app1 = new Appointment(2, 3, "halla", gc2, gc3, "halla", true);
 		app1.setAppointmentType(AppointmentType.DELETED);
 		addNotification(new Notification(2, app1, NotificationType.CANCELLED));
 		
@@ -219,8 +220,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void createEditAppointmentPanel(Appointment appointment) {
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
-		eap = new EditAppointmentPanel(this);
-		eap.setAppoitment(appointment);
+		eap = new EditAppointmentPanel(this,appointment);
 		contentPane.add(eap, BorderLayout.CENTER);
 		eap.setBackground(Color.LIGHT_GRAY);
 	}

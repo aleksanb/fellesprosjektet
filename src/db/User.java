@@ -65,12 +65,13 @@ public class User implements AbstractModel, Serializable {
 	@Override
 	public void setAction(Action action) {
 		this.action = action;
-		
 	}
-
 	@Override
 	public Action getAction() {
 		return this.action;
+	}
+	public <T> T getCopy() {
+		return (T) new User(this.id, this.name, this.email, this.hashedPassword);
 	}
 
 }
