@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 
+import db.Action;
 import db.Appointment;
 import db.AppointmentType;
 import db.CalendarModel;
@@ -70,7 +71,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	 * Create the frame.
 	 */
 	public CalendarProgram() {
-
+		
+		System.out.println("creating main program");
+		
 		appointments = new HashMap<Integer, Appointment>();
 
 		//sets up a connection to the server
@@ -105,15 +108,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		aap.setBackground(Color.LIGHT_GRAY);
 	}
 
-	//TODO fiks en metode som fungerer ordentlig for innloggin
-	public boolean checkValid(String userName, String password) {
-	User temp = cf.login(new User(0,userName,"eigil@gmail.com",password));
-	return true;
-	}
-
-	public boolean logIn(String userName, char[] password) {
-		User temp = cf.login(new User(0,userName,"eigil@gmail.com",Arrays.toString(password)));
+	public boolean logIn(String userName, String password) {
+		System.out.println("trying to log in");
+		User temp = cf.sendAction(new User(0,userName,"eigil@gmail.com",password), Action.LOGIN);
+		System.out.println("got return value " + temp);
 		if(temp != null){
+			System.out.println("*** Got valid login ***");
 			currentUser = temp;
 			return true;
 		}
@@ -130,7 +130,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
 		
-		GregorianCalendar gc = new GregorianCalendar();
+		/*GregorianCalendar gc = new GregorianCalendar();
 		GregorianCalendar gc1 = new GregorianCalendar();
 		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
 		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
@@ -148,17 +148,18 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		gc3.set(GregorianCalendar.DAY_OF_WEEK, 5);
 		Appointment app1 = new Appointment(2, 3, "halla", gc2, gc3, "halla", true);
 		app1.setAppointmentType(AppointmentType.DELETED);
-		addNotification(new Notification(2, app1, NotificationType.CANCELLED));
+		addNotification(new Notification(2, app1, NotificationType.CANCELLED));*/
 		
 		contentPane.add(menuPanel, BorderLayout.WEST);
 
 		calendarPanel = new CalendarPanel(this);
 		calendarPanel.setBackground(Color.RED);
-		calendarPanel.addAppointmentToModel(app);
-		calendarPanel.addAppointmentToModel(app1);
+		//calendarPanel.addAppointmentToModel(app);
+		//calendarPanel.addAppointmentToModel(app1);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
-		
-		loadAppointments();
+		ArrayList<Appointment> appointments = cf.sendAction(currentUser, Action.GET_ALL_APPOINTMENTS);
+		calendarPanel.setUserAndAppointments(currentUser,appointments);
+		//loadAppointments();
 		alarmSetup();
 	}
 
@@ -168,7 +169,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
 	private void alarmSetup() {
-		alarmHandler = new AlarmHandler(new ArrayList<Appointment>());//TODO: make alarmhandler compatible with hashmap
+		alarmHandler = new AlarmHandler(new ArrayList<Appointment>(appointments.values()));
 		alarmHandler.addAlarmEventListener(this);
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
@@ -176,13 +177,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 
 	//when program starts it sets the appointment field to what is recieves from server
-	private void loadAppointments() {
-		appointments = cf.loadAppointments(currentUser);
+	/*private void loadAppointments() {
+		//appointments = cf.loadAppointments(currentUser);
 		
-	}
+	}*/
 
-	public void logout(){
+	/*public void logout(){
 		cf.logout(currentUser);
+	}*/
+	
+	public void updateAppointment(Appointment appointment){
+		cf.sendAction(appointment, Action.UPDATE);
 	}
 
 	private void saveDataFromSession() {
@@ -236,6 +241,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	public Appointment getSelectedAppointment() {
 		return calendarPanel.getSelectedEvent().getModel();
+	}
+
+	public ArrayList<User> getUsers() {
+		cf.sendAction(new User(), Action.GET_ALL_USERS);
+		return null;
 	}
 
 }

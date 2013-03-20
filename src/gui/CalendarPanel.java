@@ -30,6 +30,7 @@ import db.Appointment;
 import db.AppointmentType;
 import db.CalendarModel;
 import db.NotificationType;
+import db.User;
 
 public class CalendarPanel extends JPanel implements MouseListener {
 
@@ -343,5 +344,12 @@ public class CalendarPanel extends JPanel implements MouseListener {
 			appointments.add(a);
 		}
 		return appointments;
+	}
+	public void setUserAndAppointments(User currentUser, ArrayList<Appointment> appointments) {
+		for(int i = 0; i<appointments.size(); i++){
+			Appointment app = appointments.get(i);
+		addAppointmentToModel(app);
+		}
+		updateCalendar();
 	}
 }
