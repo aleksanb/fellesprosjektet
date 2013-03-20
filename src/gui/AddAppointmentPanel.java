@@ -72,14 +72,14 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		
+		setBackground(Color.PINK); 
 		//Pick start
 		startPick = new JXDatePicker();
 		startPick.addActionListener(this);
 		startPick.setDate(new Date());
 		
 		//title label
-		JLabel titleLabel = new JLabel("Title");
+		JLabel titleLabel = new JLabel("Title:");
 		GridBagConstraints gbc_titleLabel = new GridBagConstraints();
 		gbc_titleLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_titleLabel.gridx = 0;
@@ -99,7 +99,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		titleField.setColumns(10);
 		
 		//start label
-		JLabel startLabel = new JLabel("Start");
+		JLabel startLabel = new JLabel("Start:");
 		startLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_startLabel = new GridBagConstraints();
 		gbc_startLabel.insets = new Insets(0, 0, 5, 5);
@@ -134,7 +134,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		startField.setColumns(6);
 		
 		//end label
-		JLabel endLabel = new JLabel("End");
+		JLabel endLabel = new JLabel("End:");
 		endLabel.setVerticalAlignment(SwingConstants.TOP);
 		GridBagConstraints gbc_endLabel = new GridBagConstraints();
 		gbc_endLabel.insets = new Insets(0, 0, 5, 5);
@@ -164,7 +164,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		endField.setColumns(6);
 		
 		//description label
-		JLabel descriptionLabel = new JLabel("Description");
+		JLabel descriptionLabel = new JLabel("Description:");
 		GridBagConstraints gbc_descriptionLabel = new GridBagConstraints();
 		gbc_descriptionLabel.gridwidth = 2;
 		gbc_descriptionLabel.insets = new Insets(0, 0, 5, 5);
