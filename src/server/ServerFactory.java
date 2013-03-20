@@ -46,12 +46,10 @@ public class ServerFactory {
 	public static void main(String args[]) {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
-		
 		System.out.println(sf.getAllUsers());
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
-		Appointment a = new Appointment(18, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
-		a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));
-//		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
+		/*Appointment a = new Appointment(18, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
+		a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));*/
 		/*Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
 		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
 		
@@ -157,7 +155,14 @@ public class ServerFactory {
 			System.out.println("preparing to check user");
 			//send query to db
 			db.initialize();
-			prest = db.preparedStatement("SELECT * FROM sids.appointment WHERE creatorUserId=?;");
+			//prest = db.preparedStatement("SELECT * FROM sids.appointment, sids.user_appointment,sids.user WHERE sids.user.id =?;");
+			prest = db.preparedStatement(
+					"SELECT a.id, a.creatorUserId, a.start, a.end, a.description, a.isMeeting " +
+					"FROM sids.user AS u, sids.user_appointment AS ua, sids.appointment AS a " +
+					"WHERE u.id = ua.userId " +
+					"AND ua.appointmentId = a.id " +
+					"AND u.id = ?"
+					);
 			prest.setInt(1, u.getId());
 			System.out.println(prest);
 			//returns query
@@ -170,7 +175,7 @@ public class ServerFactory {
 				start.setTime(apps.getTimestamp("start"));
 				end = new GregorianCalendar();
 				end.setTime(apps.getTimestamp("end"));
-				Appointment temp = new Appointment(apps.getInt("id"), apps.getInt("creatorUserId"), apps.getString("title"), start, end, apps.getString("description"), apps.getBoolean("isMeeting"));
+				Appointment temp = new Appointment(apps.getInt("id"), apps.getInt("creatorUserId"), apps.getString("description"), start, end, apps.getString("description"), apps.getBoolean("isMeeting"));
 				if(temp.isMeeting()){
 					temp.setParticipants(getParticipants(temp));
 					temp.setMeetingPoint(getMeetingPoint(temp));
