@@ -91,8 +91,6 @@ public class Server implements Runnable{
 		Action action = am.getAction();
 		System.out.println("Read object!"+am.toString());
 		
-//		Class cl = am.getClass();
-//		Action action = am.getAction();
 		switch(action) {
 		case LOGIN:
 			System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
@@ -132,14 +130,8 @@ public class Server implements Runnable{
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
 				System.out.println("Vi har fatt insert request for en appointment!");
-				//System.out.println(gson.fromJson(alo.get(0), classOfT));
-				//User lookup = gson.fromJson(alo.get(0).toString(), User.class);
-				//System.out.println(insert);
-				//Appointment insert = gson.fromJson(alo.get(0).toString(), Appointment.class);
-				System.out.println("vi har fatt en "+ am.getClass());
-				//Appointment i_u_callback = sf.insertAppointment(insert);
-				//System.out.println("returned from sf with " + i_u_callback);
-				output.writeObject(am);
+				Appointment i_u_callback = sf.insertAppointment( (Appointment) am);
+				output.writeObject(i_u_callback);
 				System.out.println("sent back appointment");
 			}
 			break;
