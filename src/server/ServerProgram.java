@@ -35,7 +35,6 @@ public class ServerProgram {
 				waitForConnection();
 				new Thread(new Server(connection,i,this)).start();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			i++;
@@ -52,6 +51,7 @@ public class ServerProgram {
 	public void addOnlineUserConnection(User user, Socket connection){
 		onlineUsers.put(user.getId(), user);
 		userConnection.put(user, connection);
+		System.out.println("ONLINE USERS: "+onlineUsers);
 		
 	}
 

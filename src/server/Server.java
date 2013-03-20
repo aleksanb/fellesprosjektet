@@ -157,7 +157,13 @@ public class Server implements Runnable{
 			}
 			break;
 		case NOTIFICATION:
-			//receive
+			//TODO receive notification
+			
+			//TODO extract users
+			
+			//TODO call sp, and send notification to all users that match with online users
+			
+			//TODO save notification for offline users
 			break;
 		case UPDATE:
 			if ( cl.equals(Appointment.class)) {
