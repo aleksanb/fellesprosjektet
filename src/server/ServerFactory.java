@@ -43,8 +43,10 @@ public class ServerFactory {
 	public static void main(String args[]) {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
+		
+		System.out.println(sf.getAllUsers());
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
-		Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
+		/*Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
 		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
 		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
@@ -55,7 +57,7 @@ public class ServerFactory {
 //		String result = sf.login(new User("aleksander", "email", "passord"));
 		System.out.println(result);
 //		System.out.println(result.get(1).getParticipants());
-//		System.out.println(result.get(1).getPlace());
+//		System.out.println(result.get(1).getPlace()); */
 	}
 	
 	public User login(User u) {
@@ -115,6 +117,28 @@ public class ServerFactory {
 			return null;
 		}
 		
+	}
+	
+	public ArrayList<User> getAllUsers() {
+		PreparedStatement prest;
+		ResultSet users;
+		ArrayList<User> results = new ArrayList<User>();
+		User temp;
+		try {
+			System.out.println("preparing to get users");
+			db.initialize();
+			prest = db.preparedStatement("Select * FROM sids.user");
+			users = prest.executeQuery();
+			
+			while (users.next()) {
+				temp = new User(users.getInt("id"), users.getString("name"), users.getString("email"), users.getString("hashedPassword"));
+				results.add(temp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("fucked up while getting users");
+		}
+		return results;
 	}
 
 	public ArrayList<Appointment> getAllAppointments(User u) {
