@@ -14,6 +14,9 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+
+import core.CalendarProgram;
+import db.Action;
 import db.User;
 
 
@@ -21,13 +24,21 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 	
 	DefaultListModel<CheckListItem> model;
 	ArrayList<User> participantList;
+	CalendarProgram cp;
 	
-	public ParticipantListPanel() {
+	public ParticipantListPanel(CalendarProgram cp) {
+		this.cp = cp;
 		model = new DefaultListModel<CheckListItem>();
 		participantList = new ArrayList<User>();
 		setModel(model);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		setCellRenderer(new CheckListRenderer());
+		ArrayList<User> users = cp.getUsers();
+		
+		for (int i = 0; i <= users.size(); i++) {
+			getModel().addElement(new CheckListItem(users.get(i)));
+		}
+		
 		addMouseListener(new MouseAdapter() {
 			
 			// Handle selection and adding users to the list of participants.
@@ -56,7 +67,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				// Repaint cell
 				
-				list.repaint(list.getCellBounds(index, index));					
+				list.repaint(list.getCellBounds(index, index));	
 			}
 		});   
 		
@@ -64,7 +75,7 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 
 	public static void main(String args[]) {
 		
-		ParticipantListPanel participants = new ParticipantListPanel();
+		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
 		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/

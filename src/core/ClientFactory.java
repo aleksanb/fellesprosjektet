@@ -121,13 +121,20 @@ public class ClientFactory {
 		// get all user appointments
 		// ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
 		// 
+		// get all users
+		// ArrayList<User> users = cf.sendAction(u, Action.GET_ALL_USERS);
+		//
 		// create appointment
 		// Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
 		// a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
 		// Appointment success = cf.sendAction(a, Action.INSERT);
 		
-		ClientFactory cf = new ClientFactory();
 		
+		ClientFactory cf = new ClientFactory();
+		ArrayList<User> users = cf.sendAction(new User(), Action.GET_ALL_USERS);
+		System.out.println(users);
+		cf.sendAction(new User(), Action.DISCONNECT);
+		/*
 		//test insert appointment
 		
 //		Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
@@ -150,7 +157,7 @@ public class ClientFactory {
 		System.out.println("sending logout");
 		//System.out.println("logged out");
 		//System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
-
+*/
 		//System.out.println(cf.output);
 		/*Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
 		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));

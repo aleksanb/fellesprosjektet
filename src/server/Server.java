@@ -126,9 +126,15 @@ public class Server implements Runnable{
 			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
-			ArrayList<Appointment> g_a_callback = sf.getAllAppointments((User) am);
-			output.writeObject(g_a_callback);
+			ArrayList<Appointment> g_a_a_callback = sf.getAllAppointments((User) am);
+			output.writeObject(g_a_a_callback);
 			System.out.println("sent back appointments");
+			break;
+		case GET_ALL_USERS:
+			System.out.println("Vi vil ha alle brukerne!");
+			ArrayList<User> g_a_u_callback = sf.getAllUsers();
+			output.writeObject(g_a_u_callback);
+			System.out.println("Sending back users" + g_a_u_callback);
 			break;
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
@@ -141,6 +147,12 @@ public class Server implements Runnable{
 		case NOTIFICATION:
 			break;
 		case UPDATE:
+			if ( cl.equals(Appointment.class)) {
+				System.out.println("Vi har fatt update request for en appointment!");
+				Appointment u_u_callback = sf.updateAppointment( (Appointment) am);
+				output.writeObject(u_u_callback);
+				System.out.println("sent back appointment");
+			}
 			break;
 		default:
 			System.out.println("action did not match any enum");
