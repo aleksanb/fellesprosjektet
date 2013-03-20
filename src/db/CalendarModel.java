@@ -43,6 +43,7 @@ public class CalendarModel {
 
 	public void setYear(int year) {
 		this.year = year;
+		currentDate.set(GregorianCalendar.YEAR, year);
 	}
 
 	public int getWeek() {
@@ -51,6 +52,7 @@ public class CalendarModel {
 
 	public void setWeek(int week) {
 		this.week = week;
+		currentDate.set(GregorianCalendar.WEEK_OF_YEAR, week);
 	}
 
 	public ArrayList<AppointmentView> getEvents() {
@@ -63,5 +65,17 @@ public class CalendarModel {
 	
 	public void addAppointment(Appointment appointment) {
 		appointments.add(new AppointmentView(appointment));
+	}
+	public void addAppointmentView(AppointmentView appointmentView) {
+		appointments.add(appointmentView);
+	}
+	public void removeAppointment(Appointment appointment) {
+		for(int i= 0; i< appointments.size(); i++){
+			AppointmentView appointmentView = appointments.get(i);
+			Appointment a = appointmentView.getModel();
+			if(a == appointment){
+				appointments.remove(appointmentView);
+			}
+		}
 	}
 }
