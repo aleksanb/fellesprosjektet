@@ -152,6 +152,7 @@ public class ServerFactory {
 		}
 		return results;
 	}
+	
 	private MeetingPoint getMeetingPoint(Appointment app) throws ClassNotFoundException, SQLException {
 		DBConnection conn = new DBConnection(p);
 		PreparedStatement prest;
