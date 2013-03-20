@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class Server implements Runnable{
 	boolean close;
 	
 	//lists
-	Set<User> onlineUsers= new HashSet<User>();
+	HashMap<Integer,User> onlineUsers= new HashMap<Integer,User>();
 
 	public Server(Socket connection, int connectionID) {
 		this.connection=connection;
@@ -112,6 +113,10 @@ public class Server implements Runnable{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			//adds user to servers list of online users
+			if(l_callback != null)
+				onlineUsers.put(l_callback.getId(),l_callback);
+			
 			try {
 				output.writeObject(l_callback);
 			} catch (Exception e) {
@@ -122,6 +127,9 @@ public class Server implements Runnable{
 		case DISCONNECT:
 			//System.out.println("User " + ((User) am).getName() + "Wishes to disconnect");
 			System.out.println("logging out. Going down with the ship cap'n");
+			
+			//remove user from list of online users
+			onlineUsers.remove(((User) am).getId());
 			close = true;
 			break;
 			
