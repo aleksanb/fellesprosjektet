@@ -144,7 +144,4 @@ public class Appointment implements Serializable {
 	public boolean hasAlarm() {
 		return alarm!=null;
 	}
-	
-	
-	
 }
