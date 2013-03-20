@@ -22,6 +22,7 @@ import db.User;
 import gui.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
@@ -81,13 +82,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		
 	}
 
-	//private ArrayList<Appointment> getAppointmentList() {
-		//TODO: make server fetch appointments
-		//appointments = new ArrayList<Integer, Appointment>();
-		//return appointments;
-		
-	//}
-
 	public void displayLogin() {
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
@@ -97,7 +91,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void createAppointmentPanel(){
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
-		aap = new AddAppointmentPanel(this);
+		aap = new AddAppointmentPanel(this,new Appointment(currentUser));
 		contentPane.add(aap, BorderLayout.CENTER);
 		aap.setBackground(Color.LIGHT_GRAY);
 	}
@@ -168,8 +162,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	@Override
 	public void alarmEvent(Appointment appointment) {
-		//TODO: format the message on the alarm
-		JOptionPane.showMessageDialog(this, "title and shit","Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
+		String timeToAlarm = ""+new Date(appointment.getStart().getTimeInMillis()-appointment.getAlarm().getAlarmTime().getTimeInMillis());
+		JOptionPane.showMessageDialog(this, "You have appointment: "+appointment.getTitle()+" in: "+timeToAlarm,"Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
+	}
+	public User getUser(){
+		return currentUser;
 	}
 
 }
