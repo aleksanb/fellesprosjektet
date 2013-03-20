@@ -20,6 +20,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -298,6 +299,10 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
+			/*ArrayList<User> users = cp.getUsers();
+			System.out.println(users);
+			for (int i = 0; i <= users.size(); i++) {
+				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));*/
 		}
 		
 		//add Appointment
@@ -355,9 +360,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
+		}
 		
-	}
-	
 	private void setAlarm(boolean bool) {
 		if(bool){
 			appointment.setAlarm(getAlarmValue());

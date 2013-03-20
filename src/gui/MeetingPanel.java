@@ -21,11 +21,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 
+import core.CalendarProgram;
+
 public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantListPanel plp;
 	private ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
+	protected CalendarProgram cp;
 	
 	public MeetingPanel() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -44,7 +47,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		gbc_lblNewLabel.gridy = 0;
 		add(lblNewLabel, gbc_lblNewLabel);
 		
-		plp = new ParticipantListPanel();
+		plp = new ParticipantListPanel(cp);
 		GridBagConstraints gbc_plp = new GridBagConstraints();
 		gbc_plp.fill = GridBagConstraints.BOTH;
 		gbc_plp.insets = new Insets(0, 0, 5, 0);
