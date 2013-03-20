@@ -37,31 +37,31 @@ import javax.swing.JComboBox;
 @SuppressWarnings("serial")
 public class AddAppointmentPanel extends JPanel implements ActionListener {
 
-	private Appointment appointment;
-	private JXDatePicker startPick;
-	private JXDatePicker endPick;
-	private JTextArea descriptionArea;
-	private JTextField titleField;
-	private JTextField startField;
-	private JTextField endField;
-	private JCheckBox meetingBox;
-	private JButton addAppButton;
-	private JButton cancelButton;
-	private boolean approved = false;
-	private CalendarProgram cp;
-	private JCheckBox alarmBox;
-	private JTextField alarmValueField;
-	private JComboBox valueTypePick;
-	private JLabel beforeStartLabel;
-	private MeetingPanel meetingPanel;
+	protected Appointment appointment;
+	protected JXDatePicker startPick;
+	protected JXDatePicker endPick;
+	protected JTextArea descriptionArea;
+	protected JTextField titleField;
+	protected JTextField startField;
+	protected JTextField endField;
+	protected JCheckBox meetingBox;
+	protected JButton addAppButton;
+	protected JButton cancelButton;
+	protected boolean approved = false;
+	protected CalendarProgram cp;
+	protected JCheckBox alarmBox;
+	protected JTextField alarmValueField;
+	protected JComboBox valueTypePick;
+	protected JLabel beforeStartLabel;
+	protected MeetingPanel meetingPanel;
 	
 	/**
 	 * Create the panel.
 	 */
-	public AddAppointmentPanel(CalendarProgram cp) {
+	public AddAppointmentPanel(CalendarProgram cp, Appointment appointment) {
 		
 		//creates a default appointment object based on today, with unique id
-		appointment = createAppointment();
+		this.appointment = appointment;
 		//reference to the main program
 		this.cp=cp;
 		
@@ -121,7 +121,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//set start time
 		startField = new JTextField();
 		startField.setToolTipText("HH:MM");
-		startField.setText("--:--");
+		//TODO format properly
+		startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("Start time");
 		GridBagConstraints gbc_startField = new GridBagConstraints();
@@ -150,7 +151,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//set end time
 		endField = new JTextField();
 		endField.setToolTipText("HH:MM");
-		endField.setText("--:--");
+		//TODO format properly
+		endField.setText(appointment.getEnd().get(Calendar.HOUR)+":"+appointment.getEnd().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("End time");
 		GridBagConstraints gbc_endField = new GridBagConstraints();
@@ -272,26 +274,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 	}
 
-
-	private Appointment createAppointment() {
-//		Date today = new Date();
-		GregorianCalendar today = new GregorianCalendar();
-		GregorianCalendar today2 = new GregorianCalendar();
-		//if unique id is needed we can use these
-//		long intID = today.getTimeInMillis();
-		
-		
-		//unique for date+hours+minutes
-		String id = ""+today.get(Calendar.DATE)+today.get(Calendar.HOUR)+today.get(Calendar.MINUTE)+today.get(Calendar.SECOND);
-		/*int creatorUserId = getUser().getId();*/int creatorUserId=0;
-		
-		return new Appointment(Integer.parseInt(id), creatorUserId, "", today, today2, "", false);
-	}
-
-
 	private User getUser() {
-		//TODO: fix this
-		return null;
+		return cp.getUser();
 	}
 
 
@@ -320,7 +304,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(event.getActionCommand().equals("Add")){
 			
 			//start with a fresh instance
-			appointment = createAppointment();
+//			appointment = new Appointment(getUser());
 			
 			//set title
 			appointment.setTitle(titleField.getText());
@@ -354,7 +338,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
-				appointment.setPlace((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
 				for(int i = 0; i < meetingPanel.plp.getParticipantList().size(); i++){
 					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
 				}
@@ -448,7 +432,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram()));
+		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram(),new Appointment(new User())));
 		frame.pack();
         frame.setSize (800,500);
         frame.setVisible(true);

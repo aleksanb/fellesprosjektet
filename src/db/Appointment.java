@@ -2,6 +2,7 @@ package db;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -19,8 +20,19 @@ public class Appointment implements AbstractModel, Serializable {
 	private boolean isMeeting;
 	private Alarm alarm;
 	private ArrayList<User> participants;
+	private MeetingPoint place;
+	private AppointmentType appointmentType;
 	private MeetingPoint meetingPoint;
 	
+	public Appointment(User creatorusUserId){
+		id=0;
+		this.creatorUserId=creatorUserId;
+		title="";
+		start=new GregorianCalendar();
+		end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
+		description="";
+		isMeeting=false;
+	}
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
 			GregorianCalendar end, String description, boolean isMeeting) {
@@ -33,6 +45,8 @@ public class Appointment implements AbstractModel, Serializable {
 		this.description = description;
 		this.isMeeting = isMeeting;
 		participants = new ArrayList<User>();
+		place = null;
+		appointmentType = AppointmentType.OK;
 		meetingPoint = null;
 	}
 
@@ -40,6 +54,14 @@ public class Appointment implements AbstractModel, Serializable {
 		this.id = id;
 	}
 	
+	public AppointmentType getAppointmentType() {
+		return appointmentType;
+	}
+
+	public void setAppointmentType(AppointmentType appointmentType) {
+		this.appointmentType = appointmentType;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -98,6 +120,9 @@ public class Appointment implements AbstractModel, Serializable {
 	public int getWeek(){
 		return start.get(GregorianCalendar.WEEK_OF_YEAR);
 	}
+	public int getYear(){
+		return start.get(GregorianCalendar.YEAR);
+	}
 	public Alarm getAlarm() {
 		return alarm;
 	}
@@ -138,18 +163,13 @@ public class Appointment implements AbstractModel, Serializable {
 	public boolean hasAlarm() {
 		return alarm!=null;
 	}
-
 	@Override
 	public void setAction(Action action) {
 		this.action = action;
 		
 	}
-
 	@Override
 	public Action getAction() {
 		return this.action;
 	}
-	
-	
-	
 }

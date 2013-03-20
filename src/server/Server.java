@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import com.google.gson.JsonSyntaxException;
-
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
@@ -90,7 +88,7 @@ public class Server implements Runnable{
 		System.out.println("SERVER "+connectionID+": " +text);
 	}
 	
-	private void handleShit() throws ClassNotFoundException, JsonSyntaxException, IOException {
+	private void handleShit() throws ClassNotFoundException, IOException {
 
 		close = false;
 		am = (AbstractModel) input.readObject();

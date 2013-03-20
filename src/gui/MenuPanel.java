@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 import javax.swing.JList;
@@ -31,11 +32,15 @@ public class MenuPanel extends JPanel {
 	private int selectedIndex;
 	JLabel lblNotifications;
 	CalendarProgram cp;
+	JButton btnEditAppointment;
 	/**
 	 * Create the panel.
 	 */
 	public MenuPanel(CalendarProgram cp) {
+		//set CalendarProgram
 		this.cp = cp;
+		
+		//set GridBagLayout
 		setBackground(new Color(51, 204, 204));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
@@ -45,7 +50,7 @@ public class MenuPanel extends JPanel {
 		setLayout(gridBagLayout);
 		
 
-		
+		//set helloLabel
 		JLabel lblHello = new JLabel("Hello");
 		lblHello.setForeground(new Color(0, 0, 0));
 		lblHello.setBackground(new Color(0, 0, 255));
@@ -55,26 +60,36 @@ public class MenuPanel extends JPanel {
 		gbc_lblHello.gridy = 1;
 		add(lblHello, gbc_lblHello);
 		
+		//set newAppointmentButton
 		JButton btnNewA = new JButton("New appointment");
 		btnNewA.addActionListener(new AddAppointmentListener(cp));
 		GridBagConstraints gbc_btnNewA = new GridBagConstraints();
 		gbc_btnNewA.gridwidth = 5;
-		gbc_btnNewA.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewA.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewA.gridx = 0;
 		gbc_btnNewA.gridy = 2;
 		add(btnNewA, gbc_btnNewA);
 		
+		//set showCalendarsButton
 		JButton btnShowCalendars = new JButton("Show calendars");
 		GridBagConstraints gbc_btnShowCalendars = new GridBagConstraints();
 		gbc_btnShowCalendars.gridwidth = 5;
-		gbc_btnShowCalendars.insets = new Insets(0, 0, 5, 0);
+		gbc_btnShowCalendars.insets = new Insets(0, 0, 5, 5);
 		gbc_btnShowCalendars.gridx = 0;
 		gbc_btnShowCalendars.gridy = 3;
 		add(btnShowCalendars, gbc_btnShowCalendars);
 		
-		JButton btnLog = new JButton("Logout");
-		btnLog.addActionListener(new logoutListener(cp));
+		//set EditAppointmentButton
+		btnEditAppointment = new JButton("Edit appointment");
+		btnEditAppointment.setEnabled(false);
+		btnEditAppointment.addActionListener(new EditAppointmentListener(cp));
+		GridBagConstraints gbc_btnEditAppointment = new GridBagConstraints();
+		gbc_btnEditAppointment.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEditAppointment.gridx = 2;
+		gbc_btnEditAppointment.gridy = 4;
+		add(btnEditAppointment, gbc_btnEditAppointment);
 		
+		//set NotificationsLabel
 		lblNotifications = new JLabel("You have 0 notifications");
 		GridBagConstraints gbc_lblNotifications = new GridBagConstraints();
 		gbc_lblNotifications.insets = new Insets(0, 0, 5, 5);
@@ -82,6 +97,7 @@ public class MenuPanel extends JPanel {
 		gbc_lblNotifications.gridy = 5;
 		add(lblNotifications, gbc_lblNotifications);
 		
+		//set notificationList
 		notificationList = new JComboBox<Notification>();
 		notificationList.setMaximumRowCount(5);
 		notificationList.setPreferredSize(new Dimension(250,20));
@@ -94,22 +110,33 @@ public class MenuPanel extends JPanel {
 		gbc_comboBox.gridx = 0;
 		gbc_comboBox.gridy = 6;
 		add(notificationList, gbc_comboBox);
+		
+		//add label "Display Notifications"
+		Notification note = new Notification(-1, new Appointment(-1, -1, null, null,
+				null, null, false), NotificationType.WELCOME);
+		note.setMessage("Display Notifications");
+		notificationList.addItem(note);
+		
+		//set logoutbutton
+		JButton btnLog = new JButton("Logout");
+		btnLog.addActionListener(new logoutListener(cp));
 		GridBagConstraints gbc_btnLog = new GridBagConstraints();
 		gbc_btnLog.gridwidth = 3;
 		gbc_btnLog.insets = new Insets(0, 0, 0, 5);
 		gbc_btnLog.gridx = 1;
 		gbc_btnLog.gridy = 13;
 		add(btnLog, gbc_btnLog);
-		Notification note = new Notification(-1, -1, NotificationType.WELCOME);
-		note.setMessage("Display Notifications");
-		notificationList.addItem(note);
 
 	}
+	
+	//method for adding notifications
 	public void addNotification(Notification notification){
-		NotificationType notificationType =notification.getNotificationType();
-		Appointment appointment = cp.getAppointment(notification.getAppointmentId());
+		NotificationType notificationType = notification.getNotificationType();
+		Appointment appointment = notification.getAppointment();
 		if(appointment == null){
-			return;
+			GregorianCalendar gc = new GregorianCalendar();
+			GregorianCalendar gc1 = new GregorianCalendar();
+			appointment = new Appointment(1, 2, "halla", gc, gc1, "halla", true);
 		}
 		if(notificationType == NotificationType.CANCELLED){
 			notification.setMessage("Meeting with title: " + appointment.getTitle() + " is cancelled");
@@ -126,6 +153,8 @@ public class MenuPanel extends JPanel {
 		notificationList.addItem(notification);
 		update();
 	}
+	
+	//updatefunction for setting notificationslabel properly
 	private void update() {
 		int antall = notificationList.getItemCount();
 		if(antall == 1){
@@ -138,6 +167,7 @@ public class MenuPanel extends JPanel {
 			lblNotifications.setText("You have: " + Integer.toString(antall-1) + " notifications");
 		}
 	}
+	//logoutListener for logoutbutton
 	class logoutListener implements ActionListener{
 		CalendarProgram cp;
 		public logoutListener(CalendarProgram cp){
@@ -150,6 +180,8 @@ public class MenuPanel extends JPanel {
 		}
 		
 	}
+	
+	//addappointmentlistener for addappointmentbutton
 	class AddAppointmentListener implements ActionListener{
 		CalendarProgram cp;
 		public AddAppointmentListener(CalendarProgram cp){
@@ -161,6 +193,21 @@ public class MenuPanel extends JPanel {
 		}
 		
 	}
+	
+	//editappointmentlistener for editappointmentbutton
+	class EditAppointmentListener implements ActionListener{
+		CalendarProgram cp;
+		public EditAppointmentListener(CalendarProgram cp){
+			this.cp = cp;
+		}
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			cp.createEditAppointmentPanel(cp.getSelectedAppointment());
+		}
+		
+	}
+	
+	//listener for notificationlist
 	class NotificationListListener implements ActionListener{
 		JComboBox<Notification> notificationList;
 		
@@ -175,12 +222,14 @@ public class MenuPanel extends JPanel {
 			if(index != -1 && index != 0){
 				notificationList.removeItem(note);
 				notificationList.setSelectedIndex(0);
-				//Her m� det legges inn en referanse til en metode som setter appointmenten notificationen som fjaernes refererer til aktiv i kalenderen
-			}
+				cp.setFocusInCalendar(note);
+				}
 			update();
 		}
 		
 	}
+	
+	//main method for testing
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
 			CalendarProgram cp1 = new CalendarProgram();
@@ -189,6 +238,18 @@ public class MenuPanel extends JPanel {
 			frame.pack();
 			frame.setSize(200, 400);
 			frame.setVisible(true);
-		}  
+	}
+	 
+	//method for setting editbutton enabled
+	public void setEditButtonEnabled() {
+		btnEditAppointment.setEnabled(true);
+		
+	}
+	
+	//method for setting editbutton disabled
+	public void setEditButtonDisabled() {
+		btnEditAppointment.setEnabled(false);
+		
+	}  
 
 }

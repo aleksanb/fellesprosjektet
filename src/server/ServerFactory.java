@@ -249,7 +249,7 @@ public class ServerFactory {
 					
 					// create user-appointment connection for all users
 					for (int i = 0; i < participants.size(); i++) { 
-						System.out.println("executing userAppointment nr. " + i + " " + participants.get(i).getName());
+						System.out.println(" executing userAppointment nr. " + i + " " + participants.get(i).getName());
 						prest.setInt(1, participants.get(i).getId());
 						prest.setInt(2, appointmentId);
 						prest.executeUpdate();
@@ -283,5 +283,21 @@ public class ServerFactory {
 			return null;
 		}
 	}
+	
+	public boolean deleteAppointment(Appointment appointment) {
+		return false;
+		
+	}
+	
+	public boolean editAppointment(Appointment appointment) {
+		return false;
+		
+	}
+	
+	public User logOut(User user) {
+		return user;
+		
+	}
+	//Need method for something with the notifications. Not sure what, though.
 	
 }
