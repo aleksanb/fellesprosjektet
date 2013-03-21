@@ -130,8 +130,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	// added some appointments and notifications for testing. Unpossible to do in main...
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
-		
-		/*GregorianCalendar gc = new GregorianCalendar();
+		/*addNotification(new Notification(1, null, null));
+		GregorianCalendar gc = new GregorianCalendar();
 		GregorianCalendar gc1 = new GregorianCalendar();
 		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
 		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
@@ -139,7 +139,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		Appointment app = new Appointment(1, 2, "hallais", gc1, gc, "halla", true);
 		app.setAppointmentType(AppointmentType.NEEDSATTENTION);
 		addNotification(new Notification(1, app, NotificationType.CANCELLED));
-		
 		GregorianCalendar gc2 = new GregorianCalendar();
 		GregorianCalendar gc3 = new GregorianCalendar();
 		gc2.set(GregorianCalendar.HOUR_OF_DAY, 7);
@@ -179,6 +178,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			}
 		}).start();//starts the thread
 	}
+	
+	// use this method to add notifications to the notificationsList
+	//TODO make this method send notifications when it should
 	private void addNotification(Notification notification) {
 		menuPanel.addNotification(notification);
 		
@@ -269,6 +271,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	public ArrayList<User> getUsers() {
 		return cf.sendAction(new User(), Action.GET_ALL_USERS);
+	}
+	//method for getting all appointments from user
+	public ArrayList<Appointment> getApointmentsFromUser(User user){
+		return cf.sendAction(user, Action.GET_ALL_APPOINTMENTS);
 	}
 
 }
