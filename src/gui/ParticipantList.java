@@ -15,22 +15,12 @@ import java.awt.Color;
 
 
 public class ParticipantList extends JPanel implements ActionListener{
-	private JList npList;
-	private JList pList;
+	private JList<User> npList;
+	private JList<User> pList;
 	protected DefaultListModel<User> nonparticipants;
 	protected DefaultListModel<User> participants;
-	private CalendarProgram cp;
-
-	private ArrayList<User> participantList;
-	private ArrayList<User> nonparticipantList;
 	
-	
-	public ParticipantList(CalendarProgram cp) {
-		this.cp = cp;
-		setBackground(Color.PINK);
-		nonparticipants = new DefaultListModel<User>();
-		participants = new DefaultListModel<User>();
-		
+	public ParticipantList() {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.LIGHT_GRAY);
 		
@@ -44,6 +34,19 @@ public class ParticipantList extends JPanel implements ActionListener{
 		JButton buttonRemove = new JButton("<< Remove");
 		buttonRemove.addActionListener(this);
 		buttonRemove.setActionCommand("Remove");
+		
+		setBackground(Color.PINK);
+		nonparticipants = new DefaultListModel<User>();
+		participants = new DefaultListModel<User>();
+		
+		pList = new JList<User>(participants);
+		pList.setBackground(Color.LIGHT_GRAY);
+		rightPanel.add(pList);
+		
+		npList = new JList<User>(nonparticipants);
+		npList.setBackground(Color.WHITE);
+		leftPanel.add(npList);
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -74,32 +77,26 @@ public class ParticipantList extends JPanel implements ActionListener{
 							.addComponent(buttonRemove)))
 					.addContainerGap())
 		);
-		
-		pList = new JList(participants);
-		pList.setBackground(Color.LIGHT_GRAY);
-		rightPanel.add(pList);
-		
-		npList = new JList(nonparticipants);
-		npList.setBackground(Color.WHITE);
-		leftPanel.add(npList);
 		setLayout(groupLayout);
-		
-		ArrayList<User> allUsers = cp.getUsers();
-		
+	}
+	
+	
+	public void populateParticipants(ArrayList<User> allUsers, ArrayList<User> participants){
 		for(int i = 0; i < allUsers.size(); i++){
-			nonparticipants.addElement(allUsers.get(i));
+			this.nonparticipants.addElement(allUsers.get(i));
+		}
+		for (int i = 0; i < participants.size(); i++ ) {
+			this.participants.addElement(participants.get(i));
 		}
 	}
 	
-	
-	public ArrayList<User> getParticipants(){
-		participantList = new ArrayList<User>();
-		for(int i = 0; i < participants.getSize(); i++){
-			participantList.add(participants.elementAt(i));
+	public ArrayList<User> getParticipants() {
+		ArrayList<User> participating = new ArrayList<User>();
+		for (int i = 0; i < this.participants.size(); i++ ) {
+			participating.add(this.participants.get(i));
 		}
-		return participantList;
+		return participating;
 	}
-	
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
@@ -121,7 +118,7 @@ public class ParticipantList extends JPanel implements ActionListener{
 	
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		frame.getContentPane().add(new ParticipantList(new CalendarProgram()));
+		//frame.getContentPane().add(new ParticipantList(new CalendarProgram()));
 		frame.pack();
         frame.setSize(500,630);
         frame.setVisible(true);

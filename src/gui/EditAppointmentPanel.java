@@ -131,7 +131,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.setActionCommand("Meeting");
 		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel();
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants());
 		meetingPanel.setVisible(false);
 		
 		//add appointment
@@ -302,23 +302,9 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		if(a){
 			meetingBox.setSelected(a);
 			meetingPanel.setVisible(a);
-			//Update participantlist
-			ArrayList<User> participants = app.getParticipants();
-			
-			DefaultListModel np = meetingPanel.pl.nonparticipants;
-			DefaultListModel p = meetingPanel.pl.participants;
-			
-			for(int i = 0; i < np.getSize(); i++){
-				for(int j = 0; j < participants.size(); j++){
-					if(np.elementAt(i).equals(participants.get(j))){
-						p.addElement(np.elementAt(i));
-						np.removeElement(np.elementAt(i));
-					}
-				}
-			}
 			
 			//Update MeetingPoint
-			meetingPanel.filterPlaces(participants, meetingPanel.allPlaces);
+			meetingPanel.filterPlaces(appointment.getParticipants(), meetingPanel.allPlaces);
 			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
 		}
 	}
@@ -386,9 +372,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < meetingPanel.pl.getParticipants().size() - 1; i++){
-					appointment.addParticipant(meetingPanel.pl.getParticipants().get(i));
-				}
+				appointment.setParticipants(meetingPanel.getParticipants());
 			}
 			
 			//if approved

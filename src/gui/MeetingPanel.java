@@ -32,19 +32,16 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantList pl;
 
-	protected ArrayList<User> userList;
 	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
-
-	protected CalendarProgram cp;
 	
-	public MeetingPanel() {
+	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers) {
 		setBackground(Color.PINK);
 		
 		JLabel lblNewLabel = new JLabel("Participants");
-		
-		pl = new ParticipantList(cp);
-		
 		JLabel lblPlace = new JLabel("Place");
+		
+		this.pl = new ParticipantList();		
+		this.pl.populateParticipants(allUsers, participatingUsers);
 		
 		comboBox = new JComboBox<MeetingPoint>();
 		
@@ -105,13 +102,12 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	public static void main(String[] args){
 
 		JFrame frame = new JFrame();
-		MeetingPanel mp = new MeetingPanel();
-		frame.getContentPane().add(mp);
+		//MeetingPanel mp = new MeetingPanel();
+		//frame.getContentPane().add(mp);
 		frame.pack();
 		frame.setSize(300, 100);
 		frame.setVisible(true);
 	}
-
 
 	
 	public void actionPerformed(ActionEvent e) {
