@@ -123,7 +123,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		startField = new JTextField();
 		startField.setToolTipText("HH:MM");
 		//TODO format properly
-		startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
+		startField.setText(appointment.getStart().get(Calendar.HOUR_OF_DAY)+":"+appointment.getStart().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("Start time");
 		GridBagConstraints gbc_startField = new GridBagConstraints();
@@ -153,7 +153,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		endField = new JTextField();
 		endField.setToolTipText("HH:MM");
 		//TODO format properly
-		endField.setText(appointment.getEnd().get(Calendar.HOUR)+":"+appointment.getEnd().get(Calendar.MINUTE));
+		endField.setText(appointment.getEnd().get(Calendar.HOUR_OF_DAY)+":"+appointment.getEnd().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("End time");
 		GridBagConstraints gbc_endField = new GridBagConstraints();
