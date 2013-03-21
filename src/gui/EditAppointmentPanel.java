@@ -10,6 +10,7 @@ public class EditAppointmentPanel extends AddAppointmentPanel{
 	public EditAppointmentPanel(CalendarProgram calendarProgram, Appointment appointment) {
 		super(calendarProgram, appointment);
 		System.out.println("holla mamma");
+		
 	}
 
 	public void setAppoitment(Appointment appointment) {
