@@ -40,26 +40,28 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 			public void mouseClicked(MouseEvent event) {
 				JList list = (JList) event.getSource();
 				
-				// Get index of item clicked
+				//Get index of item clicked
 				
 				int index = list.locationToIndex(event.getPoint());
 				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
 				
-				// Toggle selected state
+				//Toggle selected state
 
 				item.setSelected(! item.isSelected());					
 
-				
+				//Add user to arrayList with selected users. 
 				if(item.isSelected() == true) {
 					addParticipant(item.getUser());
 					System.out.println(participantList);
 				}
+				
+				//Remove user from arrayList with selected users.
 				if(item.isSelected() == false) {
 					removeParticipant(item.getUser());
 					System.out.println(participantList);
 				}
 				
-				// Repaint cell
+				//Repaint cell
 				
 				list.repaint(list.getCellBounds(index, index));	
 			}
