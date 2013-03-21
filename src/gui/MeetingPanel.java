@@ -22,66 +22,64 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 
 import core.CalendarProgram;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.Color;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantListPanel plp;
-	private ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
+
+	protected ArrayList<User> userList;
+	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
+
 	protected CalendarProgram cp;
 	
 	public MeetingPanel() {
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{74, 97, 279, 0};
-		gridBagLayout.rowHeights = new int[]{16, 145, 16, 27, 29, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
+		setBackground(Color.PINK);
 		
 		JLabel lblNewLabel = new JLabel("Participants");
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.gridwidth = 2;
-		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 0;
-		add(lblNewLabel, gbc_lblNewLabel);
 		
 		plp = new ParticipantListPanel(cp);
-		GridBagConstraints gbc_plp = new GridBagConstraints();
-		gbc_plp.fill = GridBagConstraints.BOTH;
-		gbc_plp.insets = new Insets(0, 0, 5, 0);
-		gbc_plp.gridwidth = 3;
-		gbc_plp.gridx = 0;
-		gbc_plp.gridy = 1;
-		add(plp, gbc_plp);
 		
 		JLabel lblPlace = new JLabel("Place");
-		GridBagConstraints gbc_lblPlace = new GridBagConstraints();
-		gbc_lblPlace.gridwidth = 2;
-		gbc_lblPlace.anchor = GridBagConstraints.WEST;
-		gbc_lblPlace.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPlace.gridx = 0;
-		gbc_lblPlace.gridy = 2;
-		add(lblPlace, gbc_lblPlace);
 		
 		comboBox = new JComboBox<MeetingPoint>();
-		GridBagConstraints gbc_comboBox = new GridBagConstraints();
-		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox.gridwidth = 2;
-		gbc_comboBox.gridx = 0;
-		gbc_comboBox.gridy = 3;
-		add(comboBox, gbc_comboBox);
 		
 		JButton findButton = new JButton("Find Place");
 		findButton.addActionListener(this);
 		findButton.setActionCommand("Cancel");
-		GridBagConstraints gbc_findButton = new GridBagConstraints();
-		gbc_findButton.insets = new Insets(0, 0, 5, 0);
-		gbc_findButton.gridx = 2;
-		gbc_findButton.gridy = 3;
-		add(findButton, gbc_findButton);
+		GroupLayout groupLayout = new GroupLayout(this);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(lblPlace, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+					.addGap(27)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
+					.addComponent(findButton))
+				.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+				.addComponent(plp, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(lblNewLabel)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(plp, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
+					.addGap(19)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblPlace)
+						.addComponent(findButton)))
+		);
+		setLayout(groupLayout);
+		
+		/*userList = cp.getUsers();
+		System.out.println(userList);
+		plp.makeCheckListItem(userList.get(1)); */
 		
 		
 	}
@@ -105,6 +103,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	}
 	
 	public static void main(String[] args){
+
 		JFrame frame = new JFrame();
 		MeetingPanel mp = new MeetingPanel();
 		frame.getContentPane().add(mp);

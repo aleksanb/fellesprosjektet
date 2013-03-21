@@ -33,13 +33,17 @@ public class DBConnection {
 
 	}
 
-	public void initialize() throws ClassNotFoundException, SQLException {
-		Class.forName(jdbcDriver);
-		Properties info = new Properties();
-
-		info.setProperty("user", properties.getProperty("user"));
-		info.setProperty("password", properties.getProperty("password"));
-		conn = DriverManager.getConnection(url, info);
+	public Boolean initialize() throws ClassNotFoundException, SQLException {
+		if ( conn == null ||conn.isClosed() ) {
+			Class.forName(jdbcDriver);
+			Properties info = new Properties();
+	
+			info.setProperty("user", properties.getProperty("user"));
+			info.setProperty("password", properties.getProperty("password"));
+			conn = DriverManager.getConnection(url, info);
+			return true;
+		}
+		return false;
 	}
 
 	public ResultSet makeSingleQuery(String sql) throws SQLException {

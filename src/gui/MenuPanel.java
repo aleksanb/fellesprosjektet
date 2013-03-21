@@ -85,7 +85,7 @@ public class MenuPanel extends JPanel {
 		add(btnShowCalendars, gbc_btnShowCalendars);
 		
 		//set EditAppointmentButton
-		btnEditAppointment = new JButton("Edit appointment");
+		btnEditAppointment = new JButton("Edit/Delete appointment");
 		btnEditAppointment.setEnabled(false);
 		btnEditAppointment.addActionListener(new EditAppointmentListener(cp));
 		GridBagConstraints gbc_btnEditAppointment = new GridBagConstraints();

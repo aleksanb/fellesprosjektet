@@ -42,7 +42,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//model
 	private HashMap<Integer, Appointment> appointments;
-	private User currentUser;
+	private User currentUser;		/*userList = cp.getUsers();
+	for (int i = 0; i <= userList.size()-1; i++) {
+	makeCheckListItem(userList.get(i));*/
+
 	
 	//tools
 	private Thread alarmHandlerThread;
@@ -166,7 +169,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			public void run() {
 				while(true){
 					long wait = 300000;//millisec = 5 min
-					System.out.println("Notifications: "+fetchNotifications());//TODO save notificatsions
+					ArrayList<Notification> notifications = fetchNotifications();
+					System.out.println("Notifications: "+notifications);
+					for (Notification notification : notifications) {
+						menuPanel.addNotification(notification);						
+					}
 					try {
 						System.out.println("notification thread will sleep for "+wait+" millies");
 						Thread.sleep(wait);

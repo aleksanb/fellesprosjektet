@@ -24,6 +24,7 @@ public class Server implements Runnable{
 	
 	//Recieve, send, local vairables
 	private AbstractModel am;
+	private User currentUser;
 	private ServerFactory sf;
 	int connectionID;
 	private ServerProgram sp;
@@ -116,6 +117,8 @@ public class Server implements Runnable{
 			//adds user to servers list of online users
 			if(l_callback != null)
 //				sp.addOnlineUserConnection(l_callback,connection);
+				currentUser = l_callback;
+				System.out.println("*** current user is set to " + currentUser.getName() + " ***");
 			
 			try {
 				output.writeObject(l_callback);
@@ -130,6 +133,7 @@ public class Server implements Runnable{
 			
 			//remove user from list of online users
 //			sp.removeOnlineUsers(((User) am).getId());
+			currentUser = null;
 			close = true;
 			break;
 			
@@ -139,7 +143,7 @@ public class Server implements Runnable{
 			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
-			ArrayList<Appointment> g_a_a_callback = sf.getAllAppointments((User) am);
+			ArrayList<Appointment> g_a_a_callback = sf.getAllAppointments(currentUser);
 			output.writeObject(g_a_a_callback);
 			System.out.println("sent back appointments");
 			break;
@@ -156,6 +160,13 @@ public class Server implements Runnable{
 				output.writeObject(i_u_callback);
 				System.out.println("sent back appointment");
 			}
+			break;
+		case SET_STATUS_ATTENDING:
+		case SET_STATUS_NOT_ATTENDING:
+			sf.setStatus((Appointment) am, currentUser, action);
+			System.out.println("sat status " + action);
+			output.writeObject(currentUser);
+			System.out.println("sent reponsestatus");
 			break;
 		case NOTIFICATION:
 			logConsole("received notification");

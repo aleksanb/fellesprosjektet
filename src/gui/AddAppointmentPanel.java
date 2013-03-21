@@ -27,7 +27,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -63,220 +66,195 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 	public AddAppointmentPanel(CalendarProgram cp, Appointment appointment) {
 		
 		//creates a default appointment object based on today, with unique id
-		this.appointment = appointment;
-		//reference to the main program
-		this.cp=cp;
-		
-		//GridBagLayout
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {0, 30, 136, -6};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
-		setBackground(Color.PINK); 
-		//Pick start
-		startPick = new JXDatePicker();
-		startPick.addActionListener(this);
-		startPick.setDate(new Date());
-		
-		//title label
-		JLabel titleLabel = new JLabel("Title:");
-		GridBagConstraints gbc_titleLabel = new GridBagConstraints();
-		gbc_titleLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_titleLabel.gridx = 0;
-		gbc_titleLabel.gridy = 1;
-		add(titleLabel, gbc_titleLabel);
-		
-		//title field
-		titleField = new JTextField();
-		titleField.addActionListener(this);
-		titleField.setActionCommand("Title");
-		GridBagConstraints gbc_titleField = new GridBagConstraints();
-		gbc_titleField.insets = new Insets(0, 0, 5, 5);
-		gbc_titleField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_titleField.gridx = 2;
-		gbc_titleField.gridy = 1;
-		add(titleField, gbc_titleField);
-		titleField.setColumns(10);
-		
-		//start label
-		JLabel startLabel = new JLabel("Start:");
-		startLabel.setVerticalAlignment(SwingConstants.TOP);
-		GridBagConstraints gbc_startLabel = new GridBagConstraints();
-		gbc_startLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_startLabel.gridx = 0;
-		gbc_startLabel.gridy = 2;
-		add(startLabel, gbc_startLabel);
-		GridBagConstraints gbc_startPick = new GridBagConstraints();
-		gbc_startPick.fill = GridBagConstraints.HORIZONTAL;
-		gbc_startPick.insets = new Insets(0, 0, 5, 5);
-		gbc_startPick.gridx = 2;
-		gbc_startPick.gridy = 2;
-		add(startPick, gbc_startPick);
-		
-		//pick end
-		endPick = new JXDatePicker();
-		endPick.addActionListener(this);
-		endPick.setDate(new Date());
-		
-		//set start time
-		startField = new JTextField();
-		startField.setToolTipText("HH:MM");
-		//TODO format properly
-		startField.setText(appointment.getStart().get(Calendar.HOUR_OF_DAY)+":"+appointment.getStart().get(Calendar.MINUTE));
-		startField.addActionListener(this);
-		startField.setActionCommand("Start time");
-		GridBagConstraints gbc_startField = new GridBagConstraints();
-		gbc_startField.anchor = GridBagConstraints.WEST;
-		gbc_startField.insets = new Insets(0, 0, 5, 0);
-		gbc_startField.gridx = 3;
-		gbc_startField.gridy = 2;
-		add(startField, gbc_startField);
-		startField.setColumns(6);
-		
-		//end label
-		JLabel endLabel = new JLabel("End:");
-		endLabel.setVerticalAlignment(SwingConstants.TOP);
-		GridBagConstraints gbc_endLabel = new GridBagConstraints();
-		gbc_endLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_endLabel.gridx = 0;
-		gbc_endLabel.gridy = 3;
-		add(endLabel, gbc_endLabel);
-		GridBagConstraints gbc_endPick = new GridBagConstraints();
-		gbc_endPick.insets = new Insets(0, 0, 5, 5);
-		gbc_endPick.fill = GridBagConstraints.HORIZONTAL;
-		gbc_endPick.gridx = 2;
-		gbc_endPick.gridy = 3;
-		add(endPick, gbc_endPick);
-		
-		//set end time
-		endField = new JTextField();
-		endField.setToolTipText("HH:MM");
-		//TODO format properly
-		endField.setText(appointment.getEnd().get(Calendar.HOUR_OF_DAY)+":"+appointment.getEnd().get(Calendar.MINUTE));
-		startField.addActionListener(this);
-		startField.setActionCommand("End time");
-		GridBagConstraints gbc_endField = new GridBagConstraints();
-		gbc_endField.anchor = GridBagConstraints.WEST;
-		gbc_endField.insets = new Insets(0, 0, 5, 0);
-		gbc_endField.gridx = 3;
-		gbc_endField.gridy = 3;
-		add(endField, gbc_endField);
-		endField.setColumns(6);
-		
-		//description label
-		
-		JLabel descriptionLabel = new JLabel("Description:");
-		GridBagConstraints gbc_descriptionLabel = new GridBagConstraints();
-		gbc_descriptionLabel.gridwidth = 2;
-		gbc_descriptionLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_descriptionLabel.gridx = 0;
-		gbc_descriptionLabel.gridy = 4;
-		add(descriptionLabel, gbc_descriptionLabel);
-		
-		//description textarea
-		
-		
-		descriptionArea = new JTextArea();
-		startField.setActionCommand("Start time");
-		descriptionArea.setColumns(35);
-		descriptionArea.setRows(4);
-		GridBagConstraints gbc_descriptionArea = new GridBagConstraints();
-		gbc_descriptionArea.insets = new Insets(0, 0, 5, 5);
-		gbc_descriptionArea.gridwidth = 3;
-		gbc_descriptionArea.fill = GridBagConstraints.BOTH;
-		gbc_descriptionArea.gridx = 0;
-		gbc_descriptionArea.gridy = 5;
-		add(descriptionArea, gbc_descriptionArea);
-		
-		//add appointment
-		addAppButton = new JButton("Add Appointment");
-		addAppButton.addActionListener(this);
-		
-		//checkbox for alarms
-		alarmBox = new JCheckBox("Alarm");
-		alarmBox.addActionListener(this);
-		alarmBox.setActionCommand("alarm");
-		GridBagConstraints gbc_alarmBox = new GridBagConstraints();
-		gbc_alarmBox.insets = new Insets(0, 0, 5, 5);
-		gbc_alarmBox.gridx = 0;
-		gbc_alarmBox.gridy = 6;
-		add(alarmBox, gbc_alarmBox);
-		
-		//field for the value you want
-		alarmValueField = new JTextField();
-		alarmValueField.setText("10");
-		alarmValueField.setVisible(false);
-		
-		beforeStartLabel = new JLabel("Before Start");
-		beforeStartLabel.setVisible(false);
-		GridBagConstraints gbc_beforeStartLabel = new GridBagConstraints();
-		gbc_beforeStartLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_beforeStartLabel.gridx = 2;
-		gbc_beforeStartLabel.gridy = 6;
-		add(beforeStartLabel, gbc_beforeStartLabel);
-		GridBagConstraints gbc_alarmValueField = new GridBagConstraints();
-		gbc_alarmValueField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_alarmValueField.insets = new Insets(0, 0, 5, 5);
-		gbc_alarmValueField.gridx = 0;
-		gbc_alarmValueField.gridy = 7;
-		add(alarmValueField, gbc_alarmValueField);
-		alarmValueField.setColumns(3);
-		
-		//pick what type the value should representent e.g. hours, minutes days.
-		String[] valueTypes = {"Minute", "Hour", "Day"};
-		valueTypePick = new JComboBox(valueTypes);
-		valueTypePick.setVisible(false);
-		GridBagConstraints gbc_valueTypePick = new GridBagConstraints();
-		gbc_valueTypePick.anchor = GridBagConstraints.WEST;
-		gbc_valueTypePick.insets = new Insets(0, 0, 5, 5);
-		gbc_valueTypePick.gridx = 2;
-		gbc_valueTypePick.gridy = 7;
-		add(valueTypePick, gbc_valueTypePick);
-		
-		
-		//checkbox for the meetings
-		meetingBox = new JCheckBox("Meeting");
-		meetingBox.addActionListener(this);
-		meetingBox.setActionCommand("Meeting");
-		
-		GridBagConstraints gbc_meetingBox = new GridBagConstraints();
-		gbc_meetingBox.insets = new Insets(0, 0, 5, 5);
-		gbc_meetingBox.gridx = 0;
-		gbc_meetingBox.gridy = 8;
-		add(meetingBox, gbc_meetingBox);
-		
-		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel();
-		GridBagConstraints gbc_meetingPanel = new GridBagConstraints();
-		gbc_meetingPanel.gridwidth = 3;
-		gbc_meetingPanel.insets = new Insets(0, 0, 5, 5);
-		gbc_meetingPanel.fill = GridBagConstraints.BOTH;
-		gbc_meetingPanel.gridx = 0;
-		gbc_meetingPanel.gridy = 9;
-		add(meetingPanel, gbc_meetingPanel);
-		meetingPanel.setVisible(false);
-		
-		
-		//add appointment
-		addAppButton.setActionCommand("Add");
-		GridBagConstraints gbc_addAppButton = new GridBagConstraints();
-		gbc_addAppButton.insets = new Insets(0, 0, 0, 5);
-		gbc_addAppButton.gridx = 0;
-		gbc_addAppButton.gridy = 10;
-		add(addAppButton, gbc_addAppButton);
-		
-		//cancel appointment
-		cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(this);
-		cancelButton.setActionCommand("Cancel");
-		GridBagConstraints gbc_cancelButton = new GridBagConstraints();
-		gbc_cancelButton.insets = new Insets(0, 0, 0, 5);
-		gbc_cancelButton.gridx = 2;
-		gbc_cancelButton.gridy = 10;
-		add(cancelButton, gbc_cancelButton);
-		
+				this.appointment = appointment;
+				//reference to the main program
+				this.cp=cp;
+				setBackground(Color.PINK); 
+				//Pick start
+				startPick = new JXDatePicker();
+				startPick.addActionListener(this);
+				startPick.setDate(new Date());
+				
+				//title label
+				JLabel titleLabel = new JLabel("Title:");
+				
+				//title field
+				titleField = new JTextField();
+				titleField.addActionListener(this);
+				titleField.setActionCommand("Title");
+				titleField.setColumns(10);
+				
+				//start label
+				JLabel startLabel = new JLabel("Start:");
+				startLabel.setVerticalAlignment(SwingConstants.TOP);
+				
+				//pick end
+				endPick = new JXDatePicker();
+				endPick.addActionListener(this);
+				endPick.setDate(new Date());
+				
+				//set start time
+				startField = new JTextField();
+				startField.setToolTipText("HH:MM");
+				//TODO format properly
+				startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
+				startField.addActionListener(this);
+				startField.setActionCommand("Start time");
+				startField.setColumns(6);
+				
+				//end label
+				JLabel endLabel = new JLabel("End:");
+				endLabel.setVerticalAlignment(SwingConstants.TOP);
+				
+				//set end time
+				endField = new JTextField();
+				endField.setToolTipText("HH:MM");
+				//TODO format properly
+				endField.setText(appointment.getEnd().get(Calendar.HOUR)+":"+appointment.getEnd().get(Calendar.MINUTE));
+				startField.addActionListener(this);
+				startField.setActionCommand("End time");
+				endField.setColumns(6);
+				
+				//description label
+				JLabel descriptionLabel = new JLabel("Description:");
+				
+				//description textarea
+				descriptionArea = new JTextArea();
+				startField.setActionCommand("Start time");
+				descriptionArea.setColumns(35);
+				descriptionArea.setRows(4);
+				
+				//checkbox for alarms
+				alarmBox = new JCheckBox("Alarm");
+				alarmBox.addActionListener(this);
+				alarmBox.setActionCommand("alarm");
+				
+				//field for the value you want
+				alarmValueField = new JTextField();
+				alarmValueField.setText("10");
+				alarmValueField.setVisible(false);
+				
+				beforeStartLabel = new JLabel("Before Start");
+				beforeStartLabel.setVisible(false);
+				alarmValueField.setColumns(3);
+				
+				//pick what type the value should representent e.g. hours, minutes days.
+				String[] valueTypes = {"Minutes", "Hours", "Days"};
+				valueTypePick = new JComboBox(valueTypes);
+				valueTypePick.setVisible(false);
+				
+				
+				//checkbox for the meetings
+				meetingBox = new JCheckBox("Meeting");
+				meetingBox.addActionListener(this);
+				meetingBox.setActionCommand("Meeting");
+				
+				//Add and hide meetingPanel
+				meetingPanel = new MeetingPanel();
+				meetingPanel.setVisible(false);
+				
+				//cancel appointment
+				cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(this);
+				cancelButton.setActionCommand("Cancel");
+				
+				addAppButton = new JButton("Add");
+				addAppButton.addActionListener(this);
+				addAppButton.setActionCommand("Add");
+				
+				
+				GroupLayout groupLayout = new GroupLayout(this);
+				groupLayout.setHorizontalGroup(
+					groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(meetingBox)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(alarmBox, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+											.addGap(186))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(8)
+											.addComponent(beforeStartLabel))))
+								.addComponent(descriptionLabel)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(titleLabel)
+										.addComponent(startLabel)
+										.addComponent(endLabel))
+									.addGap(142)
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addComponent(titleField, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(endPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE)
+												.addComponent(startPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+												.addComponent(startField, 0, 0, Short.MAX_VALUE)
+												.addComponent(endField, GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(119)
+									.addComponent(addAppButton, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE))
+								.addComponent(descriptionArea, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+								.addComponent(meetingPanel, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE))
+							.addGap(41))
+				);
+				groupLayout.setVerticalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(14)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(titleField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(startPick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(startField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(startLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(titleLabel))
+									.addGap(18)
+									.addComponent(endLabel)
+									.addGap(23)
+									.addComponent(descriptionLabel))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(88)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(endPick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(endField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+							.addGap(17)
+							.addComponent(descriptionArea, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(alarmBox)
+								.addComponent(beforeStartLabel))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(meetingBox)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(meetingPanel, GroupLayout.PREFERRED_SIZE, 246, GroupLayout.PREFERRED_SIZE)
+							.addGap(2)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(addAppButton)
+								.addComponent(cancelButton))
+							.addGap(62))
+				);
+				setLayout(groupLayout);
 	}
 
 	private User getUser() {
@@ -303,9 +281,13 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
-			ArrayList<User> users = cp.getUsers();
-			for (int i = 0; i <= users.size()-1; i++) {
-				meetingPanel.plp.makeCheckListItem(users.get(i));
+			User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+			meetingPanel.plp.makeCheckListItem(user1);
+			/*ArrayList<User> userList = cp.getUsers();
+			meetingPanel.plp.makeCheckListItem(userList.get(1));
+			for (int i = 0; i <= userList.size()-1; i++) {
+				meetingPanel.plp.makeCheckListItem(userList.get(i));
+			}*/
 		}
 		
 		//add Appointment
@@ -347,8 +329,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < cp.getUsers().size()-1; i++){
-					appointment.addParticipant(cp.getUsers().get(i));
+				for(int i = 0; i < meetingPanel.plp.getParticipantList().size()-1; i++){
+					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
 				}
 			}
 			
@@ -365,7 +347,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
 		}
-	}
+	
 		
 	private void setAlarm(boolean bool) {
 		if(bool){
@@ -443,9 +425,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		JFrame frame = new JFrame();
 		frame.getContentPane().add(new AddAppointmentPanel(new CalendarProgram(),new Appointment(new User())));
 		frame.pack();
-        frame.setSize (800,500);
+        frame.setSize (500, 640);
         frame.setVisible(true);
 	}
-	
-
 }
