@@ -44,7 +44,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	protected JButton saveButton;
 	protected JButton deleteButton;
 	
-	public EditAppointmentPanel(CalendarProgram calendarProgram, Appointment appointment) {
+	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment, Boolean firstTime) {
 		//creates a default appointment object based on today, with unique id
 		this.appointment = appointment;
 		//reference to the main program
@@ -104,10 +104,6 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		descriptionArea.setColumns(35);
 		descriptionArea.setRows(4);
 		
-		//add appointment
-		saveAppButton = new JButton("Save");
-		saveAppButton.addActionListener(this);
-		
 		//checkbox for alarms
 		alarmBox = new JCheckBox("Alarm");
 		alarmBox.addActionListener(this);
@@ -137,12 +133,20 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingPanel = new MeetingPanel();
 		meetingPanel.setVisible(false);
 		
-		
 		//add appointment
-		saveAppButton.setActionCommand("Save");
-		
+
+		if (firstTime) {
+			saveAppButton = new JButton("Add");
+			saveAppButton.addActionListener(this);
+			saveAppButton.setActionCommand("Add");					
+		} else {
+			saveAppButton = new JButton("Save");
+			saveAppButton.addActionListener(this);
+			saveAppButton.setActionCommand("Save");					
+		}
 		
 		//delete appointment
+		System.out.println("we are in an edit appointment panel!");
 		deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
@@ -335,10 +339,11 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			System.out.println(users);
 			for (int i = 0; i <= users.size(); i++) {
 				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));
+			}
 		}
 		
 		//add Appointment
-		if(event.getActionCommand().equals("Save")){
+		if(event.getActionCommand().equals("Save") || event.getActionCommand().equals("Add")){
 			
 			//start with a fresh instance
 //			appointment = new Appointment(getUser());
@@ -352,40 +357,45 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			if(appointment.getStart()==null || appointment.getEnd()==null){
 				approved=false;
 				JOptionPane.showMessageDialog(this, "You must pick dates.","Date error",JOptionPane.ERROR_MESSAGE);
-			} else approved=true;
+			} else {
+				approved=true;
+			}
 			
 			//check format and set time
-			if(approved)
+			if(approved) {
 				appointment.setStart(addTime(startField.getText(), appointment.getStart()));
-			if(approved)
 				appointment.setEnd(addTime(endField.getText(), appointment.getEnd()));
-			
 			//check that start is before end
-			if(approved)
 				checkStartVsEndTime();
-			
 			//set description
-			if(approved)
 				appointment.setDescription(descriptionArea.getText());
-			
+			}
 			//set alarm
-			if(alarmBox.isSelected())
+			if(alarmBox.isSelected()) {
 				setAlarm(true);
-			
+			}
+				
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < meetingPanel.plp.getParticipantList().size(); i++){
+				for(int i = 0; i < meetingPanel.plp.getParticipantList().size() - 1; i++){
 					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
 				}
 			}
 			
 			//if approved
-			if(approved)
-				cp.updateAppointment(appointment);
-				cp.displayMainProgram();
-			
+			if(approved) {
+				System.out.println("approved yay!");
+				if (event.getActionCommand().equals("Save")) {
+					System.out.println("updating");
+					cp.updateAppointment(appointment);					
+				} else {
+					System.out.println("creating");
+					cp.addAppointment(appointment);
+				}
+				cp.displayMainProgram(this);
+			}
 			//debug
 			System.out.println(appointment);
 		}
@@ -393,10 +403,11 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		if(event.getActionCommand().equals("Delete")){
 			//TODO delete-method in CalendarProgram
 		}
-		
+		System.out.println("something was clicked");
 		//cancel the appointment
-		if(event.getActionCommand().equals("Cancel"))
-			cp.displayMainProgram();
+		if(event.getActionCommand().equals("Cancel")) {
+			System.out.println("trying to cancel");
+			cp.displayMainProgram(this);
 		}
 	}
 	
@@ -471,7 +482,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.set(2013, 3, 20, 12, 7);
 		test.setAlarm(gc);
-		frame.getContentPane().add(new EditAppointmentPanel(null, test));
+		//frame.getContentPane().add(new EditAppointmentPanel(null, test));
 		frame.pack();
         frame.setSize (500,630);
         frame.setVisible(true);
