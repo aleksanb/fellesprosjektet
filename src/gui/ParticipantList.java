@@ -17,10 +17,11 @@ import java.awt.Color;
 public class ParticipantList extends JPanel implements ActionListener{
 	private JList npList;
 	private JList pList;
-	private DefaultListModel<User> nonparticipants;
-	private DefaultListModel<User> participants; 
+	protected DefaultListModel<User> nonparticipants;
+	protected DefaultListModel<User> participants;
 
 	private ArrayList<User> participantList;
+	private ArrayList<User> nonparticipantList;
 	
 	
 	public ParticipantList() {
@@ -97,6 +98,14 @@ public class ParticipantList extends JPanel implements ActionListener{
 			participantList.add(participants.elementAt(i));
 		}
 		return participantList;
+	}
+	
+	public ArrayList<User> getNonparticipants(){
+		nonparticipantList = new ArrayList<User>();
+		for(int i = 0; i < nonparticipants.getSize(); i++){
+			nonparticipantList.add(nonparticipants.elementAt(i));
+		}
+		return nonparticipantList;
 	}
 	
 
