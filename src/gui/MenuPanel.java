@@ -186,7 +186,7 @@ public class MenuPanel extends JPanel {
 		    if (reply == JOptionPane.YES_OPTION)
 		    {
 		    	cp.logout();
-		      System.exit(0);
+		    	System.exit(0);
 		    }
 			//cp.displayLogin();
 		}
@@ -201,7 +201,7 @@ public class MenuPanel extends JPanel {
 		}
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			cp.createAppointmentPanel();
+			cp.createEditAppointmentPanel(null);
 		}
 		
 	}
