@@ -19,12 +19,14 @@ public class ParticipantList extends JPanel implements ActionListener{
 	private JList pList;
 	protected DefaultListModel<User> nonparticipants;
 	protected DefaultListModel<User> participants;
+	private CalendarProgram cp;
 
 	private ArrayList<User> participantList;
 	private ArrayList<User> nonparticipantList;
 	
 	
-	public ParticipantList() {
+	public ParticipantList(CalendarProgram cp) {
+		this.cp = cp;
 		setBackground(Color.PINK);
 		nonparticipants = new DefaultListModel<User>();
 		participants = new DefaultListModel<User>();
@@ -82,13 +84,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		leftPanel.add(npList);
 		setLayout(groupLayout);
 		
+		ArrayList<User> allUsers = cp.getUsers();
 		
-		//Testing purposes
-		User u1 = new User(1, "Thea", "@", "kjasd");
-		User u2 = new User(2, "Alex", "@", "sdf");
-		
-		nonparticipants.addElement(u1);
-		nonparticipants.addElement(u2);
+		for(int i = 0; i < allUsers.size(); i++){
+			nonparticipants.addElement(allUsers.get(i));
+		}
 	}
 	
 	
@@ -98,14 +98,6 @@ public class ParticipantList extends JPanel implements ActionListener{
 			participantList.add(participants.elementAt(i));
 		}
 		return participantList;
-	}
-	
-	public ArrayList<User> getNonparticipants(){
-		nonparticipantList = new ArrayList<User>();
-		for(int i = 0; i < nonparticipants.getSize(); i++){
-			nonparticipantList.add(nonparticipants.elementAt(i));
-		}
-		return nonparticipantList;
 	}
 	
 
@@ -129,7 +121,7 @@ public class ParticipantList extends JPanel implements ActionListener{
 	
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		frame.getContentPane().add(new ParticipantList());
+		frame.getContentPane().add(new ParticipantList(new CalendarProgram()));
 		frame.pack();
         frame.setSize(500,630);
         frame.setVisible(true);
