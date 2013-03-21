@@ -16,6 +16,7 @@ import db.Appointment;
 import db.MeetingPoint;
 import db.User;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -165,6 +166,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		endField.setColumns(6);
 		
 		//description label
+		
 		JLabel descriptionLabel = new JLabel("Description:");
 		GridBagConstraints gbc_descriptionLabel = new GridBagConstraints();
 		gbc_descriptionLabel.gridwidth = 2;
@@ -174,6 +176,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		add(descriptionLabel, gbc_descriptionLabel);
 		
 		//description textarea
+		
+		
 		descriptionArea = new JTextArea();
 		startField.setActionCommand("Start time");
 		descriptionArea.setColumns(35);

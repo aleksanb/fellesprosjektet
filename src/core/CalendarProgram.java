@@ -183,9 +183,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		
 	}*/
 
-	/*public void logout(){
-		cf.logout(currentUser);
-	}*/
+	public void logout(){
+		cf.sendAction(currentUser, Action.DISCONNECT);
+	}
 	
 	public void updateAppointment(Appointment appointment){
 		cf.sendAction(appointment, Action.UPDATE);
