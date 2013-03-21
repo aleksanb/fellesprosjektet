@@ -1,10 +1,14 @@
 package server;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import db.Notification;
 import db.User;
 
 public class ServerProgram {
@@ -13,7 +17,7 @@ public class ServerProgram {
 	private ServerSocket server;
 	//lists
 	HashMap<Integer,User> onlineUsers= new HashMap<Integer,User>();
-	HashMap<User,Socket> userConnection = new HashMap<User, Socket>();
+	HashMap<Integer,ArrayList<Notification>> notifications = new HashMap<Integer,ArrayList<Notification>>();
 	
 	public ServerProgram(){
 	}
@@ -35,7 +39,6 @@ public class ServerProgram {
 				waitForConnection();
 				new Thread(new Server(connection,i,this)).start();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			i++;
@@ -49,16 +52,38 @@ public class ServerProgram {
 	public static void logConsole(String text){
 		System.out.println("SERVER: "+text);
 	}
-	public void addOnlineUserConnection(User user, Socket connection){
-		onlineUsers.put(user.getId(), user);
-		userConnection.put(user, connection);
-		
+//	public void addOnlineUserConnection(User user, Socket connection){
+//		onlineUsers.put(user.getId(), user);
+//		userConnection.put(user, connection);
+//		System.out.println("ONLINE USERS: "+onlineUsers);
+//		
+//	}
+
+//	public void removeOnlineUsers(int id) {
+//		User user = onlineUsers.remove(id);
+//		userConnection.remove(user);
+//	}
+
+	public void saveNotifications(Notification n_callback, ArrayList<User> users) throws IOException {
+		User receiver;
+		for (User user : users) {
+			try{
+			notifications.get(user.getId()).add(n_callback);
+			}catch(NullPointerException e){
+				notifications.put(user.getId(), new ArrayList<Notification>());
+				notifications.get(user.getId()).add(n_callback);
+				System.out.println("added new user to list of users");
+			}
+							
+		}
 	}
 
-	public void removeOnlineUsers(int id) {
-		User user = onlineUsers.remove(id);
-		userConnection.remove(user);
-		
+	public ArrayList<Notification> fetchAppointments(User am) {
+		if(notifications.get(am.getId())==null)
+			notifications.put(am.getId(), new ArrayList<Notification>());//gets a new lsit if not registred
+		ArrayList<Notification> retmsg = notifications.get(am.getId());//saves the list temp..
+		notifications.put(am.getId(), new ArrayList<Notification>());//cleans out the list
+		return retmsg;//returns the temp
 	}
 
 }

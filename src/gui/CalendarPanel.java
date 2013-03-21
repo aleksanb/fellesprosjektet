@@ -37,7 +37,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	private static final int ROWS = 24;
 	private static final int COLLUMNS = 8;
 
-	private final String[] days = {"Tid", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"};
+	private final String[] days = {"Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 	private final String[] hours = {"00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", 
 			"08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", 
 			"17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"};
@@ -123,7 +123,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		visibleAppointments = new ArrayList<AppointmentView>();
 		selectedEvent = null;
 		
-		weekLabel = new JLabel("Uke: " + model.getWeek());
+		weekLabel = new JLabel("Week: " + model.getWeek());
 		weekLabel.setFont(new Font(null, Font.BOLD, 20));
 		weekLabel.setBounds(getWidth() / 2 - calendarScroller.getWidth() / 2, getHeight() - calendarScroller.getHeight() - 40, 100, 50);
 		add(weekLabel);
@@ -194,7 +194,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 				dayLine.add(dateLabel);
 			}
 		}
-		weekLabel.setText("Uke: " + (new SimpleDateFormat("w")).format(dates));
+		weekLabel.setText("Week: " + (new SimpleDateFormat("w")).format(dates));
 		calendarScroller.setColumnHeaderView(dayLine);
 		
 		for(int i = 0; i < hours.length; i++) {
@@ -316,7 +316,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 				System.out.println("DEleted");
 				model.removeAppointment(selectedEvent.getModel());
 			}
-			//TODO skrive kode for behandling av hva som skjer når man klikker på et event delegering til menupanel
+			//TODO skrive kode for behandling av hva som skjer nï¿½r man klikker pï¿½ et event delegering til menupanel
 		}
 		updateCalendar();
 	}

@@ -16,6 +16,7 @@ import db.Appointment;
 import db.MeetingPoint;
 import db.User;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -123,7 +124,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		startField = new JTextField();
 		startField.setToolTipText("HH:MM");
 		//TODO format properly
-		startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
+		startField.setText(appointment.getStart().get(Calendar.HOUR_OF_DAY)+":"+appointment.getStart().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("Start time");
 		GridBagConstraints gbc_startField = new GridBagConstraints();
@@ -153,7 +154,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		endField = new JTextField();
 		endField.setToolTipText("HH:MM");
 		//TODO format properly
-		endField.setText(appointment.getEnd().get(Calendar.HOUR)+":"+appointment.getEnd().get(Calendar.MINUTE));
+		endField.setText(appointment.getEnd().get(Calendar.HOUR_OF_DAY)+":"+appointment.getEnd().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("End time");
 		GridBagConstraints gbc_endField = new GridBagConstraints();
@@ -165,6 +166,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		endField.setColumns(6);
 		
 		//description label
+		
 		JLabel descriptionLabel = new JLabel("Description:");
 		GridBagConstraints gbc_descriptionLabel = new GridBagConstraints();
 		gbc_descriptionLabel.gridwidth = 2;
@@ -174,6 +176,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		add(descriptionLabel, gbc_descriptionLabel);
 		
 		//description textarea
+		
+		
 		descriptionArea = new JTextArea();
 		startField.setActionCommand("Start time");
 		descriptionArea.setColumns(35);
@@ -300,9 +304,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
 			ArrayList<User> users = cp.getUsers();
-			System.out.println(users);
-			for (int i = 0; i <= users.size(); i++) {
-				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));
+			for (int i = 0; i <= users.size()-1; i++) {
+				meetingPanel.plp.makeCheckListItem(users.get(i));
 		}
 		
 		//add Appointment
@@ -344,8 +347,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < meetingPanel.plp.getParticipantList().size(); i++){
-					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
+				for(int i = 0; i < cp.getUsers().size()-1; i++){
+					appointment.addParticipant(cp.getUsers().get(i));
 				}
 			}
 			
