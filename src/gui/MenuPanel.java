@@ -182,6 +182,7 @@ public class MenuPanel extends JPanel {
 		    int reply = JOptionPane.showConfirmDialog(cp,mordi,title, JOptionPane.YES_NO_OPTION);
 		    if (reply == JOptionPane.YES_OPTION)
 		    {
+		    	cp.logout();
 		      System.exit(0);
 		    }
 			//cp.displayLogin();
