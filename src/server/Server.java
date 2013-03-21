@@ -12,6 +12,7 @@ import java.util.Set;
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
+import db.Notification;
 import db.User;
 
 public class Server implements Runnable{
@@ -114,7 +115,7 @@ public class Server implements Runnable{
 			}
 			//adds user to servers list of online users
 			if(l_callback != null)
-				sp.addOnlineUserConnection(l_callback,connection);
+//				sp.addOnlineUserConnection(l_callback,connection);
 			
 			try {
 				output.writeObject(l_callback);
@@ -128,7 +129,7 @@ public class Server implements Runnable{
 			System.out.println("logging out. Going down with the ship cap'n");
 			
 			//remove user from list of online users
-			sp.removeOnlineUsers(((User) am).getId());
+//			sp.removeOnlineUsers(((User) am).getId());
 			close = true;
 			break;
 			
@@ -157,13 +158,22 @@ public class Server implements Runnable{
 			}
 			break;
 		case NOTIFICATION:
-			//TODO receive notification
+			logConsole("received notification");
+			//receive notification
+			Notification n_callback = (Notification)am;
+			//extract users
+			ArrayList<User> users = n_callback.getAppointment().getParticipants();
+			//call sp, and save notification for all users that match
+			sp.saveNotifications(n_callback,users);
 			
-			//TODO extract users
-			
-			//TODO call sp, and send notification to all users that match with online users
-			
-			//TODO save notification for offline users
+			//write back to client
+			output.writeObject(n_callback);
+			break;
+			//getting all the notifications for this specific user.
+		case GET_NOTIFICATION:
+			logConsole("fetching notification");
+			ArrayList<Notification> al_n_callback = sp.fetchAppointments((User) am);
+			output.writeObject(al_n_callback);
 			break;
 		case UPDATE:
 			if ( cl.equals(Appointment.class)) {
