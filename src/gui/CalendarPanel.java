@@ -336,6 +336,11 @@ public class CalendarPanel extends JPanel implements MouseListener {
 			}
 		}
 	}
+	
+	public void removeAppointment(Appointment app) {
+			model.removeAppointment(app);
+	}
+	
 	private ArrayList<Appointment> getAppointmentList() {
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		ArrayList<AppointmentView> appointmentView = model.getEvents();
