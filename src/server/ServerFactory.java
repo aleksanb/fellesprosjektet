@@ -47,16 +47,18 @@ public class ServerFactory {
 	public static void main(String args[]) throws ClassNotFoundException, SQLException {
 		ServerFactory sf = new ServerFactory();
 		System.out.println("created serverFactory");
-		System.out.println(sf.getAllUsers());
-		User u = new User(1, "espen", "master@commander.net", "hunter2");
+		//System.out.println(sf.getAllUsers());
+		//User u = new User(1, "espen", "master@commander.net", "hunter2");
 		//Appointment a = new Appointment(9, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
 		//a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));
-		ArrayList<Appointment> b = sf.getAllAppointments(u);
+		//ArrayList<Appointment> b = sf.getAllAppointments(u);
+		//System.out.println(b);
+		
+		Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
+		//a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
+		Appointment b = sf.insertAppointment(a);
 		System.out.println(b);
-		
-		/*Appointment a = new Appointment(10, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", true);
-		a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
-		
+		/*
 		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
 		a.addParticipant(new User(8, "aleksander", "email", "passord"));
 //		boolean result = sf.deleteAppointment(a);
@@ -303,6 +305,7 @@ public class ServerFactory {
 			generatedKeys = prest.getGeneratedKeys();
 			if (generatedKeys.next()) { // if successfully inserted
 				appointmentId = generatedKeys.getInt(1);
+				System.out.println("we inserted successfully and appointmentId is now " + appointmentId);
 				
 				// add appointment to creator
 				prest = db.preparedStatement("INSERT INTO sids.user_appointment (userId, appointmentId) VALUES (?, ?)");

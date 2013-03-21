@@ -158,7 +158,7 @@ public class Server implements Runnable{
 				System.out.println("Vi har fatt insert request for en appointment!");
 				Appointment i_u_callback = sf.insertAppointment( (Appointment) am);
 				output.writeObject(i_u_callback);
-				System.out.println("sent back appointment");
+				System.out.println("sent back appointment with id " + i_u_callback.getId());
 			}
 			break;
 		case SET_STATUS_ATTENDING:
