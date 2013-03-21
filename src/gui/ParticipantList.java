@@ -11,6 +11,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import core.CalendarProgram;
 
 import db.User;
+import java.awt.Color;
 
 
 public class ParticipantList extends JPanel implements ActionListener{
@@ -23,12 +24,15 @@ public class ParticipantList extends JPanel implements ActionListener{
 	
 	
 	public ParticipantList() {
+		setBackground(Color.PINK);
 		nonparticipants = new DefaultListModel<User>();
 		participants = new DefaultListModel<User>();
 		
 		JPanel leftPanel = new JPanel();
+		leftPanel.setBackground(Color.LIGHT_GRAY);
 		
 		JPanel rightPanel = new JPanel();
+		rightPanel.setBackground(Color.LIGHT_GRAY);
 		
 		JButton btnAdd = new JButton("Add >>");
 		btnAdd.addActionListener(this);
@@ -69,9 +73,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		);
 		
 		pList = new JList(participants);
+		pList.setBackground(Color.LIGHT_GRAY);
 		rightPanel.add(pList);
 		
 		npList = new JList(nonparticipants);
+		npList.setBackground(Color.WHITE);
 		leftPanel.add(npList);
 		setLayout(groupLayout);
 		
