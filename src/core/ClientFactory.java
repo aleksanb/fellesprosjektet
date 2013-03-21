@@ -8,9 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 import db.AbstractModel;
@@ -23,7 +21,6 @@ public class ClientFactory {
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	private ObjectInputStream serverUpdates;
 	private Socket connection;
 	Properties prop;
 	
@@ -138,15 +135,19 @@ public class ClientFactory {
 		
 		ClientFactory cf = new ClientFactory();
 		User u = new User(0, "aleksander", "yolo", "passord");
-		cf.sendAction(u, Action.LOGIN);
+		User logged_in = cf.sendAction(u, Action.LOGIN);
+		Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
 		
-		ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
+		Appointment b = cf.sendAction(a, Action.INSERT);
+		System.out.println(b);
+		cf.sendAction(logged_in, Action.DISCONNECT);
+		/*ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
 		System.out.println(appointments);
 		for ( int i = 0; i < appointments.size(); i ++ ) {
 			System.out.println("setting status attending for appointment nr. " + i);
 			cf.sendAction(appointments.get(i), Action.SET_STATUS_NOT_ATTENDING);	
 			System.out.println("sat status for appointmentdone w" + i);
-		}
+		}*/
 		
 //		cf.sendAction(new User(), Action.DISCONNECT);
 //		cf.sendAction(new User(1,"espen","mail","hunter2"), Action.GET_NOTIFICATION);

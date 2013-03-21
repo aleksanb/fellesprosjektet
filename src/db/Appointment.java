@@ -24,15 +24,17 @@ public class Appointment implements AbstractModel, Serializable {
 	private AppointmentType appointmentType;
 	private MeetingPoint meetingPoint;
 	
-	public Appointment(User creatorusUserId){
-		id=0;
-		this.creatorUserId=creatorUserId;
-		title="";
-		start=new GregorianCalendar();
-		end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
-		description="";
-		isMeeting=false;
-		participants = new ArrayList<User>();
+	public Appointment(User u){
+		this.title="";
+		this.creatorUserId = u.getId();
+		this.start=new GregorianCalendar();
+		this.end=new GregorianCalendar(); end.set(Calendar.HOUR, start.get(Calendar.HOUR)+1);
+		this.description="";
+		this.isMeeting=false;
+		this.participants = new ArrayList<User>();
+		this.place = null;
+		this.appointmentType = AppointmentType.OK;
+		this.meetingPoint = null;
 	}
 
 	public Appointment(int id, int creatorUserId, String title, GregorianCalendar start,
@@ -45,10 +47,10 @@ public class Appointment implements AbstractModel, Serializable {
 		this.end = end;
 		this.description = description;
 		this.isMeeting = isMeeting;
-		participants = new ArrayList<User>();
-		place = null;
-		appointmentType = AppointmentType.OK;
-		meetingPoint = null;
+		this.participants = new ArrayList<User>();
+		this.place = null;
+		this.appointmentType = AppointmentType.OK;
+		this.meetingPoint = null;
 	}
 
 	public void setId(int id) {

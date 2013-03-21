@@ -14,25 +14,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.MatteBorder;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
-import core.CalendarProgram;
+import core.*;
+import db.*;
 
-import db.Appointment;
-import db.AppointmentType;
-import db.CalendarModel;
-import db.NotificationType;
-import db.User;
-
-public class CalendarPanel extends JPanel implements MouseListener {
+public class ShowCalendarPanel extends JPanel implements MouseListener {
 
 	private static final int ROWS = 24;
 	private static final int COLLUMNS = 8;
@@ -61,7 +49,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 
 	 public static void main(String args[]) {
 			JFrame frame = new JFrame("...");
-			CalendarPanel cp = new CalendarPanel(null);
+			ShowCalendarPanel cp = new ShowCalendarPanel(null,null);
 			GregorianCalendar gc = new GregorianCalendar();
 			GregorianCalendar gc1 = new GregorianCalendar();
 			gc1.set(GregorianCalendar.HOUR_OF_DAY, 23);
@@ -76,10 +64,9 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	/**
 	 * Create the application.
 	 */
-	public CalendarPanel(CalendarProgram cp) {
+	public ShowCalendarPanel(CalendarProgram cp, User user) {
 
 		this.cp = cp;
-		
 		setSize(800, 400);
 		setLayout(null);
 		
@@ -155,7 +142,10 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		previousWeek.setIcon(new ImageIcon("resources/ArrowLeft.png"));
 		previousWeek.setBounds(10, getHeight() / 3 - 25, 70, 50);
 		add(previousWeek);
-
+		
+		//Set appointments from user
+		setUserAndAppointments(cp.getApointmentsFromUser(user));
+		
 		updateCalendar();
 	}
 	
@@ -288,7 +278,6 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		cp.setEditButtonDisabled();
 		selectedEvent = null;
 		for(AppointmentView ev : visibleAppointments) {
 			ev.setSelected(false);
@@ -302,59 +291,15 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		else if(e.getComponent() instanceof AppointmentView) {
 			selectedEvent = (AppointmentView)e.getComponent();
 			((AppointmentView)e.getComponent()).setSelected(true);
-			AppointmentType appointmentType = selectedEvent.getModel().getAppointmentType();
-
-			if(appointmentType == AppointmentType.OK ){
-				cp.setEditButtonEnabled();
-				System.out.println("Ok");
-			}
-			else if(appointmentType == AppointmentType.NEEDSATTENTION){
-				cp.setEditButtonEnabled();
-				System.out.println("Attention");
-			}
-			else{
-				System.out.println("DEleted");
-				model.removeAppointment(selectedEvent.getModel());
-			}
-			//TODO skrive kode for behandling av hva som skjer n�r man klikker p� et event delegering til menupanel
 		}
 		updateCalendar();
 	}
-	public void setFocusToAppointment(Appointment app){
-		ArrayList<Appointment> appointments = getAppointmentList();
-		if(appointments.contains(app)){
-			model.setWeek(app.getWeek());
-			model.setYear(app.getYear());
-		}
-		updateCalendar();
-		for(AppointmentView ev : visibleAppointments) {
-			if(ev.getModel() == app){
-				ev.setSelected(true);
-			}
-			else{
-				ev.setSelected(false);
-			}
-		}
-	}
-	
-	public void removeAppointment(Appointment app) {
-			model.removeAppointment(app);
-	}
-	
-	private ArrayList<Appointment> getAppointmentList() {
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-		ArrayList<AppointmentView> appointmentView = model.getEvents();
-		for(int i = 0; i < appointmentView.size(); i++){
-			Appointment a = appointmentView.get(i).getModel();
-			appointments.add(a);
-		}
-		return appointments;
-	}
-	public void setUserAndAppointments(User currentUser, ArrayList<Appointment> appointments) {
+	public void setUserAndAppointments(ArrayList<Appointment> appointments) {
 		for(int i = 0; i<appointments.size(); i++){
 			Appointment app = appointments.get(i);
 		addAppointmentToModel(app);
 		}
 		updateCalendar();
 	}
+	
 }
