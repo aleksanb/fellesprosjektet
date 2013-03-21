@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -92,7 +93,8 @@ public class ClientFactory {
 		}
 		
 		// Recieve object if nessecary
-		if (!action.equals(Action.DISCONNECT)) {
+		if ( !action.equals(Action.DISCONNECT) ) {
+			System.out.println("waiting for callback:");
 			try {
 				callback = (R) input.readObject();	
 			} catch (ClassNotFoundException e) {
@@ -100,6 +102,8 @@ public class ClientFactory {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			System.out.println("no callback needed");
 		}
 		return callback;
 	}
@@ -129,10 +133,19 @@ public class ClientFactory {
 		// a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
 		// Appointment success = cf.sendAction(a, Action.INSERT);
 		
-		
 		ClientFactory cf = new ClientFactory();
-		ArrayList<User> users = cf.sendAction(new User(), Action.GET_ALL_USERS);
-		System.out.println(users);
+		
+		User u = new User(0, "aleksander", "yolo", "passord");
+		cf.sendAction(u, Action.LOGIN);
+		
+		ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
+		System.out.println(appointments);
+		for ( int i = 0; i < appointments.size(); i ++ ) {
+			System.out.println("setting status attending for appointment nr. " + i);
+			cf.sendAction(appointments.get(i), Action.SET_STATUS_NOT_ATTENDING);	
+			System.out.println("sat status for appointmentdone w" + i);
+		}
+		
 		cf.sendAction(new User(), Action.DISCONNECT);
 		/*
 		//test insert appointment
