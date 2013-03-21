@@ -139,6 +139,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		
 		
 		//add appointment
+		
 		saveAppButton.setActionCommand("Save");
 		
 		
@@ -291,25 +292,26 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		}
 		
 		//Update meetinginformation
-		meetingBox.setSelected(app.isMeeting());
-		
-		//Update participantlist
-		ArrayList<User> participants = app.getParticipants();
-		ArrayList<User> allParticipants = meetingPanel.plp.getParticipantList();
-		
-		for(int i = 0; i < participants.size(); i++){
-			for(int j = 0; j < allParticipants.size(); j++){
-				if(participants.get(i) == allParticipants.get(j)){
-					CheckListItem item = (CheckListItem) meetingPanel.plp.getModel().getElementAt(j);
-					item.setSelected(true);
+		boolean a = app.isMeeting();
+		if(a){
+			meetingBox.setSelected(a);
+			meetingPanel.setVisible(a);
+			//Update participantlist
+			ArrayList<User> participants = app.getParticipants();
+			ArrayList<User> allParticipants = meetingPanel.plp.getParticipantList();
+			
+			for(int i = 0; i < participants.size(); i++){
+				for(int j = 0; j < allParticipants.size(); j++){
+					if(participants.get(i) == allParticipants.get(j)){
+						CheckListItem item = (CheckListItem) meetingPanel.plp.getModel().getElementAt(j);
+						item.setSelected(true);
+					}
 				}
 			}
+			//Update MeetingPoint
+			meetingPanel.filterPlaces(participants, meetingPanel.allPlaces);
+			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
 		}
-		
-		//Update MeetingPoint
-		meetingPanel.filterPlaces(participants, meetingPanel.allPlaces);
-		meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
-		
 	}
 	
 	
@@ -467,10 +469,11 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 
 	public static void main(String[] args){
 		JFrame frame = new JFrame();
-		Appointment test = new Appointment(2, 13, "Thea", new GregorianCalendar(), new GregorianCalendar(), "Description!", false);
+		Appointment test = new Appointment(2, 13, "Thea", new GregorianCalendar(), new GregorianCalendar(), "Description!", true);
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.set(2013, 3, 19, 12, 13);
 		test.setAlarm(gc);
+		test.addParticipant(new User());
 		frame.getContentPane().add(new EditAppointmentPanel(null, test));
 		frame.pack();
         frame.setSize (500,630);
