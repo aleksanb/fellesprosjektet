@@ -1,33 +1,28 @@
 package core;
 
+import gui.CalendarPanel;
+import gui.EditAppointmentPanel;
+import gui.LoginPanel;
+import gui.MenuPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
-
 import db.Action;
 import db.Appointment;
-import db.AppointmentType;
-import db.CalendarModel;
-import core.ClientFactory;
 import db.Notification;
-import db.NotificationType;
 import db.User;
-
-import gui.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
 	
@@ -40,8 +35,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private CalendarPanel calendarPanel;
 	
 	//model
+	//private HashMap<Integer, Appointment> appointments;
 	private HashMap<Integer, Appointment> appointments;
-	private User currentUser;		/*userList = cp.getUsers();
+	private User currentUser;
+	private ArrayList<User> cachedUsers;/*userList = cp.getUsers();
 	for (int i = 0; i <= userList.size()-1; i++) {
 	makeCheckListItem(userList.get(i));*/
 
@@ -95,6 +92,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
 		
+		System.out.println(cachedUsers);
+		
 	}
 
 	public void displayLogin() {
@@ -125,34 +124,16 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	// added some appointments and notifications for testing. Unpossible to do in main...
 	public void CreateMainProgram() {
 		menuPanel = new MenuPanel(this);
-		/*addNotification(new Notification(1, null, null));
-		GregorianCalendar gc = new GregorianCalendar();
-		GregorianCalendar gc1 = new GregorianCalendar();
-		gc1.set(GregorianCalendar.HOUR_OF_DAY, 6);
-		gc.set(GregorianCalendar.WEEK_OF_YEAR, 5);
-		gc1.set(GregorianCalendar.WEEK_OF_YEAR, 5);
-		Appointment app = new Appointment(1, 2, "hallais", gc1, gc, "halla", true);
-		app.setAppointmentType(AppointmentType.NEEDSATTENTION);
-		addNotification(new Notification(1, app, NotificationType.CANCELLED));
-		GregorianCalendar gc2 = new GregorianCalendar();
-		GregorianCalendar gc3 = new GregorianCalendar();
-		gc2.set(GregorianCalendar.HOUR_OF_DAY, 7);
-		gc2.set(GregorianCalendar.WEEK_OF_YEAR, 5);
-		gc3.set(GregorianCalendar.WEEK_OF_YEAR, 5);
-		gc2.set(GregorianCalendar.DAY_OF_WEEK, 5);
-		gc3.set(GregorianCalendar.DAY_OF_WEEK, 5);
-		Appointment app1 = new Appointment(2, 3, "halla", gc2, gc3, "halla", true);
-		app1.setAppointmentType(AppointmentType.DELETED);
-		addNotification(new Notification(2, app1, NotificationType.CANCELLED));*/
 		
 		contentPane.add(menuPanel, BorderLayout.WEST);
-
 		calendarPanel = new CalendarPanel(this);
 		calendarPanel.setBackground(Color.RED);
-		//calendarPanel.addAppointmentToModel(app);
-		//calendarPanel.addAppointmentToModel(app1);
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
+		
+		//Initialize values
 		ArrayList<Appointment> appointments = cf.sendAction(currentUser, Action.GET_ALL_APPOINTMENTS);
+		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
+		
 		calendarPanel.setUserAndAppointments(currentUser,appointments);
 		//loadAppointments();
 		alarmSetup();
@@ -200,13 +181,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		alarmHandlerThread.start();
 	}
 
-
-	//when program starts it sets the appointment field to what is recieves from server
-	/*private void loadAppointments() {
-		//appointments = cf.loadAppointments(currentUser);
-		
-	}*/
-
 	public void logout(){
 		cf.sendAction(currentUser, Action.DISCONNECT);
 	}
@@ -227,6 +201,12 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			}
 		}		
 		System.out.println("our superlist now contains the following: " + appointments);
+	}
+	
+	public void deleteAppointment(Appointment appointment) {
+		cf.sendAction(appointment, Action.DELETE);
+		calendarPanel.removeAppointment(appointment);
+		appointments.remove(appointment.getId());
 	}
 	
 	public void updateAppointment(Appointment appointment){
@@ -254,9 +234,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		String timeToAlarm = ""+new Date(appointment.getStart().getTimeInMillis()-appointment.getAlarm().getAlarmTime().getTimeInMillis());
 		JOptionPane.showMessageDialog(this, "You have appointment: "+appointment.getTitle()+" in: "+timeToAlarm,"Appointment alarm",JOptionPane.INFORMATION_MESSAGE);
 	}
-	public User getUser(){
-		return currentUser;
-	}
 
 	public void setFocusInCalendar(Notification note) {
 		calendarPanel.setFocusToAppointment(note.getAppointment());
@@ -268,11 +245,14 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	public void setEditButtonDisabled() {
 		menuPanel.setEditButtonDisabled();
-		
 	}
 
 	public Appointment getSelectedAppointment() {
 		return calendarPanel.getSelectedEvent().getModel();
+	}
+	
+	public User getUser(){
+		return currentUser;
 	}
 
 	public ArrayList<User> getUsers() {
@@ -281,6 +261,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	//method for getting all appointments from user
 	public ArrayList<Appointment> getApointmentsFromUser(User user){
 		return cf.sendAction(user, Action.GET_ALL_APPOINTMENTS);
+	}
+	
+	public ArrayList<User> getCachedUsers() {
+		return this.cachedUsers;
 	}
 
 }
