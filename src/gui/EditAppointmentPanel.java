@@ -45,6 +45,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	protected JButton deleteButton;
 	
 	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment, Boolean firstTime) {
+		
 		//creates a default appointment object based on today, with unique id
 		this.appointment = appointment;
 		//reference to the main program
@@ -300,16 +301,19 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			meetingPanel.setVisible(a);
 			//Update participantlist
 			ArrayList<User> participants = app.getParticipants();
-			ArrayList<User> allParticipants = meetingPanel.plp.getParticipantList();
 			
-			for(int i = 0; i < participants.size(); i++){
-				for(int j = 0; j < allParticipants.size(); j++){
-					if(participants.get(i) == allParticipants.get(j)){
-						CheckListItem item = (CheckListItem) meetingPanel.plp.getModel().getElementAt(j);
-						item.setSelected(true);
+			DefaultListModel np = meetingPanel.pl.nonparticipants;
+			DefaultListModel p = meetingPanel.pl.participants;
+			
+			for(int i = 0; i < np.getSize(); i++){
+				for(int j = 0; j < participants.size(); j++){
+					if(np.elementAt(i).equals(participants.get(j))){
+						p.addElement(np.elementAt(i));
+						np.removeElement(np.elementAt(i));
 					}
 				}
 			}
+			
 			//Update MeetingPoint
 			meetingPanel.filterPlaces(participants, meetingPanel.allPlaces);
 			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
@@ -340,11 +344,6 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
-			ArrayList<User> users = cp.getUsers();
-			System.out.println(users);
-			for (int i = 0; i <= users.size(); i++) {
-				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));
-			}
 		}
 		
 		//add Appointment
@@ -384,8 +383,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < meetingPanel.plp.getParticipantList().size() - 1; i++){
-					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
+				for(int i = 0; i < meetingPanel.pl.getParticipants().size() - 1; i++){
+					appointment.addParticipant(meetingPanel.pl.getParticipants().get(i));
 				}
 			}
 			
@@ -481,12 +480,14 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			throw new IllegalArgumentException();
 	}
 
-	public static void main(String[] args){
+	
+	//Testing
+	/*public static void main(String[] args){
 		JFrame frame = new JFrame();
 		frame.pack();
         frame.setSize (500,630);
         frame.setVisible(true);
-	}
+	}*/
 	
 
 }
