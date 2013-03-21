@@ -27,6 +27,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantListPanel plp;
+	protected ArrayList<User> userList;
 	private ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 	protected CalendarProgram cp;
 	
@@ -83,6 +84,10 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		gbc_findButton.gridy = 3;
 		add(findButton, gbc_findButton);
 		
+		/*userList = cp.getUsers();
+		System.out.println(userList);
+		plp.makeCheckListItem(userList.get(1)); */
+		
 		
 	}
 	
@@ -105,6 +110,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	}
 	
 	public static void main(String[] args){
+
 		JFrame frame = new JFrame();
 		MeetingPanel mp = new MeetingPanel();
 		frame.getContentPane().add(mp);
