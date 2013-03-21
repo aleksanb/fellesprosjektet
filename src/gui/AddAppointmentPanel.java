@@ -255,7 +255,6 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 							.addGap(62))
 				);
 				setLayout(groupLayout);
-		
 	}
 
 	private User getUser() {
@@ -282,9 +281,13 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
-			ArrayList<User> users = cp.getUsers();
-			for (int i = 0; i <= users.size()-1; i++) {
-				meetingPanel.plp.makeCheckListItem(users.get(i));
+			User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
+			meetingPanel.plp.makeCheckListItem(user1);
+			/*ArrayList<User> userList = cp.getUsers();
+			meetingPanel.plp.makeCheckListItem(userList.get(1));
+			for (int i = 0; i <= userList.size()-1; i++) {
+				meetingPanel.plp.makeCheckListItem(userList.get(i));
+			}*/
 		}
 		
 		//add Appointment
@@ -326,8 +329,8 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
-				for(int i = 0; i < cp.getUsers().size()-1; i++){
-					appointment.addParticipant(cp.getUsers().get(i));
+				for(int i = 0; i < meetingPanel.plp.getParticipantList().size()-1; i++){
+					appointment.addParticipant(meetingPanel.plp.getParticipantList().get(i));
 				}
 			}
 			
@@ -344,7 +347,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		if(event.getActionCommand().equals("Cancel"))
 			cp.displayMainProgram();
 		}
-	}
+	
 		
 	private void setAlarm(boolean bool) {
 		if(bool){

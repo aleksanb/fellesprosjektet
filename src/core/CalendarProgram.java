@@ -42,7 +42,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//model
 	private HashMap<Integer, Appointment> appointments;
-	private User currentUser;
+	private User currentUser;		/*userList = cp.getUsers();
+	for (int i = 0; i <= userList.size()-1; i++) {
+	makeCheckListItem(userList.get(i));*/
+
 	
 	//tools
 	private Thread alarmHandlerThread;

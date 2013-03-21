@@ -23,6 +23,7 @@ import db.User;
 public class ParticipantListPanel extends JList<CheckListItem> { 
 	
 	DefaultListModel<CheckListItem> model;
+	ArrayList<User> userList;
 	ArrayList<User> participantList;
 	CalendarProgram cp;
 	
@@ -65,19 +66,19 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 				
 				list.repaint(list.getCellBounds(index, index));	
 			}
-		});   
-		
+		});  
 	}
+	
+		
 
 	public static void main(String args[]) {
 		
 		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
+
 		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
-		participants.getModel().addElement(new CheckListItem(user1));
-		participants.getModel().addElement(new CheckListItem(user2));
-		participants.getModel().addElement(new CheckListItem(user3));
+		participants.makeCheckListItem(user1);
 		JFrame frame = new JFrame("Participants");
 		Dimension d = new Dimension(400,400);
 		frame.setSize(d);
