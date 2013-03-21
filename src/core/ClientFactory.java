@@ -23,6 +23,7 @@ public class ClientFactory {
 	//server
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
+	private ObjectInputStream serverUpdates;
 	private Socket connection;
 	Properties prop;
 	
@@ -62,6 +63,7 @@ public class ClientFactory {
 		output= new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
+//		serverUpdates = new ObjectInputStream(connection.getInputStream());
 		logConsole("connection established");
 	}
 	
@@ -84,8 +86,9 @@ public class ClientFactory {
 		R callback = null;
 		T clone = t.getCopy();
 		clone.setAction(action);
-		
+		System.out.println(clone.getAction());
 		// Send object
+		System.out.println("Sending: "+t.getClass()+", Action: " + action);
 		try {
 			output.writeObject(clone);
 		} catch (IOException e) {
@@ -134,7 +137,6 @@ public class ClientFactory {
 		// Appointment success = cf.sendAction(a, Action.INSERT);
 		
 		ClientFactory cf = new ClientFactory();
-		
 		User u = new User(0, "aleksander", "yolo", "passord");
 		cf.sendAction(u, Action.LOGIN);
 		
@@ -146,7 +148,12 @@ public class ClientFactory {
 			System.out.println("sat status for appointmentdone w" + i);
 		}
 		
-		cf.sendAction(new User(), Action.DISCONNECT);
+//		cf.sendAction(new User(), Action.DISCONNECT);
+//		cf.sendAction(new User(1,"espen","mail","hunter2"), Action.GET_NOTIFICATION);
+		
+//		ArrayList<User> users = cf.sendAction(new User(), Action.GET_ALL_USERS);
+//		System.out.println(users);
+//		cf.sendAction(new User(), Action.DISCONNECT);
 		/*
 		//test insert appointment
 		

@@ -23,6 +23,7 @@ import db.User;
 public class ParticipantListPanel extends JList<CheckListItem> { 
 	
 	DefaultListModel<CheckListItem> model;
+	ArrayList<User> userList;
 	ArrayList<User> participantList;
 	CalendarProgram cp;
 	
@@ -40,42 +41,44 @@ public class ParticipantListPanel extends JList<CheckListItem> {
 			public void mouseClicked(MouseEvent event) {
 				JList list = (JList) event.getSource();
 				
-				// Get index of item clicked
+				//Get index of item clicked
 				
 				int index = list.locationToIndex(event.getPoint());
 				CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
 				
-				// Toggle selected state
+				//Toggle selected state
 
 				item.setSelected(! item.isSelected());					
 
-				
+				//Add user to arrayList with selected users. 
 				if(item.isSelected() == true) {
 					addParticipant(item.getUser());
 					System.out.println(participantList);
 				}
+				
+				//Remove user from arrayList with selected users.
 				if(item.isSelected() == false) {
 					removeParticipant(item.getUser());
 					System.out.println(participantList);
 				}
 				
-				// Repaint cell
+				//Repaint cell
 				
 				list.repaint(list.getCellBounds(index, index));	
 			}
-		});   
-		
+		});  
 	}
+	
+		
 
 	public static void main(String args[]) {
 		
 		ParticipantListPanel participants = new ParticipantListPanel(new CalendarProgram());
+
 		User user1 = new User(142, "Kathrine Steffensen", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user2 = new User(142, "Petter Astrup", "morr4d1erm4nn", "kathrine.steffensen@gmail.com");
 		User user3 = new User(142, "Espen Hellerud", "morr4d1erm4nn", "kathrine.steffensen@gmail.com"); //<---- For testing purposes*/
-		participants.getModel().addElement(new CheckListItem(user1));
-		participants.getModel().addElement(new CheckListItem(user2));
-		participants.getModel().addElement(new CheckListItem(user3));
+		participants.makeCheckListItem(user1);
 		JFrame frame = new JFrame("Participants");
 		Dimension d = new Dimension(400,400);
 		frame.setSize(d);
