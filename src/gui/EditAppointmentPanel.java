@@ -149,6 +149,9 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
+		if (!firstTime && cp.getUser().getId() != appointment.getCreatorUserId()) {
+			deleteButton.setEnabled(false);
+		}
 		
 		//cancel appointment
 		cancelButton = new JButton("Cancel");
@@ -406,9 +409,10 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		}
 		
 		if(event.getActionCommand().equals("Delete")){
+			cp.displayMainProgram(this);
+			cp.deleteAppointment(appointment);
 			//TODO delete-method in CalendarProgram
 		}
-		System.out.println("something was clicked");
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel")) {
 			System.out.println("trying to cancel");
