@@ -44,7 +44,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	protected JButton saveButton;
 	protected JButton deleteButton;
 	
-	public EditAppointmentPanel(CalendarProgram calendarProgram, Appointment appointment) {
+	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment) {
 		//creates a default appointment object based on today, with unique id
 		this.appointment = appointment;
 		//reference to the main program
@@ -314,7 +314,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	
 	
 	public void actionPerformed(ActionEvent event) {
-//		System.out.println(event.getActionCommand());
+		System.out.println(event.getActionCommand());
 
 		//add alarm options
 		if(event.getActionCommand().equals("alarm")){
@@ -326,8 +326,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 				if(!bool)
 					setAlarm(bool);
 		}
-			
-		
+		//cancel the appointment
+		if(event.getActionCommand().equals("Cancel")){
+			cp.displayMainProgram(this);
+		}
+		if(event.getActionCommand().equals("Delete")){
+			//TODO delete-method in CalendarProgram
+		}
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
@@ -384,19 +389,11 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			//if approved
 			if(approved)
 				cp.updateAppointment(appointment);
-				cp.displayMainProgram();
+				cp.displayMainProgram(this);
 			
 			//debug
 			System.out.println(appointment);
 		}
-		
-		if(event.getActionCommand().equals("Delete")){
-			//TODO delete-method in CalendarProgram
-		}
-		
-		//cancel the appointment
-		if(event.getActionCommand().equals("Cancel"))
-			cp.displayMainProgram();
 		}
 	}
 	

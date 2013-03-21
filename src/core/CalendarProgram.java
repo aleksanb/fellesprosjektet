@@ -124,8 +124,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		return false;
 	}
 	
-	public void displayMainProgram(){
-		aap.setVisible(false);
+	public void displayMainProgram(JPanel panel){
+		panel.setVisible(false);
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}

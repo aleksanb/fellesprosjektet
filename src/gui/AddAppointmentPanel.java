@@ -337,7 +337,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			//if approved
 			if(approved)
 				cp.addAppointment(appointment);
-				cp.displayMainProgram();
+				cp.displayMainProgram(this);
 			
 			//debug
 			System.out.println(appointment);
@@ -345,7 +345,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 		
 		//cancel the appointment
 		if(event.getActionCommand().equals("Cancel"))
-			cp.displayMainProgram();
+			cp.displayMainProgram(this);
 		}
 	
 		
