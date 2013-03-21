@@ -19,10 +19,14 @@ public class User implements AbstractModel, Serializable {
 	}
 	
 	@Override
-	public String toString() {
+	/*public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email
 				+ ", hashedPassword=" + hashedPassword + "]";
+	}*/
+	public String toString(){
+		return name + ", " + email;
 	}
+	
 
 	public User(int id, String name, String email, String hashedPassword){
 		this.action = null;
