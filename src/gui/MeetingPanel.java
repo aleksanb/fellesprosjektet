@@ -30,7 +30,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
-	protected ParticipantListPanel plp;
+	protected ParticipantList pl;
 
 	protected ArrayList<User> userList;
 	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
@@ -42,7 +42,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		JLabel lblNewLabel = new JLabel("Participants");
 		
-		plp = new ParticipantListPanel(cp);
+		pl = new ParticipantList();
 		
 		JLabel lblPlace = new JLabel("Place");
 		
@@ -61,15 +61,15 @@ public class MeetingPanel extends JPanel implements ActionListener{
 					.addPreferredGap(ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
 					.addComponent(findButton))
 				.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-				.addComponent(plp, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+				.addComponent(pl, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addComponent(lblNewLabel)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(plp, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
-					.addGap(19)
+					.addComponent(pl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblPlace)
@@ -85,7 +85,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	}
 	
 	public ArrayList<User> getParticipants(){
-		return this.plp.getParticipantList();
+		return this.pl.getParticipants();
 	}
 	
 	public ArrayList<MeetingPoint> filterPlaces(ArrayList<User> participants, ArrayList<MeetingPoint> allPlaces){
@@ -116,7 +116,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		comboBox.removeAllItems();
-		ArrayList<MeetingPoint> filter = filterPlaces(plp.getParticipantList(), allPlaces);
+		ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), allPlaces);
 		for(int i = 0; i < filter.size(); i++){
 			comboBox.addItem(filter.get(i));
 		}
