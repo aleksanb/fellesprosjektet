@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.Component;
@@ -176,7 +177,14 @@ public class MenuPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//cp.logout();
-			cp.displayLogin();
+			String title = "Log out";
+			String mordi = "Are you sure you want to logout?";
+		    int reply = JOptionPane.showConfirmDialog(cp,mordi,title, JOptionPane.YES_NO_OPTION);
+		    if (reply == JOptionPane.YES_OPTION)
+		    {
+		      System.exit(0);
+		    }
+			//cp.displayLogin();
 		}
 		
 	}
