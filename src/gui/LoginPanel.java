@@ -102,9 +102,15 @@ public class LoginPanel extends JPanel {
 		
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
-			if(cp.logIn(textField.getText(),passwordfield.getText())){
-				lp.setVisible(false);
-				cp.CreateMainProgram();
+			if (textField.getText().length() > 0 && passwordfield.getText().length() > 0 ) {
+				if(cp.logIn(textField.getText(),passwordfield.getText())){
+					lp.setVisible(false);
+					cp.CreateMainProgram();
+				} else {
+					System.out.println("invalid login");
+				}
+			} else {
+				System.out.println("no data");
 			}
 		}
 	}
