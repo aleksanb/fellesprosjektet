@@ -23,8 +23,10 @@ import java.util.Properties;
 import javax.swing.JList;
 
 import db.Appointment;
+import db.MeetingPoint;
 import db.Notification;
 import db.NotificationType;
+import db.User;
 import core.CalendarProgram;
 import javax.swing.JComboBox;
 
@@ -73,6 +75,7 @@ public class MenuPanel extends JPanel {
 		
 		//set showCalendarsButton
 		JButton btnShowCalendars = new JButton("Show calendars");
+		btnShowCalendars.addActionListener(new TestListener(cp));
 		GridBagConstraints gbc_btnShowCalendars = new GridBagConstraints();
 		gbc_btnShowCalendars.gridwidth = 5;
 		gbc_btnShowCalendars.insets = new Insets(0, 0, 5, 5);
@@ -214,6 +217,24 @@ public class MenuPanel extends JPanel {
 			cp.createEditAppointmentPanel(cp.getSelectedAppointment());
 		}
 		
+	}
+	//just us the show calendars button to send notifications to server for testing
+	class TestListener implements ActionListener{
+		CalendarProgram cp;
+		public TestListener(CalendarProgram cp){
+			this.cp=cp;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("show cal button clicked");
+			Appointment app = new Appointment(cp.getUser());
+			app.setMeeting(true);
+			app.setMeetingPoint(new MeetingPoint(3, "Blackie", 15));
+			app.addParticipant(new User(8, "ALeksander", "email", "passord"));
+			app.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
+			cp.sendNotification(new Notification(cp.getUser().getId(), app, NotificationType.WELCOME,"test notification"));
+		}
 	}
 	
 	//listener for notificationlist
