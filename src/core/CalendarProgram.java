@@ -34,7 +34,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	//gui
 	private JPanel contentPane;
-	private AddAppointmentPanel aap;
 	private EditAppointmentPanel eap;
 	private LoginPanel loginPanel;
 	private MenuPanel menuPanel;
@@ -104,13 +103,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
 	}
-	public void createAppointmentPanel(){
-		menuPanel.setVisible(false);
-		calendarPanel.setVisible(false);
-		aap = new AddAppointmentPanel(this,new Appointment(currentUser));
-		contentPane.add(aap, BorderLayout.CENTER);
-		aap.setBackground(Color.LIGHT_GRAY);
-	}
 
 	public boolean logIn(String userName, String password) {
 		System.out.println("trying to log in");
@@ -124,8 +116,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		return false;
 	}
 	
-	public void displayMainProgram(){
-		aap.setVisible(false);
+	public void displayMainProgram(JPanel panel){
+		panel.setVisible(false);
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}
@@ -216,28 +208,43 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void logout(){
 		cf.sendAction(currentUser, Action.DISCONNECT);
 	}
-	
-	public void updateAppointment(Appointment appointment){
-		cf.sendAction(appointment, Action.UPDATE);
-	}
 
-	private void saveDataFromSession() {
-		// TODO: save stuff and things so it dont get lost before the program shuts down
-		
-	}
 	private void logConsole(String text){
 		System.out.println("CLIENT: "+ text);
 	}
 	
 	public void addAppointment(Appointment app){
-		//userf.create
-		calendarPanel.addAppointmentToModel(app);
-		appointments.put(app.getId(), app);
-		if(app.hasAlarm()){
-			alarmHandler.addAppointment(app);
-			alarmHandlerThread.interrupt();
-			System.out.println("Thread: "+alarmHandlerThread.interrupted());
+		Appointment callback = cf.sendAction(app, Action.INSERT);
+		if (callback != null) {
+			calendarPanel.addAppointmentToModel(callback);
+			appointments.put(app.getId(), callback);
+			if(callback.hasAlarm()){
+				alarmHandler.addAppointment(callback);
+				alarmHandlerThread.interrupt();
+				System.out.println("Thread: "+alarmHandlerThread.interrupted());
+			}
 		}		
+		System.out.println("our superlist now contains the following: " + appointments);
+	}
+	
+	public void updateAppointment(Appointment appointment){
+		// TODO: make edit appointment return the edited version
+		cf.sendAction(appointment, Action.UPDATE);
+		calendarPanel.removeAppointment(appointment);
+		appointments.remove(appointment.getId());
+		calendarPanel.addAppointmentToModel(appointment);
+	}
+	
+	public void createEditAppointmentPanel(Appointment appointment){
+		menuPanel.setVisible(false);
+		calendarPanel.setVisible(false);
+		if (appointment == null) {
+			eap = new EditAppointmentPanel(this,new Appointment(currentUser), true);			
+		} else {
+			eap = new EditAppointmentPanel(this,appointment, false);			
+		}
+		contentPane.add(eap, BorderLayout.CENTER);
+		eap.setBackground(Color.LIGHT_GRAY);
 	}
 		
 	@Override
@@ -251,14 +258,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	public void setFocusInCalendar(Notification note) {
 		calendarPanel.setFocusToAppointment(note.getAppointment());
-	}
-
-	public void createEditAppointmentPanel(Appointment appointment) {
-		menuPanel.setVisible(false);
-		calendarPanel.setVisible(false);
-		eap = new EditAppointmentPanel(this,appointment);
-		contentPane.add(eap, BorderLayout.CENTER);
-		eap.setBackground(Color.LIGHT_GRAY);
 	}
 
 	public void setEditButtonEnabled() {
