@@ -33,7 +33,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	protected ParticipantListPanel plp;
 
 	protected ArrayList<User> userList;
-	private ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
+	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 
 	protected CalendarProgram cp;
 	
