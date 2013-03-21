@@ -42,7 +42,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		JLabel lblNewLabel = new JLabel("Participants");
 		
-		pl = new ParticipantList();
+		pl = new ParticipantList(cp);
 		
 		JLabel lblPlace = new JLabel("Place");
 		
