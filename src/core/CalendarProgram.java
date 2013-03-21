@@ -162,11 +162,34 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		calendarPanel.setUserAndAppointments(currentUser,appointments);
 		//loadAppointments();
 		alarmSetup();
+		//fetching notifications, after easch call it wait 5 mins
+		new Thread(new Runnable() {
+			public void run() {
+				while(true){
+					long wait = 300000;//millisec = 5 min
+					System.out.println("Notifications: "+fetchNotifications());//TODO save notificatsions
+					try {
+						System.out.println("notification thread will sleep for "+wait+" millies");
+						Thread.sleep(wait);
+					} catch (InterruptedException e) {
+						System.out.println("notification thread interupted");
+					}
+					System.out.println("notification thread woke up");
+				}
+			}
+		}).start();//starts the thread
 	}
-
 	private void addNotification(Notification notification) {
 		menuPanel.addNotification(notification);
 		
+	}
+	//this should be called every 5 minuts to fetch notifications
+	public ArrayList<Notification> fetchNotifications(){
+		return cf.sendAction(currentUser, Action.GET_NOTIFICATION);
+	}
+	public void sendNotification(Notification notification){
+		Notification callback = cf.sendAction(notification, Action.NOTIFICATION);
+		System.out.println(callback.getNotificationType());
 	}
 	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
 	private void alarmSetup() {
