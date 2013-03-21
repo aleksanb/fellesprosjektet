@@ -1,11 +1,9 @@
 package gui;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
@@ -15,13 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Insets;
 import javax.swing.JLabel;
 import java.awt.Color;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Properties;
-
-import javax.swing.JList;
-
 import db.Appointment;
 import db.MeetingPoint;
 import db.Notification;
