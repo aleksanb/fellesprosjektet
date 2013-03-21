@@ -278,7 +278,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			int dayDiff = app.getStartAsDate().getDate() - app.getAlarm().getAlarmTime().getTime().getDate();
 			
 			
-			if(minuteDiff == 0 && dayDiff != 0){
+			if(dayDiff != 0){
 				valueTypePick.setSelectedItem("Days");
 				alarmValueField.setText(Integer.toString(dayDiff));
 			}
@@ -318,7 +318,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	
 	
 	public void actionPerformed(ActionEvent event) {
-//		System.out.println(event.getActionCommand());
+		System.out.println(event.getActionCommand());
 
 		//add alarm options
 		if(event.getActionCommand().equals("alarm")){
@@ -330,8 +330,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 				if(!bool)
 					setAlarm(bool);
 		}
-			
-		
+		//cancel the appointment
+		if(event.getActionCommand().equals("Cancel")){
+			cp.displayMainProgram(this);
+		}
+		if(event.getActionCommand().equals("Delete")){
+			//TODO delete-method in CalendarProgram
+		}
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
 			meetingPanel.setVisible(meetingBox.isSelected());
@@ -480,7 +485,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		JFrame frame = new JFrame();
 		Appointment test = new Appointment(2, 13, "Thea", new GregorianCalendar(), new GregorianCalendar(), "Description!", false);
 		GregorianCalendar gc = new GregorianCalendar();
-		gc.set(2013, 3, 20, 12, 7);
+		gc.set(2013, 3, 19, 12, 13);
 		test.setAlarm(gc);
 		//frame.getContentPane().add(new EditAppointmentPanel(null, test));
 		frame.pack();

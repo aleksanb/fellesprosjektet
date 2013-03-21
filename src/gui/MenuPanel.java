@@ -76,6 +76,7 @@ public class MenuPanel extends JPanel {
 		//set showCalendarsButton
 		JButton btnShowCalendars = new JButton("Show calendars");
 		btnShowCalendars.addActionListener(new TestListener(cp));
+		btnShowCalendars.addActionListener(new ShowCalendarsListener(cp,cp.getUser()));//adds listener which makes the show calendars-panel
 		GridBagConstraints gbc_btnShowCalendars = new GridBagConstraints();
 		gbc_btnShowCalendars.gridwidth = 5;
 		gbc_btnShowCalendars.insets = new Insets(0, 0, 5, 5);
@@ -84,7 +85,7 @@ public class MenuPanel extends JPanel {
 		add(btnShowCalendars, gbc_btnShowCalendars);
 		
 		//set EditAppointmentButton
-		btnEditAppointment = new JButton("Edit appointment");
+		btnEditAppointment = new JButton("Edit/Delete appointment");
 		btnEditAppointment.setEnabled(false);
 		btnEditAppointment.addActionListener(new EditAppointmentListener(cp));
 		GridBagConstraints gbc_btnEditAppointment = new GridBagConstraints();
@@ -237,6 +238,25 @@ public class MenuPanel extends JPanel {
 		}
 	}
 	
+	class ShowCalendarsListener implements ActionListener{
+		CalendarProgram cp;
+		User user;
+		public ShowCalendarsListener(CalendarProgram cp,User user){
+			this.cp=cp;
+			this.user = user;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFrame frame = new JFrame("...");
+			//TODO first make a Modified ParticipationlistPanel where it only is possible to select one user and then add å showCalendarpanel according to which user is selected
+			ShowCalendarPanel scp = new ShowCalendarPanel(cp, user);
+			frame.getContentPane().add(scp);
+			frame.pack();
+			frame.setSize(800, 600);
+			frame.setVisible(true);
+		}
+	}
 	//listener for notificationlist
 	class NotificationListListener implements ActionListener{
 		JComboBox<Notification> notificationList;
