@@ -302,7 +302,7 @@ public class AddAppointmentPanel extends JPanel implements ActionListener {
 			ArrayList<User> users = cp.getUsers();
 			System.out.println(users);
 			for (int i = 0; i <= users.size(); i++) {
-				meetingPanel.plp.getModel().addElement(new CheckListItem(users.get(i)));
+				meetingPanel.plp.makeCheckListItem(users.get(i));
 		}
 		
 		//add Appointment
