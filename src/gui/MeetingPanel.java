@@ -33,8 +33,6 @@ public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantList pl;
-
-	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 	private JTextField textField;
 	private JButton findButton;
 	

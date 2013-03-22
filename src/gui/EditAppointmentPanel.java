@@ -352,9 +352,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			meetingPanel.setVisible(a);
 			
 			//Update MeetingPoint
-			meetingPanel.filterPlaces(appointment.getParticipants(), meetingPanel.allPlaces);
+			meetingPanel.filterPlaces(appointment.getParticipants(), cp.getMeetingPoints());
 			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
 		}
+	}
+	
+	public ArrayList<MeetingPoint> getMeetingPoints(){
+		return cp.getMeetingPoints();
 	}
 	
 	
