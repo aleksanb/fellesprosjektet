@@ -54,22 +54,13 @@ public class ServerFactory {
 		//ArrayList<Appointment> b = sf.getAllAppointments(u);
 		//System.out.println(b);
 		
-		Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
+		//Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
 		//a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
-		Appointment b = sf.insertAppointment(a);
-		System.out.println(b);
-		/*
-		a.addParticipant(new User(1, "espen", "master@commander.net", "hunter2"));
-		a.addParticipant(new User(8, "aleksander", "email", "passord"));
-//		boolean result = sf.deleteAppointment(a);
-		//System.out.println(a.getMeetingPoint().getId());
-		//User result = sf.login(new User("aleksander", "email", "passord"));
-//		Appointment result = sf.insertAppointment(a);
-//		String result = sf.login(new User("aleksander", "email", "passord"));
-		Appointment result = sf.updateAppointment(a);
-		System.out.println(result);
-//		System.out.println(result.get(1).getParticipants());
-//		System.out.println(result.get(1).getPlace()); */
+		//Appointment b = sf.insertAppointment(a);
+		//System.out.println(b);
+		HashMap<User, ArrayList<Appointment>> u = sf.getAllUsersAllAppointments();
+		System.out.println(u.get(new User(1, null, null, null)));
+		//System.out.println(u);
 	}
 	
 	public User login(User u) {
@@ -89,8 +80,7 @@ public class ServerFactory {
 			while (rs.next()) {
 				result = new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("hashedPassword"));
 			}
-			System.out.println("found user " + result.getName());
-				
+			if (result != null) System.out.println("found a user with name: " + result.getName());
 			if (shouldClose) db.close();
 			
 		} catch (Exception e) {
@@ -151,6 +141,15 @@ public class ServerFactory {
 			System.out.println("fucked up while getting users");
 		}
 		return results;
+	}
+	
+	public HashMap<User, ArrayList<Appointment>> getAllUsersAllAppointments() {
+		ArrayList<User> allUsers = getAllUsers();
+		HashMap<User, ArrayList<Appointment>> allUserAllAppointment = new HashMap<User, ArrayList<Appointment>>();
+		for (int i = 0; i < allUsers.size(); i++) {
+			allUserAllAppointment.put(allUsers.get(i), getAllAppointments(allUsers.get(i)));
+		}
+		return allUserAllAppointment;
 	}
 
 	public ArrayList<Appointment> getAllAppointments(User u) {
@@ -293,7 +292,7 @@ public class ServerFactory {
 			// create and insert new appointment into database
 			prest = db.preparedStatement("INSERT INTO sids.appointment (creatorUserId, title, start, end, description, isMeeting)"+
 			" VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-			prest.setInt(1, appointment.getId());
+			prest.setInt(1, appointment.getCreatorUserId());
 			prest.setString(2, appointment.getTitle());
 			prest.setTimestamp(3, new Timestamp(appointment.getStart().getTimeInMillis()));
 			prest.setTimestamp(4, new Timestamp(appointment.getEnd().getTimeInMillis()));
@@ -307,23 +306,20 @@ public class ServerFactory {
 				appointmentId = generatedKeys.getInt(1);
 				System.out.println("we inserted successfully and appointmentId is now " + appointmentId);
 				
-				// add appointment to creator
 				prest = db.preparedStatement("INSERT INTO sids.user_appointment (userId, appointmentId) VALUES (?, ?)");
-				prest.setInt(1, appointment.getCreatorUserId());
-				prest.setInt(2, appointmentId);
-				prest.executeUpdate();
+				ArrayList<User> participants = appointment.getParticipants();
+				System.out.println("our participants are!");
 				
-				if (appointment.isMeeting()) { 
-					prest = db.preparedStatement("INSERT INTO sids.user_appointment (userId, appointmentId) VALUES (?, ?)");
-					ArrayList<User> participants = appointment.getParticipants();
-					
-					// create user-appointment connection for all users
-					for (int i = 0; i < participants.size(); i++) { 
-						System.out.println(" executing userAppointment nr. " + i + " " + participants.get(i).getName());
-						prest.setInt(1, participants.get(i).getId());
-						prest.setInt(2, appointmentId);
-						prest.executeUpdate();
-					}
+				// create user-appointment connection for all users
+				for (int i = 0; i < participants.size(); i++) { 
+					System.out.println(" executing userAppointment nr. " + i + " " + participants.get(i).getName());
+					prest.setInt(1, participants.get(i).getId());
+					prest.setInt(2, appointmentId);
+					prest.executeUpdate();
+				}
+				System.out.println("finished adding users");
+				// TODO: implement
+				/*if (appointment.isMeeting()) { 
 					// create appointment - room connection
 					System.out.println("executing appointmentMeetingpoint");
 					prest = db.preparedStatement("INSERT INTO sids.appointment_meetingpoint (appointmentId, meetingpointId) VALUES(?, ?)");
@@ -332,7 +328,7 @@ public class ServerFactory {
 					System.out.println("executing appointmentMeetingPoint");
 					prest.executeUpdate();
 					
-				}
+				}*/
 			}
 			
 			System.out.println("finished inserting");
@@ -355,7 +351,6 @@ public class ServerFactory {
 	public boolean deleteAppointment(Appointment appointment) {
 		
 		PreparedStatement prest;
-		int mPoint;
 	
 		try {		
 			System.out.println("preparing to check delete appointment from user_appointment");
@@ -363,34 +358,28 @@ public class ServerFactory {
 			Boolean shouldClose = db.initialize();
 			prest = db.preparedStatement("DELETE FROM sids.user_appointment WHERE ? = appointmentId;");
 			prest.setInt(1, appointment.getId());
-			//System.out.println(prest);
-			mPoint = prest.executeUpdate();
-			//returns query
+			prest.executeUpdate();
+			
 			System.out.println("preparing to check delete appointment from appointment_meetingpoint");
 			//send query to db
 			prest = db.preparedStatement("DELETE FROM sids.appointment_meetingpoint WHERE ? = appointmentId;");
 			prest.setInt(1, appointment.getId());
-			//System.out.println(prest);
-			mPoint = prest.executeUpdate();
+			prest.executeUpdate();
 			
 			System.out.println("preparing to check delete appointment");
 			//send query to db
 			prest = db.preparedStatement("DELETE FROM sids.appointment WHERE id = ?;");
 			prest.setInt(1, appointment.getId());
-			//System.out.println(prest);
 			//returns query
-			mPoint = prest.executeUpdate();
+			prest.executeUpdate();
 			
-			if (shouldClose) db.close();
-			
-			//makes query for deleting appointments from user_appointment, appointment_meetingpoint and appointment
-	
+			if (shouldClose) db.close();	
 		}
-		
 		
 		catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("something fucked up while deleting appointment");
+			return false;
 		}
 		return true;
 		
@@ -411,6 +400,10 @@ public class ServerFactory {
 				//retreives users from new and old version and put them into a set so they are unique
 				ArrayList<User> ppantsMaster = appointment.getParticipants();
 				ArrayList<User> ppantsOld = new ArrayList<User>(getParticipants(appointment).keySet());
+				System.out.println("users in server version" +
+						ppantsOld
+						+ "users in client version"
+						+ ppantsMaster);
 				HashSet<User> ppantsSet = new HashSet<User>(ppantsMaster); ppantsSet.addAll(ppantsOld);
 				System.out.println("all users:" + ppantsSet);
 				for (User user : ppantsSet) {
@@ -438,7 +431,7 @@ public class ServerFactory {
 				}
 				
 				// update room connection
-				System.out.println("updateing appointmentMeetingpoint");
+				System.out.println("updating appointmentMeetingpoint");
 				prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
 				prest.setInt(2, appointment.getMeetingPoint().getId());
 				prest.setInt(1, appointment.getId());
