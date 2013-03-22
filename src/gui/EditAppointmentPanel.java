@@ -352,14 +352,16 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			meetingBox.setSelected(a);
 			meetingPanel.setVisible(a);
 			
-			//Update MeetingPoint
-			meetingPanel.filterPlaces(appointment.getParticipants(), cp.getMeetingPoints());
-			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
+			//Update MeetingPoint what? wtf
+			meetingPanel.filterPlaces();
+			if (app.getMeetingPoint() != null) {
+				meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
+			}
 		}
 	}
 	
 	public ArrayList<MeetingPoint> getMeetingPoints(){
-		return cp.getMeetingPoints();
+		return cp.getMeetingPoints(this.appointment);
 	}
 	
 	
@@ -436,7 +438,11 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
-				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				if (meetingPanel.comboBox.getSelectedItem() != null) {
+					appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				} else {
+					appointment.setMeetingPoint(null);
+				}
 				appointment.setParticipants(meetingPanel.getParticipants());
 			} else {
 				appointment.setMeeting(false);
