@@ -35,7 +35,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 	
 	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers) {
-		setBackground(Color.PINK);
+		//setBackground(Color.PINK);
 		
 		JLabel lblNewLabel = new JLabel("Participants");
 		JLabel lblPlace = new JLabel("Place");
