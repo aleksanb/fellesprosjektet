@@ -22,10 +22,10 @@ public class ParticipantList extends JPanel implements ActionListener{
 	
 	public ParticipantList() {
 		JPanel leftPanel = new JPanel();
-		leftPanel.setBackground(Color.LIGHT_GRAY);
+		leftPanel.setBackground(Color.WHITE);
 		
 		JPanel rightPanel = new JPanel();
-		rightPanel.setBackground(Color.LIGHT_GRAY);
+		rightPanel.setBackground(Color.WHITE);
 		
 		JButton btnAdd = new JButton("Add >>");
 		btnAdd.addActionListener(this);
@@ -35,7 +35,7 @@ public class ParticipantList extends JPanel implements ActionListener{
 		buttonRemove.addActionListener(this);
 		buttonRemove.setActionCommand("Remove");
 		
-		setBackground(Color.PINK);
+		setBackground(Color.LIGHT_GRAY);
 		nonparticipants = new DefaultListModel<User>();
 		participants = new DefaultListModel<User>();
 		
@@ -57,25 +57,25 @@ public class ParticipantList extends JPanel implements ActionListener{
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 						.addComponent(btnAdd, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(buttonRemove, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(18)
+					.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
 					.addComponent(rightPanel, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(5))
+					.addGap(10))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(5)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(leftPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-								.addComponent(rightPanel, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 290, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(95)
+							.addGap(67)
 							.addComponent(btnAdd)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(buttonRemove)))
-					.addContainerGap())
+							.addComponent(buttonRemove))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(5)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(rightPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(leftPanel, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))))
+					.addGap(102))
 		);
 		setLayout(groupLayout);
 	}
