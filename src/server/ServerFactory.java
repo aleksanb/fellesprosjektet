@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.sql.PreparedStatement;
 
 import db.Action;
@@ -467,6 +468,11 @@ public class ServerFactory {
 	
 	public User logOut(User user) {
 		return user;
+		
+	}
+	
+	public Set<MeetingPoint> getAvailableMeetingpoints(Appointment appointment){
+		return null;
 		
 	}
 
