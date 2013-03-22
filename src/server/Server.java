@@ -11,6 +11,7 @@ import db.AbstractModel;
 import db.Action;
 import db.Appointment;
 import db.Callback;
+import db.MeetingPoint;
 import db.Notification;
 import db.Status;
 import db.User;
@@ -236,6 +237,16 @@ public class Server implements Runnable{
 					e.printStackTrace();
 				}
 				System.out.println("sent back " + action + " with status " + i_u_callback.getAction());
+			}
+			break;
+		case GET_MEETINGPOINT:
+			ArrayList<MeetingPoint> g_m_callback = new ArrayList<MeetingPoint>();
+			g_m_callback.add(new MeetingPoint(10, "yolo", 40));
+			g_m_callback.add(new MeetingPoint(13, "holo", 30));
+			try {
+				output.writeObject(g_m_callback);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 			break;
 		case SET_STATUS_ATTENDING:
