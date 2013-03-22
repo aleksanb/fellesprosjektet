@@ -350,10 +350,12 @@ public class CalendarPanel extends JPanel implements MouseListener {
 		}
 		return appointments;
 	}
-	public void setUserAndAppointments(User currentUser, ArrayList<Appointment> appointments) {
+	
+	public void setUserAndAppointments(ArrayList<Appointment> appointments) {
+		Appointment tmp;
 		for(int i = 0; i<appointments.size(); i++){
-			Appointment app = appointments.get(i);
-		addAppointmentToModel(app);
+			tmp = appointments.get(i).getCopy();
+			addAppointmentToModel(tmp);
 		}
 		updateCalendar();
 	}
