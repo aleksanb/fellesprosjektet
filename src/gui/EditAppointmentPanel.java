@@ -284,9 +284,9 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		startPick.setDate(app.getStartAsDate()); //?
 		endPick.setDate(app.getEndAsDate());
 		
-		displayTime
+		displayTime(startField, app.getStartAsDate());
+		displayTime(endField, app.getEndAsDate());
 		
-		endField.setText(app.getEndAsDate().getHours() + ":" + app.getEndAsDate().getMinutes());
 		descriptionArea.setText(app.getDescription());
 		
 		
