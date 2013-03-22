@@ -105,13 +105,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			User temp = cf.sendAction(new User(0 ,userName ,null, password), Action.LOGIN);
 			System.out.println("got return value " + temp + " with status " + temp.getAction());
 			if (temp.getAction().equals(Action.SUCCESS)) {
-				loginPanel.correctInput.setVisible(true);
+				loginPanel.toggleCorrectInputVisibility();
 				System.out.println("*** Got valid login ***");
 				currentUser = temp;
 				return true;
 			}
 		}
-		loginPanel.wrongInput.setVisible(true);
+		loginPanel.toggleWrongInputVisibility();
 		return false;
 	}
 
