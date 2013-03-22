@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.Color;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -57,6 +60,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		startPick = new JXDatePicker();
 		startPick.addActionListener(this);
 		startPick.setDate(new Date());
+		//Formatting time
 		
 		//title label
 		JLabel titleLabel;
@@ -80,7 +84,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		//set start time
 		startField = new JTextField();
 		startField.setToolTipText("HH:MM");
-		//TODO format properly
+		//TODO format properly, make sure it is not possible to add appointments without the correct formatting.
 		startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("Start time");
@@ -98,6 +102,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		startField.addActionListener(this);
 		startField.setActionCommand("End time");
 		endField.setColumns(6);
+		
+		
 		
 		//description label
 		JLabel descriptionLabel = new JLabel("Description:");
@@ -300,7 +306,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	
 	public void updateFields(Appointment app) {
 		titleField.setText(app.getTitle());
-		startPick.setDate(app.getStartAsDate());
+		startPick.setDate(app.getStartAsDate()); //?
 		endPick.setDate(app.getEndAsDate());
 		
 		displayTime(startField, app.getStartAsDate());
@@ -400,6 +406,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this, "You must pick dates.","Date error",JOptionPane.ERROR_MESSAGE);
 			} else {
 				approved=true;
+			}
+			
+			if(appointment.getTitle().equals("")) {
+				approved=false;
+				System.out.println("The appointment needs a title.");
+				JOptionPane.showMessageDialog(this, "You must set a title.", "Missing title", JOptionPane.ERROR_MESSAGE);
 			}
 			
 			//check format and set time
@@ -514,9 +526,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	private void checkTimeFormat(String[] text) throws IllegalArgumentException{
 		if(text.length!=2)
 			throw new IllegalArgumentException();
+			approved=false;
 		if(text[1].length()!=2 && text[0].length()!=2)
 			throw new IllegalArgumentException();
+			approved=false;
 	}
+
 
 	
 	//Testing
