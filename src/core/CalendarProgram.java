@@ -23,6 +23,7 @@ import db.Action;
 import db.Appointment;
 import db.Callback;
 import db.Notification;
+import db.Status;
 import db.User;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
@@ -175,6 +176,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 
 	public void logout(){
 		cf.sendAction(currentUser, Action.DISCONNECT);
+	}
+	
+	public HashMap<User, Status> getAllAppointmentUsers(Appointment app) {
+		System.out.println("getting participants with statuses for " + app.getId());
+		HashMap<User, Status> callback = cf.sendAction(app, Action.GET_ALL_APPOINTMENT_USERS);
+		if (callback != null) {
+			return callback;
+		} else {
+			System.out.println("could not return statuses");
+			return new HashMap<User, Status>();
+		}
 	}
 	
 	public void addAppointment(Appointment app){

@@ -14,6 +14,7 @@ import db.Action;
 import db.Appointment;
 import db.Callback;
 import db.Notification;
+import db.Status;
 import db.User;
 
 public class Server implements Runnable{
@@ -190,6 +191,21 @@ public class Server implements Runnable{
 				e.printStackTrace();
 			}
 			System.out.println("sent back " + g_a_a_callback.size() + "appointments");
+			break;
+		case GET_ALL_APPOINTMENT_USERS:
+			System.out.println("getting all users with status for appointment y");
+			HashMap<User, Status> g_a_a_u_callback;
+			try {
+				g_a_a_u_callback = sf.getParticipants((Appointment) am );
+			} catch (Exception e) {
+				g_a_a_u_callback = new HashMap<User, Status>();
+			}
+			try {
+				output.writeObject(g_a_a_u_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back users with statuses for " + ((Appointment) am).getId());
 			break;
 		case GET_ALL_USERS:
 			System.out.println("Vi vil ha alle brukerne!");

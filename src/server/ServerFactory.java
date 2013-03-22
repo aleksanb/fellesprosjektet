@@ -49,7 +49,7 @@ public class ServerFactory {
 		System.out.println("created serverFactory");
 		//System.out.println(sf.getAllUsers());
 		//User u = new User(1, "espen", "master@commander.net", "hunter2");
-		//Appointment a = new Appointment(9, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
+		Appointment a = new Appointment(47, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "update test", true);
 		//a.setMeetingPoint(new MeetingPoint(1, "papi", 1337));
 		//ArrayList<Appointment> b = sf.getAllAppointments(u);
 		//System.out.println(b);
@@ -58,8 +58,7 @@ public class ServerFactory {
 		//a.setMeetingPoint(new MeetingPoint(1, "mordi", 200));
 		//Appointment b = sf.insertAppointment(a);
 		//System.out.println(b);
-		HashMap<User, ArrayList<Appointment>> u = sf.getAllUsersAllAppointments();
-		System.out.println(u.get(new User(1, null, null, null)));
+		HashMap<User, Status> u = sf.getParticipants(a);
 		//System.out.println(u);
 	}
 	
@@ -223,7 +222,7 @@ public class ServerFactory {
 		return results;
 	}
 	
-	private HashMap<User, Status> getParticipants(Appointment app) throws ClassNotFoundException, SQLException{
+	public HashMap<User, Status> getParticipants(Appointment app) throws ClassNotFoundException, SQLException{
 		PreparedStatement prest;
 		ResultSet ppants;
 		HashMap<User, Status> results = new HashMap<User, Status>();
