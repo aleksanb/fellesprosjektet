@@ -2,7 +2,8 @@ package db;
 
 import java.io.Serializable;
 
-public class MeetingPoint implements Serializable {
+public class MeetingPoint implements AbstractModel {
+	private Action action;
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
@@ -33,4 +34,17 @@ public class MeetingPoint implements Serializable {
 		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
 				+ capacity + "]";
 	}
+	@Override
+	public void setAction(Action action) {
+		this.action=action;
+	}
+	@Override
+	public Action getAction() {
+		return action;
+	}
+	@Override
+	public <T> T getCopy() {
+		return (T) new MeetingPoint(this.id, this.name, this.capacity);
+	}
+	
 }
