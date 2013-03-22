@@ -101,16 +101,17 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	public boolean logIn(String userName, String password) {
 		System.out.println("trying to log in");
-		loginPanel.correctInput.setVisible(true);
 		if (userName.length() > 0 && password.length() > 0 ) {
 			User temp = cf.sendAction(new User(0 ,userName ,null, password), Action.LOGIN);
 			System.out.println("got return value " + temp + " with status " + temp.getAction());
 			if (temp.getAction().equals(Action.SUCCESS)) {
+				loginPanel.toggleCorrectInputVisibility();
 				System.out.println("*** Got valid login ***");
 				currentUser = temp;
 				return true;
-			} 
+			}
 		}
+		loginPanel.toggleWrongInputVisibility();
 		return false;
 	}
 

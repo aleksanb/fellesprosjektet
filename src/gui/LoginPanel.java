@@ -27,7 +27,7 @@ public class LoginPanel extends JPanel {
 	private JPasswordField passwordfield;
 	private CalendarProgram cp;
 	private JLabel wrongInput;
-	public JLabel correctInput;
+	private JLabel correctInput;
 
 
 	/**
@@ -112,6 +112,13 @@ public class LoginPanel extends JPanel {
 
 	}
 	
+	public void toggleWrongInputVisibility() {
+		wrongInput.setVisible(true);
+	}
+	public void toggleCorrectInputVisibility() {
+		correctInput.setVisible(true);
+	}
+	
 	
 	
 	class LoginAction implements ActionListener {
@@ -125,13 +132,12 @@ public class LoginPanel extends JPanel {
 		
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
-			correctInput.setVisible(true);
 			if(cp.logIn(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			} else {
 				System.out.println("invalid login");
-				wrongInput.setVisible(true);
+				
 			}
 		}
 	}
@@ -151,7 +157,6 @@ public class LoginPanel extends JPanel {
 
 		public void keyReleased(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER){
-				correctInput.setVisible(true);
 				if(cp.logIn(textField.getText(),passwordfield.getText())){
 					lp.setVisible(false);
 					cp.CreateMainProgram();
@@ -163,6 +168,9 @@ public class LoginPanel extends JPanel {
 		public void keyTyped(KeyEvent e) {
 			
 		}
+		
+		
+		
 		
 	}
 
