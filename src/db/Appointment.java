@@ -208,7 +208,7 @@ public class Appointment implements AbstractModel, Serializable {
 		for (int i = 0; i < this.participants.size(); i++) {
 			app.addParticipant(this.getParticipants().get(i));
 		}
-		if(this.isMeeting){
+		if(this.isMeeting && this.meetingPoint != null){
 			app.setMeetingPoint(this.meetingPoint);
 		}
 		//TODO: bruke this.clone() ?
