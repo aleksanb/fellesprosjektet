@@ -43,7 +43,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	ButtonGroup group;
 	EditAppointmentPanel eap;
 	
-	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap, String creator) {
+	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap) {
 		setBackground(Color.LIGHT_GRAY);
 		this.eap = eap;
 		//setBackground(Color.PINK);
@@ -77,7 +77,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		JLabel lblHost = new JLabel("Host:");
 		
-		hostField = new JTextField(creator);
+		hostField = new JTextField("the internets");
 		hostField.setEditable(false);
 		hostField.setColumns(10);
 		

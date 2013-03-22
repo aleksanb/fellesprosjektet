@@ -140,12 +140,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.addActionListener(this);
 		meetingBox.setActionCommand("Meeting");
 		
-		//Get appointment hosts
-		User tmp = cp.getCachedUsers().get(cp.getCachedUsers().indexOf(new User(this.appointment.getCreatorUserId(), "b", "ull", "shit")));
-		String tmpName = (tmp != null)? tmp.getName() : "Has no creator :(";
-		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this, tmpName);
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this);
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
@@ -443,6 +439,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				if (meetingPanel.comboBox.getSelectedItem() != null) {
+					System.out.println("meetingpoint is set to " + meetingPanel.comboBox.getSelectedItem());
 					appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
 				} else {
 					appointment.setMeetingPoint(null);

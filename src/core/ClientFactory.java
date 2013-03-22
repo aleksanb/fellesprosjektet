@@ -10,11 +10,13 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.GregorianCalendar;
 import java.util.Properties;
+import java.util.Set;
 
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
 import db.User;
+import db.MeetingPoint;
 
 public class ClientFactory {
 	
@@ -129,67 +131,23 @@ public class ClientFactory {
 		// ArrayList<User> users = cf.sendAction(u, Action.GET_ALL_USERS);
 		//
 		// create appointment
-		// Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
-		// a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
+		//Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
 		// Appointment success = cf.sendAction(a, Action.INSERT);
 		
 		ClientFactory cf = new ClientFactory();
 		User u = new User(0, "aleksander", "yolo", "passord");
 		User logged_in = cf.sendAction(u, Action.LOGIN);
-		Appointment a = new Appointment(0, 1, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
-		
-		Appointment b = cf.sendAction(a, Action.INSERT);
-		System.out.println(b);
-		cf.sendAction(logged_in, Action.DISCONNECT);
-		/*ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
-		System.out.println(appointments);
-		for ( int i = 0; i < appointments.size(); i ++ ) {
-			System.out.println("setting status attending for appointment nr. " + i);
-			cf.sendAction(appointments.get(i), Action.SET_STATUS_NOT_ATTENDING);	
-			System.out.println("sat status for appointmentdone w" + i);
-		}*/
-		
-//		cf.sendAction(new User(), Action.DISCONNECT);
-//		cf.sendAction(new User(1,"espen","mail","hunter2"), Action.GET_NOTIFICATION);
-		
-//		ArrayList<User> users = cf.sendAction(new User(), Action.GET_ALL_USERS);
-//		System.out.println(users);
-//		cf.sendAction(new User(), Action.DISCONNECT);
-		/*
-		//test insert appointment
-		
-//		Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
-//		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
-		
-		// Test login+logout
-		User u = new User(0, "aleksander", "yolo", "passord");
-		
-		//System.out.println(login);
-//		Appointment ap = cf.sendAction(a, Action.INSERT);
-//		System.out.println(ap);
-		User login = cf.sendAction(u, Action.LOGIN);
-		System.out.println("returned with " + login.getName());
-		
-		System.out.println("get appointments");
-		ArrayList<Appointment> appointments = cf.sendAction(u, Action.GET_ALL_APPOINTMENTS);
-		System.out.println(appointments.size());
-		
-		cf.sendAction(u, Action.DISCONNECT);
-		System.out.println("sending logout");
-		//System.out.println("logged out");
-		//System.out.println("login returned with " + ((login != null)? login.getName() : "null") );
-*/
-		//System.out.println(cf.output);
-		/*Appointment a = new Appointment(0, 1, "test2", new GregorianCalendar(), new GregorianCalendar(), "beskrivelse", true);
+		Appointment a = new Appointment(0, 8, "title", new GregorianCalendar(), new GregorianCalendar(), "first test meeting", false);
 		a.setMeetingPoint(new MeetingPoint(1, "redhead", 200));
-		Appointment success = cf.addAppointment(a);
-		System.out.println(success.getId());*/
+		u.setId(1);
+		a.addParticipant(u);
 		
+		Set<MeetingPoint> mps = cf.sendAction(a, Action.GET_MEETINGPOINT);
+		System.out.println(mps);
+		//Appointment b = cf.sendAction(a, Action.INSERT);
+		//System.out.println(b);
+		cf.sendAction(logged_in, Action.DISCONNECT);
 		
-		//Action a = cf.sendAction(u, Action.LOGOUT);
-		//cf.sendAction(u, Action.LOGOUT);
-		//System.out.println("logout returned ");
-		//cf.closeConnection();
 
 	}
 }
