@@ -33,6 +33,7 @@ public class LoginPanel extends JPanel {
 	 */
 	public LoginPanel(CalendarProgram cp) {
 		this.cp = cp;
+		
 		setBackground(new Color(255, 153, 0));
 		setBackground(Color.PINK); 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -102,15 +103,11 @@ public class LoginPanel extends JPanel {
 		
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
-			if (textField.getText().length() > 0 && passwordfield.getText().length() > 0 ) {
-				if(cp.logIn(textField.getText(),passwordfield.getText())){
-					lp.setVisible(false);
-					cp.CreateMainProgram();
-				} else {
-					System.out.println("invalid login");
-				}
+			if(cp.logIn(textField.getText(),passwordfield.getText())){
+				lp.setVisible(false);
+				cp.CreateMainProgram();
 			} else {
-				System.out.println("no data");
+				System.out.println("invalid login");
 			}
 		}
 	}
