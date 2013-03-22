@@ -20,6 +20,8 @@ public class ParticipantList extends JPanel implements ActionListener{
 	private JList<User> pList;
 	protected DefaultListModel<User> nonparticipants;
 	protected DefaultListModel<User> participants;
+	JButton btnAdd;
+	JButton buttonRemove;
 	
 	public ParticipantList() {
 		JPanel leftPanel = new JPanel();
@@ -28,11 +30,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBackground(Color.WHITE);
 		
-		JButton btnAdd = new JButton("Add >>");
+		btnAdd = new JButton("Add >>");
 		btnAdd.addActionListener(this);
 		btnAdd.setActionCommand("Add");
 		
-		JButton buttonRemove = new JButton("<< Remove");
+		buttonRemove = new JButton("<< Remove");
 		buttonRemove.addActionListener(this);
 		buttonRemove.setActionCommand("Remove");
 		
@@ -142,6 +144,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		frame.pack();
         frame.setSize(500,630);
         frame.setVisible(true);
+	}
+	
+	public void setEditable(Boolean bool) {
+		this.btnAdd.setEnabled(bool);
+		this.buttonRemove.setEnabled(bool);
 	}
 	
 }
