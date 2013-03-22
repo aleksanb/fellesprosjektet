@@ -397,30 +397,30 @@ public class ServerFactory {
 			Boolean shouldClose = db.initialize();
 			if (appointment.isMeeting()) { 
 				//retreives users from new and old version and put them into a set so they are unique
-				ArrayList<User> ppantsMaster = appointment.getParticipants();
-				ArrayList<User> ppantsOld = new ArrayList<User>(getParticipants(appointment).keySet());
+				ArrayList<User> clientParticipants = appointment.getParticipants();
+				ArrayList<User> serverParticipants = new ArrayList<User>(getParticipants(appointment).keySet());
 				System.out.println("users in server version" +
-						ppantsOld
+						serverParticipants
 						+ "users in client version"
-						+ ppantsMaster);
-				HashSet<User> ppantsSet = new HashSet<User>(ppantsMaster); ppantsSet.addAll(ppantsOld);
-				System.out.println("all users:" + ppantsSet);
-				for (User user : ppantsSet) {
-					if(ppantsMaster.contains(user)&& ppantsOld.contains(user))		//both have the user
-						//do nothing
-						break;
-					else if(ppantsMaster.contains(user)&& !ppantsOld.contains(user)){//master has user but not old
+						+ clientParticipants);
+				HashSet<User> combinedUsers = new HashSet<User>(clientParticipants); combinedUsers.addAll(serverParticipants);
+				System.out.println("all users:" + combinedUsers);
+				for (User user : combinedUsers) {
+					if(clientParticipants.contains(user)&& serverParticipants.contains(user)) {	//both have the user
+						System.out.println("both contain " + user);
+					}
+					else if(clientParticipants.contains(user) && !serverParticipants.contains(user)){//master has user but not old
 						//insert user into participants
-						System.out.println("Inserting participant");
+						System.out.println("Inserting participant" + user);
 						prest = db.preparedStatement("INSERT INTO sids.user_appointment (userId, appointmentId) VALUES (?, ?)");
 						prest.setInt(1, user.getId());
 						prest.setInt(2, appointment.getId());
 						//System.out.println(prest);
 						prest.executeUpdate();
 					}
-					else{															//old has user, but not master
+					else if (!clientParticipants.contains(user) && serverParticipants.contains(user)){															//old has user, but not master
 						//delete user from participants
-						System.out.println("deleting participant");
+						System.out.println("deleting participant" + user);
 						prest = db.preparedStatement("DELETE FROM sids.user_appointment WHERE userId=? AND appointmentId=?");
 						prest.setInt(1, user.getId());
 						prest.setInt(2, appointment.getId());
@@ -430,13 +430,13 @@ public class ServerFactory {
 				}
 				
 				// update room connection
-				System.out.println("updating appointmentMeetingpoint");
+				/*System.out.println("updating appointmentMeetingpoint");
 				prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
 				prest.setInt(2, appointment.getMeetingPoint().getId());
 				prest.setInt(1, appointment.getId());
 				System.out.println("updating appointmentMeetingPoint");
 				//System.out.println(prest);
-				prest.executeUpdate();
+				prest.executeUpdate();*/
 			}
 			// update appointment in database
 			prest = db.preparedStatement("UPDATE sids.appointment SET title=?, start=?, end=?, description=?, isMeeting=?"+

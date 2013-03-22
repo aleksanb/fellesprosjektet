@@ -36,6 +36,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
 	private JTextField textField;
+	private JButton findButton;
 	
 	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers) {
 		setBackground(Color.LIGHT_GRAY);
@@ -49,7 +50,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		comboBox = new JComboBox<MeetingPoint>();
 		
-		JButton findButton = new JButton("Find Place");
+		findButton = new JButton("Find Place");
 		findButton.addActionListener(this);
 		findButton.setActionCommand("Cancel");
 		
@@ -164,6 +165,11 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		frame.setVisible(true);
 	}
 
+	public void toggleEditable(Boolean bool) {
+		this.pl.setEditable(bool);
+		this.comboBox.setEnabled(bool);
+		this.findButton.setEnabled(bool);
+	}
 	
 	public void actionPerformed(ActionEvent e) {
 		comboBox.removeAllItems();
