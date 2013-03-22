@@ -101,6 +101,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	public boolean logIn(String userName, String password) {
 		System.out.println("trying to log in");
+		loginPanel.correctInput.setVisible(true);
 		if (userName.length() > 0 && password.length() > 0 ) {
 			User temp = cf.sendAction(new User(0 ,userName ,null, password), Action.LOGIN);
 			System.out.println("got return value " + temp + " with status " + temp.getAction());
@@ -127,7 +128,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		appointments = cf.sendAction(currentUser, Action.GET_ALL_USERS_ALL_APPOINTMENTS);
 		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
 		
-		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk på denne
+		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk pï¿½ denne
 		//loadAppointments();
 		alarmSetup();
 		//fetching notifications, after easch call it wait 5 mins

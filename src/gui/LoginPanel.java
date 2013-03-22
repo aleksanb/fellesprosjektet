@@ -26,6 +26,8 @@ public class LoginPanel extends JPanel {
 	private JTextField textField;
 	private JPasswordField passwordfield;
 	private CalendarProgram cp;
+	private JLabel wrongInput;
+	public JLabel correctInput;
 
 
 	/**
@@ -87,6 +89,26 @@ public class LoginPanel extends JPanel {
 		gbc_btnLogin.gridx = 2;
 		gbc_btnLogin.gridy = 4;
 		add(btnLogin, gbc_btnLogin);
+		
+		wrongInput = new JLabel("The username or password you have entered is incorrect.");
+		GridBagConstraints gbc_wrongInput = new GridBagConstraints();
+		gbc_wrongInput.anchor = GridBagConstraints.WEST;
+		gbc_wrongInput.insets = new Insets(0, 0, 5, 0);
+		gbc_wrongInput.gridx = 2;
+		gbc_wrongInput.gridy = 5;
+		add(wrongInput, gbc_wrongInput);
+		wrongInput.setForeground(Color.RED);
+		wrongInput.setVisible(false);
+	
+		correctInput = new JLabel("Trying to log in, please wait.");
+		GridBagConstraints gbc_correctInput = new GridBagConstraints();
+		gbc_correctInput.anchor = GridBagConstraints.WEST;
+		gbc_correctInput.insets = new Insets(0, 0, 5, 0);
+		gbc_correctInput.gridx = 2;
+		gbc_correctInput.gridy = 5;
+		add(correctInput, gbc_correctInput);
+		correctInput.setForeground(Color.BLACK);
+		correctInput.setVisible(false);
 
 	}
 	
@@ -103,11 +125,13 @@ public class LoginPanel extends JPanel {
 		
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("someone clicked with " + textField.getText() + "and" + passwordfield.getText());
+			correctInput.setVisible(true);
 			if(cp.logIn(textField.getText(),passwordfield.getText())){
 				lp.setVisible(false);
 				cp.CreateMainProgram();
 			} else {
 				System.out.println("invalid login");
+				wrongInput.setVisible(true);
 			}
 		}
 	}
@@ -127,6 +151,7 @@ public class LoginPanel extends JPanel {
 
 		public void keyReleased(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				correctInput.setVisible(true);
 				if(cp.logIn(textField.getText(),passwordfield.getText())){
 					lp.setVisible(false);
 					cp.CreateMainProgram();
