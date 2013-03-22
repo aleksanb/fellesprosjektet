@@ -43,6 +43,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	protected MeetingPanel meetingPanel;
 	protected JButton saveButton;
 	protected JButton deleteButton;
+	protected Boolean firstTime;
 	
 	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment, Boolean firstTime) {
 		
@@ -50,6 +51,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		this.appointment = appointment.getCopy();
 		//reference to the main program
 		this.cp=cp;
+		this.firstTime = firstTime;
 		setBackground(Color.LIGHT_GRAY); 
 		//Pick start
 		startPick = new JXDatePicker();
@@ -136,16 +138,23 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
-			saveAppButton = new JButton("Save");
-			saveAppButton.addActionListener(this);
-			saveAppButton.setActionCommand("Save");					
-		
+		saveAppButton = new JButton("Save");
+		saveAppButton.addActionListener(this);
+		saveAppButton.setActionCommand("Save");					
+	
 		//delete appointment
 		System.out.println("we are in an edit appointment panel!");
 		deleteButton = new JButton("Delete");
 		deleteButton.setForeground(Color.BLACK);
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
+
+		if (cp.getUser().getId() != appointment.getCreatorUserId()) {
+			saveAppButton.setEnabled(false);
+			if (!firstTime) {
+				deleteButton.setEnabled(false);				
+			}
+		}
 		
 		//cancel appointment
 		cancelButton = new JButton("Cancel");
@@ -365,7 +374,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		}
 		
 		//add Appointment
-		if(event.getActionCommand().equals("Save") || event.getActionCommand().equals("Add")){
+		if(event.getActionCommand().equals("Save")){
 			
 			//start with a fresh instance
 //			appointment = new Appointment(getUser());
@@ -410,12 +419,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			//if approved
 			if(approved) {
 				System.out.println("approved yay!");
-				if (event.getActionCommand().equals("Save")) {
-					System.out.println("updating");
-					cp.updateAppointment(appointment);					
-				} else {
+				if (this.firstTime){
 					System.out.println("creating");
-					cp.addAppointment(appointment);
+					cp.addAppointment(appointment);					
+				} else {
+					System.out.println("updating");
+					cp.updateAppointment(appointment);										
 				}
 				cp.displayMainProgram(this);
 			}
