@@ -19,6 +19,8 @@ public class ParticipantList extends JPanel implements ActionListener{
 	private JList<User> pList;
 	protected DefaultListModel<User> nonparticipants;
 	protected DefaultListModel<User> participants;
+	JButton btnAdd;
+	JButton buttonRemove;
 	
 	public ParticipantList() {
 		JPanel leftPanel = new JPanel();
@@ -27,11 +29,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBackground(Color.WHITE);
 		
-		JButton btnAdd = new JButton("Add >>");
+		btnAdd = new JButton("Add >>");
 		btnAdd.addActionListener(this);
 		btnAdd.setActionCommand("Add");
 		
-		JButton buttonRemove = new JButton("<< Remove");
+		buttonRemove = new JButton("<< Remove");
 		buttonRemove.addActionListener(this);
 		buttonRemove.setActionCommand("Remove");
 		
@@ -58,42 +60,41 @@ public class ParticipantList extends JPanel implements ActionListener{
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(leftPanel, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-							.addGap(43)
+							.addComponent(leftPanel, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 								.addComponent(btnAdd, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(buttonRemove, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(34)
+							.addGap(51)
 							.addComponent(lblAllUsers)))
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(53)
-							.addComponent(rightPanel, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+							.addComponent(rightPanel, GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
 							.addContainerGap())
 						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(lblParticipating)
-							.addGap(26))))
+							.addGap(48))))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(89)
 							.addComponent(btnAdd)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(buttonRemove))
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(12)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(lblAllUsers)
 								.addComponent(lblParticipating))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(leftPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-								.addComponent(rightPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(leftPanel, GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+								.addComponent(rightPanel, GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))))
 					.addContainerGap())
 		);
 		setLayout(groupLayout);
@@ -142,6 +143,11 @@ public class ParticipantList extends JPanel implements ActionListener{
 		frame.pack();
         frame.setSize(500,630);
         frame.setVisible(true);
+	}
+	
+	public void setEditable(Boolean bool) {
+		this.btnAdd.setEnabled(bool);
+		this.buttonRemove.setEnabled(bool);
 	}
 	
 }
