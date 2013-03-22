@@ -47,7 +47,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment, Boolean firstTime) {
 		
 		//creates a default appointment object based on today, with unique id
-		this.appointment = appointment;
+		this.appointment = appointment.getCopy();
 		//reference to the main program
 		this.cp=cp;
 		setBackground(Color.PINK); 
@@ -57,7 +57,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		startPick.setDate(new Date());
 		
 		//title label
-		JLabel titleLabel = new JLabel("Title:");
+		JLabel titleLabel;
+		if (firstTime) {
+			titleLabel = new JLabel("Title: ");
+		} else {
+			titleLabel = new JLabel(" Owned by: " + cp.getCachedUsers().get(appointment.getCreatorUserId()) + "Title: ");
+		}
 		
 		//title field
 		titleField = new JTextField();
@@ -150,8 +155,14 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
+		
+		// Access control
 		if (!firstTime && cp.getUser().getId() != appointment.getCreatorUserId()) {
 			deleteButton.setEnabled(false);
+		}
+		
+		if (cp.getUser().getId() != appointment.getCreatorUserId()) {
+			saveAppButton.setEnabled(false);
 		}
 		
 		//cancel appointment
@@ -328,6 +339,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			cp.displayMainProgram(this);
 		}
 		if(event.getActionCommand().equals("Delete")){
+			cp.deleteAppointment(this.appointment);
+			cp.displayMainProgram(this);
 			//TODO delete-method in CalendarProgram
 		}
 		//add meeting options
@@ -367,12 +380,15 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			if(alarmBox.isSelected()) {
 				setAlarm(true);
 			}
-				
+			
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
 				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
 				appointment.setParticipants(meetingPanel.getParticipants());
+			} else {
+				appointment.setMeeting(false);
+				appointment.setMeetingPoint(null);
 			}
 			
 			//if approved
@@ -387,13 +403,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 				}
 				cp.displayMainProgram(this);
 			}
-			//debug
-			System.out.println(appointment);
 		}
 		
 		if(event.getActionCommand().equals("Delete")){
 			cp.displayMainProgram(this);
 			cp.deleteAppointment(appointment);
+			System.out.println("******* sent delete command from EAP *******");
 			//TODO delete-method in CalendarProgram
 		}
 		//cancel the appointment
@@ -416,7 +431,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		GregorianCalendar alarm = (GregorianCalendar) appointment.getStart().clone();
 		int value = Integer.parseInt(alarmValueField.getText());
 		if(value<0){
-			JOptionPane.showMessageDialog(this, "No negative numbers i alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "No negative numbers in alarmfield","Alarm Error",JOptionPane.ERROR_MESSAGE);
 			approved=false;
 			return appointment.getAlarm().getAlarmTime();
 		}
