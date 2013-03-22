@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import db.AbstractModel;
 import db.Action;
@@ -240,14 +242,19 @@ public class Server implements Runnable{
 			}
 			break;
 		case GET_MEETINGPOINT:
-			ArrayList<MeetingPoint> g_m_callback = new ArrayList<MeetingPoint>();
-			g_m_callback.add(new MeetingPoint(10, "yolo", 40));
-			g_m_callback.add(new MeetingPoint(13, "holo", 30));
+			System.out.println("Vi vil ha alle brukerne!");
+			Set<MeetingPoint> g_m_callback;
+			try {
+				g_m_callback = sf.getAvailableMeetingpoints((Appointment) am);
+			} catch (Exception e) { 
+				g_m_callback = new HashSet<MeetingPoint>();
+			}
 			try {
 				output.writeObject(g_m_callback);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+			System.out.println("sent back meetingpoints with size" + g_m_callback.size());
 			break;
 		case SET_STATUS_ATTENDING:
 		case SET_STATUS_NOT_ATTENDING:

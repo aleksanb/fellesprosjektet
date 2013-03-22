@@ -320,7 +320,7 @@ public class ServerFactory {
 				}
 				System.out.println("finished adding users");
 				// TODO: implement
-				/*if (appointment.isMeeting()) { 
+				if (appointment.isMeeting() && appointment.getMeetingPoint() != null) { 
 					// create appointment - room connection
 					System.out.println("executing appointmentMeetingpoint");
 					prest = db.preparedStatement("INSERT INTO sids.appointment_meetingpoint (appointmentId, meetingpointId) VALUES(?, ?)");
@@ -329,7 +329,7 @@ public class ServerFactory {
 					System.out.println("executing appointmentMeetingPoint");
 					prest.executeUpdate();
 					
-				}*/
+				}
 			}
 			
 			System.out.println("finished inserting");
@@ -432,13 +432,14 @@ public class ServerFactory {
 				}
 				
 				// update room connection
-				/*System.out.println("updating appointmentMeetingpoint");
-				prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
-				prest.setInt(2, appointment.getMeetingPoint().getId());
-				prest.setInt(1, appointment.getId());
-				System.out.println("updating appointmentMeetingPoint");
+				if (appointment.getMeetingPoint() != null) {
+					System.out.println("updating appointmentMeetingpoint");
+					prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
+					prest.setInt(2, appointment.getMeetingPoint().getId());
+					prest.setInt(1, appointment.getId());
+					prest.executeUpdate();
+				}
 				//System.out.println(prest);
-				prest.executeUpdate();*/
 			}
 			// update appointment in database
 			prest = db.preparedStatement("UPDATE sids.appointment SET title=?, start=?, end=?, description=?, isMeeting=?"+
@@ -483,7 +484,7 @@ public class ServerFactory {
 		try {
 			System.out.println("preparing to get meetingpoints");
 			Boolean shouldClose = db.initialize();
-			prest = db.preparedStatement("SELECT * FROM meetingpoint WHERE capacity>=?;");
+			prest = db.preparedStatement("SELECT * FROM sids.meetingpoint WHERE capacity>=?;");
 			prest.setInt(1, minCap);
 			//puts fitting rooms in a set
 			mpResult = prest.executeQuery();
@@ -498,7 +499,7 @@ public class ServerFactory {
 			boolean isAvailable;
 			for (MeetingPoint meetingPoint : mPoints) {
 				isAvailable = true;
-				prest = db.preparedStatement("SELECT start,end FROM appointment_meetingpoint JOIN appointment ON appointmentId=id WHERE meetingpointId=?;");
+				prest = db.preparedStatement("SELECT start,end FROM sids.appointment_meetingpoint JOIN sids.appointment ON appointmentId=id WHERE meetingpointId=?;");
 				prest.setInt(1, meetingPoint.getId());
 				timeRes=prest.executeQuery();
 				//checks alle appointments connected to this MeetingPoint for collisions with the appointment
