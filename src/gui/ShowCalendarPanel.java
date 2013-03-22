@@ -144,6 +144,7 @@ public class ShowCalendarPanel extends JPanel implements MouseListener {
 		add(previousWeek);
 		
 		//Set appointments from user
+		System.out.println(user);
 		setUserAndAppointments(cp.getApointmentsFromUser(user));
 		
 		updateCalendar();
@@ -295,6 +296,7 @@ public class ShowCalendarPanel extends JPanel implements MouseListener {
 		updateCalendar();
 	}
 	public void setUserAndAppointments(ArrayList<Appointment> appointments) {
+		System.out.println(appointments);
 		for(int i = 0; i<appointments.size(); i++){
 			Appointment app = appointments.get(i);
 		addAppointmentToModel(app);

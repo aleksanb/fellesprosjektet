@@ -287,7 +287,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	
 	public void updateFields(Appointment app) {
 		titleField.setText(app.getTitle());
-		startPick.setDate(app.getStartAsDate());
+		startPick.setDate(app.getStartAsDate()); //?
 		endPick.setDate(app.getEndAsDate());
 		
 		displayTime(startField, app.getStartAsDate());
