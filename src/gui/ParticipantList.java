@@ -82,6 +82,7 @@ public class ParticipantList extends JPanel implements ActionListener{
 	
 	
 	public void populateParticipants(ArrayList<User> allUsers, ArrayList<User> participants){
+		allUsers.removeAll(participants);
 		for(int i = 0; i < allUsers.size(); i++){
 			this.nonparticipants.addElement(allUsers.get(i));
 		}
