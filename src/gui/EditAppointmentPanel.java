@@ -258,12 +258,35 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		
 	}
 	
+	public void displayTime(JTextField field, Date date){
+		int hours = date.getHours();
+		int minutes = date.getMinutes();
+		
+		//Fix zeros for hour
+		if(hours < 10){
+			field.setText("0" + hours + ":");
+		}
+		else{
+			field.setText(hours + ":");
+		}
+		
+		//Fix zeros for minute
+		if(minutes < 10){
+			field.setText(field.getText() + "0" + minutes);
+		}
+		else{
+			field.setText(field.getText() + minutes);
+		}
+	}
+	
 	public void updateFields(Appointment app) {
 		titleField.setText(app.getTitle());
-		startPick.setDate(app.getStartAsDate()); //?
+		startPick.setDate(app.getStartAsDate());
 		endPick.setDate(app.getEndAsDate());
-		startField.setText(app.getStartAsDate().getHours() + ":" + app.getStartAsDate().getMinutes());
-		endField.setText(app.getEndAsDate().getHours() + ":" + app.getEndAsDate().getMinutes());
+		
+		displayTime(startField, app.getStartAsDate());
+		displayTime(endField, app.getEndAsDate());
+		
 		descriptionArea.setText(app.getDescription());
 		
 		
