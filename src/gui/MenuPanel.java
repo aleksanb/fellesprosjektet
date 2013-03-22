@@ -231,7 +231,7 @@ public class MenuPanel extends JPanel {
 		}
 		
 	}
-	//just us the show calendars button to send notifications to server for testing
+	//just used the show calendars button to send notifications to server for testing
 	class TestListener implements ActionListener{
 		CalendarProgram cp;
 		public TestListener(CalendarProgram cp){
@@ -266,13 +266,6 @@ public class MenuPanel extends JPanel {
 			else{
 				showCalendarsDisbled();
 			}
-			/*JFrame frame = new JFrame("...");
-			//TODO first make a Modified ParticipationlistPanel where it only is possible to select one user and then add å showCalendarpanel according to which user is selected
-			ShowCalendarPanel scp = new ShowCalendarPanel(cp, user);
-			frame.getContentPane().add(scp);
-			frame.pack();
-			frame.setSize(800, 600);
-			frame.setVisible(true);*/
 		}
 	}
 	//listener for notificationlist

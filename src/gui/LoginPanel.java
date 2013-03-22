@@ -26,6 +26,8 @@ public class LoginPanel extends JPanel {
 	private JTextField textField;
 	private JPasswordField passwordfield;
 	private CalendarProgram cp;
+	private JLabel wrongInput;
+	private JLabel correctInput;
 
 
 	/**
@@ -87,7 +89,34 @@ public class LoginPanel extends JPanel {
 		gbc_btnLogin.gridx = 2;
 		gbc_btnLogin.gridy = 4;
 		add(btnLogin, gbc_btnLogin);
+		
+		wrongInput = new JLabel("The username or password you have entered is incorrect.");
+		GridBagConstraints gbc_wrongInput = new GridBagConstraints();
+		gbc_wrongInput.anchor = GridBagConstraints.WEST;
+		gbc_wrongInput.insets = new Insets(0, 0, 5, 0);
+		gbc_wrongInput.gridx = 2;
+		gbc_wrongInput.gridy = 5;
+		add(wrongInput, gbc_wrongInput);
+		wrongInput.setForeground(Color.RED);
+		wrongInput.setVisible(false);
+	
+		correctInput = new JLabel("Trying to log in, please wait.");
+		GridBagConstraints gbc_correctInput = new GridBagConstraints();
+		gbc_correctInput.anchor = GridBagConstraints.WEST;
+		gbc_correctInput.insets = new Insets(0, 0, 5, 0);
+		gbc_correctInput.gridx = 2;
+		gbc_correctInput.gridy = 5;
+		add(correctInput, gbc_correctInput);
+		correctInput.setForeground(Color.BLACK);
+		correctInput.setVisible(false);
 
+	}
+	
+	public void toggleWrongInputVisibility() {
+		wrongInput.setVisible(true);
+	}
+	public void toggleCorrectInputVisibility() {
+		correctInput.setVisible(true);
 	}
 	
 	
@@ -108,6 +137,7 @@ public class LoginPanel extends JPanel {
 				cp.CreateMainProgram();
 			} else {
 				System.out.println("invalid login");
+				
 			}
 		}
 	}
@@ -138,6 +168,9 @@ public class LoginPanel extends JPanel {
 		public void keyTyped(KeyEvent e) {
 			
 		}
+		
+		
+		
 		
 	}
 

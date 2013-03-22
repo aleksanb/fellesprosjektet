@@ -105,11 +105,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			User temp = cf.sendAction(new User(0 ,userName ,null, password), Action.LOGIN);
 			System.out.println("got return value " + temp + " with status " + temp.getAction());
 			if (temp.getAction().equals(Action.SUCCESS)) {
+				loginPanel.toggleCorrectInputVisibility();
 				System.out.println("*** Got valid login ***");
 				currentUser = temp;
 				return true;
-			} 
+			}
 		}
+		loginPanel.toggleWrongInputVisibility();
 		return false;
 	}
 
@@ -127,10 +129,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		appointments = cf.sendAction(currentUser, Action.GET_ALL_USERS_ALL_APPOINTMENTS);
 		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
 		
-		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk på denne
+		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk pï¿½ denne
 		//loadAppointments();
 		alarmSetup();
-		//fetching notifications, after easch call it wait 5 mins
+		//fetching notifications in new thread, after easch call it wait 5 mins
 		new Thread(new Runnable() {
 			public void run() {
 				while(true){
@@ -189,6 +191,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		}
 	}
 	
+	@SuppressWarnings("static-access")
 	public void addAppointment(Appointment app){
 		System.out.println("we have these participants!");
 		System.out.println(app.getParticipants());
