@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import db.AbstractModel;
@@ -240,6 +241,21 @@ public class Server implements Runnable{
 				System.out.println("sent back " + action + " with status " + i_u_callback.getAction());
 			}
 			break;
+		case GET_MEETINGPOINT:
+			System.out.println("Vi vil ha alle brukerne!");
+			Set<MeetingPoint> g_m_callback;
+			try {
+				g_m_callback = sf.getAvailableMeetingpoints((Appointment) am);
+			} catch (Exception e) { 
+				g_m_callback = new HashSet<MeetingPoint>();
+			}
+			try {
+				output.writeObject(g_m_callback);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			System.out.println("sent back meetingpoints with size" + g_m_callback.size());
+			break;
 		case SET_STATUS_ATTENDING:
 		case SET_STATUS_NOT_ATTENDING:
 			Callback callback;
@@ -315,16 +331,6 @@ public class Server implements Runnable{
 				}
 				System.out.println("sent back " + action + " with status " + u_u_callback.getAction());
 			}
-			break;
-		case GET_MEETINGPOINT:
-			Set<MeetingPoint> mp_callback = sf.getAvailableMeetingpoints((Appointment) am);
-			
-			try {
-				output.writeObject(mp_callback);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
 			break;
 		case MASSIVE_FAILURE:
 			System.out.println("could not read input properly");

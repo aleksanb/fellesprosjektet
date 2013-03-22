@@ -1,7 +1,5 @@
 package db;
 
-import java.io.Serializable;
-
 public class MeetingPoint implements AbstractModel {
 	private Action action;
 	private static final long serialVersionUID = 1L;
@@ -13,6 +11,26 @@ public class MeetingPoint implements AbstractModel {
 		this.id = id;
 		this.name = name;
 		this.capacity = capacity;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MeetingPoint other = (MeetingPoint) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 	public int getId() {
 		return id;
@@ -31,9 +49,12 @@ public class MeetingPoint implements AbstractModel {
 	}
 	@Override
 	public String toString() {
+		return this.name + " ("+this.capacity+")";
+	}
+	/*public String toString() {
 		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
 				+ capacity + "]";
-	}
+	}*/
 	@Override
 	public void setAction(Action action) {
 		this.action=action;

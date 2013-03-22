@@ -11,6 +11,7 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -41,7 +42,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private HashMap<User, ArrayList<Appointment>> appointments;
 	private User currentUser;
 	private ArrayList<User> cachedUsers;
-	private ArrayList<MeetingPoint> meetingPoints;
 
 	//tools
 	private Thread alarmHandlerThread;
@@ -311,9 +311,9 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		return this.cachedUsers;
 	}
 	
-	public ArrayList<MeetingPoint> getMeetingPoints(){
-		this.meetingPoints = cf.sendAction(this.currentUser, Action.GET_MEETINGPOINT);
-		return this.meetingPoints;
+	public ArrayList<MeetingPoint> getMeetingPoints(Appointment app){
+		HashSet<MeetingPoint> callback = cf.sendAction(app, Action.GET_MEETINGPOINT);
+		return new ArrayList<MeetingPoint>(callback);
 	}
 
 }

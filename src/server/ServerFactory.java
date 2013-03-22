@@ -320,7 +320,7 @@ public class ServerFactory {
 				}
 				System.out.println("finished adding users");
 				// TODO: implement
-				/*if (appointment.isMeeting()) { 
+				if (appointment.isMeeting() && appointment.getMeetingPoint() != null) { 
 					// create appointment - room connection
 					System.out.println("executing appointmentMeetingpoint");
 					prest = db.preparedStatement("INSERT INTO sids.appointment_meetingpoint (appointmentId, meetingpointId) VALUES(?, ?)");
@@ -329,7 +329,7 @@ public class ServerFactory {
 					System.out.println("executing appointmentMeetingPoint");
 					prest.executeUpdate();
 					
-				}*/
+				}
 			}
 			
 			System.out.println("finished inserting");
@@ -432,13 +432,14 @@ public class ServerFactory {
 				}
 				
 				// update room connection
-				/*System.out.println("updating appointmentMeetingpoint");
-				prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
-				prest.setInt(2, appointment.getMeetingPoint().getId());
-				prest.setInt(1, appointment.getId());
-				System.out.println("updating appointmentMeetingPoint");
+				if (appointment.getMeetingPoint() != null) {
+					System.out.println("updating appointmentMeetingpoint");
+					prest = db.preparedStatement("UPDATE sids.appointment_meetingpoint SET meetingpointId=? WHERE appointmentId=? ");
+					prest.setInt(2, appointment.getMeetingPoint().getId());
+					prest.setInt(1, appointment.getId());
+					prest.executeUpdate();
+				}
 				//System.out.println(prest);
-				prest.executeUpdate();*/
 			}
 			// update appointment in database
 			prest = db.preparedStatement("UPDATE sids.appointment SET title=?, start=?, end=?, description=?, isMeeting=?"+

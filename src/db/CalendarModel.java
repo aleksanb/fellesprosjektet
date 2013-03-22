@@ -76,13 +76,13 @@ public class CalendarModel implements Serializable {
 	}
 	public void removeAppointment(Appointment appointment) {
 		for(int i= 0; i< appointments.size(); i++){
-			System.out.println("hore");
+			//System.out.println("hore");
 			AppointmentView appointmentView = appointments.get(i);
 			Appointment a = appointmentView.getModel();
-			System.out.println(a);
-			System.out.println(appointment);
+			//System.out.println(a);
+			//System.out.println(appointment);
 			if(a.equals(appointment)){
-				System.out.println("DEleted for faen");
+				//System.out.println("DEleted for faen");
 				appointments.remove(appointmentView);
 			}
 		}

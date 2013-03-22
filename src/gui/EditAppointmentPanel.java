@@ -140,12 +140,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.addActionListener(this);
 		meetingBox.setActionCommand("Meeting");
 		
-		//Get appointment hosts
-		User tmp = cp.getCachedUsers().get(cp.getCachedUsers().indexOf(new User(this.appointment.getCreatorUserId(), "b", "ull", "shit")));
-		String tmpName = (tmp != null)? tmp.getName() : "Has no creator :(";
-		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this, tmpName);
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this);
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
@@ -356,14 +352,16 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			meetingBox.setSelected(a);
 			meetingPanel.setVisible(a);
 			
-			//Update MeetingPoint
-			meetingPanel.filterPlaces(appointment.getParticipants(), cp.getMeetingPoints());
-			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
+			//Update MeetingPoint what? wtf
+			meetingPanel.filterPlaces();
+			if (app.getMeetingPoint() != null) {
+				meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
+			}
 		}
 	}
 	
 	public ArrayList<MeetingPoint> getMeetingPoints(){
-		return cp.getMeetingPoints();
+		return cp.getMeetingPoints(this.appointment);
 	}
 	
 	
@@ -440,7 +438,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			//meeting
 			if(meetingBox.isSelected()){
 				appointment.setMeeting(true);
-				appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				if (meetingPanel.comboBox.getSelectedItem() != null) {
+					System.out.println("meetingpoint is set to " + meetingPanel.comboBox.getSelectedItem());
+					appointment.setMeetingPoint((MeetingPoint) meetingPanel.comboBox.getSelectedItem());
+				} else {
+					appointment.setMeetingPoint(null);
+				}
 				appointment.setParticipants(meetingPanel.getParticipants());
 			} else {
 				appointment.setMeeting(false);

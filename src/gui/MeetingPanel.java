@@ -43,7 +43,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	ButtonGroup group;
 	EditAppointmentPanel eap;
 	
-	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap, String creator) {
+	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap) {
 		setBackground(Color.LIGHT_GRAY);
 		this.eap = eap;
 		//setBackground(Color.PINK);
@@ -77,7 +77,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		JLabel lblHost = new JLabel("Host:");
 		
-		hostField = new JTextField(creator);
+		hostField = new JTextField("the internets");
 		hostField.setEditable(false);
 		hostField.setColumns(10);
 		
@@ -152,14 +152,15 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		return this.pl.getParticipants();
 	}
 	
-	public ArrayList<MeetingPoint> filterPlaces(ArrayList<User> participants, ArrayList<MeetingPoint> allPlaces){
-		ArrayList<MeetingPoint> places = new ArrayList<MeetingPoint>();
+	public void filterPlaces(){
+		this.comboBox.removeAllItems();
+		ArrayList<User> participants = pl.getParticipants();
+		ArrayList<MeetingPoint> allPlaces = eap.getMeetingPoints();
 		for (int i = 0; i < allPlaces.size(); i++){
 			if(allPlaces.get(i).getCapacity() >= participants.size()-1){
-				places.add(allPlaces.get(i));
+				comboBox.addItem(allPlaces.get(i));
 			}
 		}
-		return places;
 	}
 	
 	public MeetingPoint getMeetingPoint(){
@@ -189,12 +190,9 @@ public class MeetingPanel extends JPanel implements ActionListener{
 				System.out.println("action is null");
 			}
 		} else if (e.getActionCommand().equals("Find")) {
+			// TODO: pass på at klokkeslett er satt før man søker
 			System.out.println("attempting to find rooms");
-			comboBox.removeAllItems();
-			ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), eap.getMeetingPoints());
-			for(int i = 0; i < filter.size(); i++){
-				comboBox.addItem(filter.get(i));
-			}
+			filterPlaces();
 		}
 	}
 }
