@@ -22,6 +22,7 @@ import core.alarm.AlarmListener;
 import db.Action;
 import db.Appointment;
 import db.Callback;
+import db.MeetingPoint;
 import db.Notification;
 import db.Status;
 import db.User;
@@ -39,6 +40,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private HashMap<User, ArrayList<Appointment>> appointments;
 	private User currentUser;
 	private ArrayList<User> cachedUsers;
+	private ArrayList<MeetingPoint> meetingPoints;
 
 	//tools
 	private Thread alarmHandlerThread;
@@ -129,7 +131,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		appointments = cf.sendAction(currentUser, Action.GET_ALL_USERS_ALL_APPOINTMENTS);
 		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
 		
-		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk p� denne
+		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk p��� denne
 		//loadAppointments();
 		alarmSetup();
 		//fetching notifications in new thread, after easch call it wait 5 mins
@@ -293,6 +295,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	
 	public ArrayList<User> getCachedUsers() {
 		return this.cachedUsers;
+	}
+	
+	public ArrayList<MeetingPoint> getMeetingPoints(){
+		this.meetingPoints = cf.sendAction(this.currentUser, Action.GET_MEETINGPOINT);
+		return this.meetingPoints;
 	}
 
 }
