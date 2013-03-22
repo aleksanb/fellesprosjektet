@@ -50,7 +50,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		this.appointment = appointment.getCopy();
 		//reference to the main program
 		this.cp=cp;
-		setBackground(Color.PINK); 
+		setBackground(Color.LIGHT_GRAY); 
 		//Pick start
 		startPick = new JXDatePicker();
 		startPick.addActionListener(this);
@@ -58,12 +58,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		
 		//title label
 		JLabel titleLabel;
-		if (firstTime) {
 			titleLabel = new JLabel("Title: ");
-		} else {
-			titleLabel = new JLabel(" Owned by: " + cp.getCachedUsers().get(appointment.getCreatorUserId()) + "Title: ");
-		}
-		
+			
 		//title field
 		titleField = new JTextField();
 		titleField.addActionListener(this);
@@ -120,7 +116,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		alarmValueField.setText("10");
 		alarmValueField.setVisible(false);
 		
-		beforeStartLabel = new JLabel("Before Start");
+		beforeStartLabel = new JLabel("Before Start:");
 		beforeStartLabel.setVisible(false);
 		alarmValueField.setColumns(3);
 		
@@ -139,31 +135,17 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants());
 		meetingPanel.setVisible(false);
 		
-		//add appointment
-		if (firstTime) {
-			saveAppButton = new JButton("Add");
-			saveAppButton.addActionListener(this);
-			saveAppButton.setActionCommand("Add");					
-		} else {
+		//add or save appointment
 			saveAppButton = new JButton("Save");
 			saveAppButton.addActionListener(this);
 			saveAppButton.setActionCommand("Save");					
-		}
 		
 		//delete appointment
 		System.out.println("we are in an edit appointment panel!");
 		deleteButton = new JButton("Delete");
+		deleteButton.setForeground(Color.BLACK);
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
-		
-		// Access control
-		if (!firstTime && cp.getUser().getId() != appointment.getCreatorUserId()) {
-			deleteButton.setEnabled(false);
-		}
-		
-		if (cp.getUser().getId() != appointment.getCreatorUserId()) {
-			saveAppButton.setEnabled(false);
-		}
 		
 		//cancel appointment
 		cancelButton = new JButton("Cancel");
@@ -171,51 +153,58 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		cancelButton.setActionCommand("Cancel");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(meetingBox, Alignment.LEADING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(alarmBox, GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-									.addGap(186))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)))
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(8)
-									.addComponent(beforeStartLabel))))
-						.addComponent(descriptionLabel, Alignment.LEADING)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(titleLabel)
-								.addComponent(startLabel)
-								.addComponent(endLabel))
-							.addGap(142)
+							.addComponent(meetingBox)
+							.addContainerGap(412, Short.MAX_VALUE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(descriptionLabel)
+							.addContainerGap(417, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(titleField, GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(endPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE)
-										.addComponent(startPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-										.addComponent(startField, 0, 0, Short.MAX_VALUE)
-										.addComponent(endField, GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))))
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addGap(13)
-							.addComponent(saveAppButton, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(deleteButton, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE))
-						.addComponent(descriptionArea, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-						.addComponent(meetingPanel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE))
-					.addGap(41))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(alarmBox, GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+											.addGap(186))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(8)
+											.addComponent(beforeStartLabel))))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(titleLabel)
+										.addComponent(startLabel)
+										.addComponent(endLabel))
+									.addGap(142)
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addComponent(titleField, GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(endPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE)
+												.addComponent(startPick, GroupLayout.PREFERRED_SIZE, 227, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+												.addComponent(startField, 0, 0, Short.MAX_VALUE)
+												.addComponent(endField, GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(saveAppButton, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+									.addGap(18)
+									.addComponent(deleteButton, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(cancelButton, GroupLayout.PREFERRED_SIZE, 144, GroupLayout.PREFERRED_SIZE))
+								.addComponent(meetingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addGap(41))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(descriptionArea, GroupLayout.PREFERRED_SIZE, 482, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -234,33 +223,33 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 										.addComponent(startLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
 								.addComponent(titleLabel))
 							.addGap(18)
-							.addComponent(endLabel)
-							.addGap(23)
-							.addComponent(descriptionLabel))
+							.addComponent(endLabel))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(88)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(endPick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(endField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-					.addGap(17)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(descriptionLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(descriptionArea, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(alarmBox)
 						.addComponent(beforeStartLabel))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(valueTypePick, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(alarmValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(meetingBox)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(meetingPanel, GroupLayout.PREFERRED_SIZE, 246, GroupLayout.PREFERRED_SIZE)
-					.addGap(2)
+					.addComponent(meetingPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(deleteButton)
+						.addComponent(cancelButton)
 						.addComponent(saveAppButton)
-						.addComponent(cancelButton))
+						.addComponent(deleteButton))
 					.addGap(62))
 		);
 		setLayout(groupLayout);

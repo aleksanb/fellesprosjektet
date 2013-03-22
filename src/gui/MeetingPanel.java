@@ -1,5 +1,6 @@
 package gui;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -26,6 +27,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JRadioButton;
 
 public class MeetingPanel extends JPanel implements ActionListener{
 
@@ -33,12 +35,14 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	protected ParticipantList pl;
 
 	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
+	private JTextField textField;
 	
 	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers) {
+		setBackground(Color.LIGHT_GRAY);
 		//setBackground(Color.PINK);
 		
-		JLabel lblNewLabel = new JLabel("Participants");
-		JLabel lblPlace = new JLabel("Place");
+		JLabel lblNewLabel = new JLabel("Participants:");
+		JLabel lblPlace = new JLabel("Place:");
 		
 		this.pl = new ParticipantList();		
 		this.pl.populateParticipants(allUsers, participatingUsers);
@@ -48,35 +52,82 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		JButton findButton = new JButton("Find Place");
 		findButton.addActionListener(this);
 		findButton.setActionCommand("Cancel");
+		
+		JLabel lblStatus = new JLabel("Status:");
+		
+		
+		JRadioButton rdbtnAttending = new JRadioButton("Attending");
+		
+		JRadioButton rdbtnNotAttending = new JRadioButton("Not attending");
+		
+		//Group radiobuttons
+		ButtonGroup group = new ButtonGroup();
+		group.add(rdbtnAttending);
+		group.add(rdbtnNotAttending);
+		
+		
+		JLabel lblHost = new JLabel("Host:");
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setColumns(10);
+		
+		JButton btnUpdateStatus = new JButton("Update status");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addComponent(lblPlace, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-							.addGap(24)
-							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(findButton))
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(pl, GroupLayout.PREFERRED_SIZE, 479, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblStatus)
+								.addComponent(lblPlace, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
+							.addGap(39)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 254, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(rdbtnAttending)
+									.addGap(18)
+									.addComponent(rdbtnNotAttending)))
 							.addGap(18)
-							.addComponent(pl, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(42, Short.MAX_VALUE))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(btnUpdateStatus, GroupLayout.PREFERRED_SIZE, 126, Short.MAX_VALUE)
+								.addComponent(findButton, GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)))
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addComponent(lblHost)
+							.addGap(139)
+							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 306, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblHost)
+						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(14)
 					.addComponent(lblNewLabel)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(pl, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(pl, GroupLayout.PREFERRED_SIZE, 207, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(findButton)
 						.addComponent(lblPlace))
-					.addGap(46))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(rdbtnAttending)
+						.addComponent(rdbtnNotAttending)
+						.addComponent(lblStatus)
+						.addComponent(btnUpdateStatus))
+					.addGap(12))
 		);
 		setLayout(groupLayout);
 		
@@ -123,5 +174,4 @@ public class MeetingPanel extends JPanel implements ActionListener{
 			comboBox.addItem(filter.get(i));
 		}
 	}
-
 }
