@@ -24,6 +24,7 @@ import db.Appointment;
 import db.Callback;
 import db.MeetingPoint;
 import db.Notification;
+import db.NotificationType;
 import db.Status;
 import db.User;
 
@@ -206,6 +207,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 				alarmHandlerThread.interrupt();
 				System.out.println("Thread: "+alarmHandlerThread.interrupted());
 			}
+			sendNotification(new Notification(currentUser.getId(), app, NotificationType.INVITE));
 			System.out.println("our superlist now contains the following"+appointments.size()+"elements: " + appointments);
 		} else {
 			System.out.println("Warning: Returned with status code " + callback.getAction());
@@ -221,6 +223,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			calendarPanel.updateCalendar();
 			alarmHandler.removeAppointment(appointment);
 			alarmHandlerThread.interrupt();
+			sendNotification(new Notification(currentUser.getId(), appointment, NotificationType.CANCELLED));
 		} else {
 			System.out.println("Warning: Returned with status code " + c.getAction());
 		}
@@ -235,8 +238,11 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			appointments.get(currentUser).remove(appointment);
 			appointments.get(currentUser).add(callback);
 			calendarPanel.removeAppointment(appointment);
-			alarmHandler.addAppointment(callback);//adds the new
-			alarmHandlerThread.interrupt();//wake the thread
+			if(callback.hasAlarm()){
+				alarmHandler.addAppointment(callback);//adds the new
+				alarmHandlerThread.interrupt();//wake the thread
+			}
+			sendNotification(new Notification(currentUser.getId(), appointment, NotificationType.CHANGED));
 			//calendarPanel.removeAppointment(appointment);
 			//calendarPanel.addAppointmentToModel(appointment);		
 		} else {
