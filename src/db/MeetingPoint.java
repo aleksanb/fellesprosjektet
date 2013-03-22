@@ -49,9 +49,12 @@ public class MeetingPoint implements AbstractModel {
 	}
 	@Override
 	public String toString() {
+		return this.name + " ("+this.capacity+")";
+	}
+	/*public String toString() {
 		return "MeetingPoint [id=" + id + ", name=" + name + ", capacity="
 				+ capacity + "]";
-	}
+	}*/
 	@Override
 	public void setAction(Action action) {
 		this.action=action;
