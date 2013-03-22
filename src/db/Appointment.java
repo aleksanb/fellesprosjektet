@@ -20,6 +20,28 @@ public class Appointment implements AbstractModel, Serializable {
 	private boolean isMeeting;
 	private Alarm alarm;
 	private ArrayList<User> participants;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Appointment other = (Appointment) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
 	private MeetingPoint place;
 	private AppointmentType appointmentType;
 	private MeetingPoint meetingPoint;
@@ -32,6 +54,7 @@ public class Appointment implements AbstractModel, Serializable {
 		this.description="";
 		this.isMeeting=false;
 		this.participants = new ArrayList<User>();
+		this.participants.add(u);
 		this.place = null;
 		this.appointmentType = AppointmentType.OK;
 		this.meetingPoint = null;
@@ -181,9 +204,12 @@ public class Appointment implements AbstractModel, Serializable {
 		Appointment app = new Appointment(this.id,this.creatorUserId,this.title,this.start,this.end,this.description,this.isMeeting);
 		if(this.hasAlarm())
 			app.setAlarm(this.alarm.getAlarmTime());
+		app.setParticipants(new ArrayList<User>());
+		for (int i = 0; i < this.participants.size(); i++) {
+			app.addParticipant(this.getParticipants().get(i));
+		}
 		if(this.isMeeting){
 			app.setMeetingPoint(this.meetingPoint);
-			app.setParticipants(this.participants);
 		}
 		//TODO: bruke this.clone() ?
 		return (T) app; 
