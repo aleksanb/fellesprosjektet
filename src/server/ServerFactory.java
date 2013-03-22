@@ -483,7 +483,7 @@ public class ServerFactory {
 		try {
 			System.out.println("preparing to get meetingpoints");
 			Boolean shouldClose = db.initialize();
-			prest = db.preparedStatement("SELECT * FROM meetingpoint WHERE capacity>=?;");
+			prest = db.preparedStatement("SELECT * FROM sids.meetingpoint WHERE capacity>=?;");
 			prest.setInt(1, minCap);
 			//puts fitting rooms in a set
 			mpResult = prest.executeQuery();
@@ -498,7 +498,7 @@ public class ServerFactory {
 			boolean isAvailable;
 			for (MeetingPoint meetingPoint : mPoints) {
 				isAvailable = true;
-				prest = db.preparedStatement("SELECT start,end FROM appointment_meetingpoint JOIN appointment ON appointmentId=id WHERE meetingpointId=?;");
+				prest = db.preparedStatement("SELECT start,end FROM sids.appointment_meetingpoint JOIN sids.appointment ON appointmentId=id WHERE meetingpointId=?;");
 				prest.setInt(1, meetingPoint.getId());
 				timeRes=prest.executeQuery();
 				//checks alle appointments connected to this MeetingPoint for collisions with the appointment
