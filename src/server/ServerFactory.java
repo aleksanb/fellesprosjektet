@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -472,7 +473,56 @@ public class ServerFactory {
 	}
 	
 	public Set<MeetingPoint> getAvailableMeetingpoints(Appointment appointment){
-		return null;
+		int minCap=appointment.getParticipants().size();
+		PreparedStatement prest;
+		ResultSet mpResult;
+		Set<MeetingPoint> mPoints = new HashSet<MeetingPoint>();
+		Set<MeetingPoint> callback = new HashSet<MeetingPoint>();		
+		
+		//get fitting meetingpoints
+		try {
+			System.out.println("preparing to get meetingpoints");
+			Boolean shouldClose = db.initialize();
+			prest = db.preparedStatement("SELECT * FROM meetingpoint WHERE capacity>=?;");
+			prest.setInt(1, minCap);
+			//puts fitting rooms in a set
+			mpResult = prest.executeQuery();
+			while(mpResult.next())
+				mPoints.add(new MeetingPoint(mpResult.getInt("id"), mpResult.getString("name"), mpResult.getInt("capacity")));
+			//runs thru each meetingpoint and compares start and end dates
+			Date start = appointment.getStartAsDate();
+			Date end = appointment.getEndAsDate();
+			Date tempStart=null;
+			Date tempEnd=null;
+			ResultSet timeRes;
+			boolean isAvailable;
+			for (MeetingPoint meetingPoint : mPoints) {
+				isAvailable = true;
+				prest = db.preparedStatement("SELECT start,end FROM appointment_meetingpoint JOIN appointment ON appointmentId=id WHERE meetingpointId=?;");
+				prest.setInt(1, meetingPoint.getId());
+				timeRes=prest.executeQuery();
+				//checks alle appointments connected to this MeetingPoint for collisions with the appointment
+				while(timeRes.next() && isAvailable ){
+					tempStart = timeRes.getTimestamp("start");
+					tempEnd = timeRes.getTimestamp("end");
+					if(tempStart.after(end) || tempEnd.before(start))
+						continue;
+					else
+						isAvailable=false;
+				}
+				//if this meetingpoint is availabel it get added to the set that will be returned
+				if(isAvailable)
+					callback.add(meetingPoint);
+			}
+			
+			
+			if (shouldClose) db.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("something fucked up while getting available meetingpoints");
+		}
+		
+		return callback;
 		
 	}
 

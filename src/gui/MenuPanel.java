@@ -54,7 +54,7 @@ public class MenuPanel extends JPanel {
 		
 
 		//set helloLabel
-		JLabel lblHello = new JLabel("Hello");
+		JLabel lblHello = new JLabel("Hello " + cp.getUser().getName());
 		lblHello.setForeground(new Color(0, 0, 0));
 		lblHello.setBackground(new Color(0, 0, 255));
 		GridBagConstraints gbc_lblHello = new GridBagConstraints();
@@ -92,6 +92,7 @@ public class MenuPanel extends JPanel {
 		participantsList.setVisible(false);
 		add(participantsList, gbc_comboBox);
 		User user = new User();
+		user.setEmail("");
 		user.setName("Select a Person");
 		participantsList.addItem(user);
 		
@@ -308,7 +309,15 @@ public class MenuPanel extends JPanel {
 			System.out.println(arg0.getActionCommand());
 			System.out.println(index);
 			User user = (User) participantsList.getSelectedItem();
-			JFrame frame = new JFrame();
+			String temp = user.getName();
+			if(temp.endsWith("s")){
+				temp = temp + "'";
+			}
+			else{
+				temp = temp + "s";
+			}
+			temp = temp + " calendar";
+			JFrame frame = new JFrame(temp);
 			ShowCalendarPanel scp = new ShowCalendarPanel(cp, user);
 			frame.getContentPane().add(scp);
 			frame.pack();
