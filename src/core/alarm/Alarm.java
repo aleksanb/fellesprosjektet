@@ -2,10 +2,14 @@ package core.alarm;
 
 import java.util.GregorianCalendar;
 
-public class Alarm {
+import db.AbstractModel;
+import db.Action;
 
+public class Alarm implements AbstractModel {
+	private static final long serialVersionUID = 1L;
 	private GregorianCalendar time;
 	private int id;
+	private Action action;
 	
 	public Alarm(GregorianCalendar alarmTime, int id) {
 		this.time=alarmTime;
@@ -19,6 +23,18 @@ public class Alarm {
 	}
 	public long getMillis(){
 		return time.getTimeInMillis();
+	}
+	@Override
+	public void setAction(Action action) {
+		this.action = action;
+	}
+	@Override
+	public Action getAction() {
+		return this.action;
+	}
+	@Override
+	public <T> T getCopy() {
+		return (T) new Alarm(this.time, this.id);
 	}
 
 }
