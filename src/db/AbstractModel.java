@@ -1,6 +1,8 @@
 package db;
 
-public interface AbstractModel {
+import java.io.Serializable;
+
+public interface AbstractModel extends Serializable {
 
 	public void setAction(Action action);
 	public Action getAction();
