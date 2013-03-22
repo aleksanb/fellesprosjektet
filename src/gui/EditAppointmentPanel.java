@@ -341,7 +341,6 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		if(event.getActionCommand().equals("Delete")){
 			cp.deleteAppointment(this.appointment);
 			cp.displayMainProgram(this);
-			//TODO delete-method in CalendarProgram
 		}
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){

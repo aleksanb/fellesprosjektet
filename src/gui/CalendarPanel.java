@@ -338,7 +338,9 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	}
 	
 	public void removeAppointment(Appointment app) {
+			System.out.println("DEleted");
 			model.removeAppointment(app);
+			updateCalendar();
 	}
 	
 	private ArrayList<Appointment> getAppointmentList() {
@@ -354,7 +356,7 @@ public class CalendarPanel extends JPanel implements MouseListener {
 	public void setUserAndAppointments(ArrayList<Appointment> appointments) {
 		Appointment tmp;
 		for(int i = 0; i<appointments.size(); i++){
-			tmp = appointments.get(i).getCopy();
+			tmp = appointments.get(i);
 			addAppointmentToModel(tmp);
 		}
 		updateCalendar();
