@@ -32,8 +32,10 @@ public class AlarmHandler implements Runnable{
 			appointments.push(app);
 			Collections.sort(appointments,new alarmComparator());
 		}
-		else
-			throw new IllegalArgumentException("This appointment does not have an alarm");
+		else {
+			System.out.println("this appointment does not have an alarm");
+			//throw new IllegalArgumentException("This appointment does not have an alarm");
+		}
 	}
 	//use this when a whole list needs to be imported, like in the start
 	public void addAppointments(ArrayList<Appointment> appointmentList){
