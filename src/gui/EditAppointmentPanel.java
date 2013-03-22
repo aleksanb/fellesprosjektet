@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.Color;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,6 +19,7 @@ import javax.swing.*;
 import org.jdesktop.swingx.JXDatePicker;
 
 import core.CalendarProgram;
+import db.Action;
 import db.Appointment;
 import db.MeetingPoint;
 import db.User;
@@ -43,6 +47,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	protected MeetingPanel meetingPanel;
 	protected JButton saveButton;
 	protected JButton deleteButton;
+	protected Boolean firstTime;
 	
 	public EditAppointmentPanel(CalendarProgram cp, Appointment appointment, Boolean firstTime) {
 		
@@ -50,11 +55,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		this.appointment = appointment.getCopy();
 		//reference to the main program
 		this.cp=cp;
+		this.firstTime = firstTime;
 		setBackground(Color.LIGHT_GRAY); 
 		//Pick start
 		startPick = new JXDatePicker();
 		startPick.addActionListener(this);
 		startPick.setDate(new Date());
+		//Formatting time
 		
 		//title label
 		JLabel titleLabel;
@@ -78,7 +85,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		//set start time
 		startField = new JTextField();
 		startField.setToolTipText("HH:MM");
-		//TODO format properly
+		//TODO format properly, make sure it is not possible to add appointments without the correct formatting.
 		startField.setText(appointment.getStart().get(Calendar.HOUR)+":"+appointment.getStart().get(Calendar.MINUTE));
 		startField.addActionListener(this);
 		startField.setActionCommand("Start time");
@@ -96,6 +103,8 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		startField.addActionListener(this);
 		startField.setActionCommand("End time");
 		endField.setColumns(6);
+		
+		
 		
 		//description label
 		JLabel descriptionLabel = new JLabel("Description:");
@@ -132,20 +141,37 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.setActionCommand("Meeting");
 		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants());
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this);
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
-			saveAppButton = new JButton("Save");
-			saveAppButton.addActionListener(this);
-			saveAppButton.setActionCommand("Save");					
-		
+		saveAppButton = new JButton("Save");
+		saveAppButton.addActionListener(this);
+		saveAppButton.setActionCommand("Save");					
+	
 		//delete appointment
 		System.out.println("we are in an edit appointment panel!");
 		deleteButton = new JButton("Delete");
 		deleteButton.setForeground(Color.BLACK);
 		deleteButton.addActionListener(this);
 		deleteButton.setActionCommand("Delete");
+
+		if (cp.getUser().getId() != appointment.getCreatorUserId()) {
+			saveAppButton.setEnabled(false);
+			meetingPanel.toggleEditable(false);
+			startPick.setEnabled(false);
+			titleField.setEnabled(false);
+			endPick.setEnabled(false);
+			endField.setEnabled(false);
+			startField.setEnabled(false);
+			descriptionArea.setEnabled(false);
+			meetingBox.setEnabled(false);
+			if (!firstTime) {
+				deleteButton.setEnabled(false);				
+			}
+		} else {
+			meetingPanel.toggleEditable(true);
+		}
 		
 		//cancel appointment
 		cancelButton = new JButton("Cancel");
@@ -327,9 +353,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			meetingPanel.setVisible(a);
 			
 			//Update MeetingPoint
-			meetingPanel.filterPlaces(appointment.getParticipants(), meetingPanel.allPlaces);
+			meetingPanel.filterPlaces(appointment.getParticipants(), cp.getMeetingPoints());
 			meetingPanel.comboBox.setSelectedItem(app.getMeetingPoint());
 		}
+	}
+	
+	public ArrayList<MeetingPoint> getMeetingPoints(){
+		return cp.getMeetingPoints();
 	}
 	
 	
@@ -365,7 +395,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		}
 		
 		//add Appointment
-		if(event.getActionCommand().equals("Save") || event.getActionCommand().equals("Add")){
+		if(event.getActionCommand().equals("Save")){
 			
 			//start with a fresh instance
 //			appointment = new Appointment(getUser());
@@ -381,6 +411,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 				JOptionPane.showMessageDialog(this, "You must pick dates.","Date error",JOptionPane.ERROR_MESSAGE);
 			} else {
 				approved=true;
+			}
+			
+			if(appointment.getTitle().equals("")) {
+				approved=false;
+				System.out.println("The appointment needs a title.");
+				JOptionPane.showMessageDialog(this, "You must set a title.", "Missing title", JOptionPane.ERROR_MESSAGE);
 			}
 			
 			//check format and set time
@@ -410,12 +446,12 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			//if approved
 			if(approved) {
 				System.out.println("approved yay!");
-				if (event.getActionCommand().equals("Save")) {
-					System.out.println("updating");
-					cp.updateAppointment(appointment);					
-				} else {
+				if (this.firstTime){
 					System.out.println("creating");
-					cp.addAppointment(appointment);
+					cp.addAppointment(appointment);					
+				} else {
+					System.out.println("updating");
+					cp.updateAppointment(appointment);										
 				}
 				cp.displayMainProgram(this);
 			}
@@ -451,9 +487,9 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			approved=false;
 			return appointment.getAlarm().getAlarmTime();
 		}
-		if(type.equals("Minute"))
+		if(type.equals("Minutes"))
 			alarm.set(Calendar.MINUTE,alarm.get(Calendar.MINUTE) - value);
-		else if(type.equals("Hour"))
+		else if(type.equals("Hours"))
 			alarm.set(Calendar.HOUR,alarm.get(Calendar.HOUR) - value);
 		else
 			alarm.set(Calendar.DATE,alarm.get(Calendar.DATE) - value);
@@ -495,18 +531,24 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 	private void checkTimeFormat(String[] text) throws IllegalArgumentException{
 		if(text.length!=2)
 			throw new IllegalArgumentException();
+			approved=false;
 		if(text[1].length()!=2 && text[0].length()!=2)
 			throw new IllegalArgumentException();
+			approved=false;
 	}
 
+	public void setStatus(String ac) {
+		if (ac.equals("Attending")) {
+			System.out.println("setting status to attending");
+			cp.setStatus(appointment, Action.SET_STATUS_ATTENDING);			
+		} else if (ac.equals("Not attending")) {
+			System.out.println("setting status to not attending");
+			cp.setStatus(appointment, Action.SET_STATUS_NOT_ATTENDING);			
+		}
+	}
 	
-	//Testing
-	/*public static void main(String[] args){
-		JFrame frame = new JFrame();
-		frame.pack();
-        frame.setSize (500,630);
-        frame.setVisible(true);
-	}*/
-	
+	public Appointment getAppointmnet() {
+		return this.appointment;
+	}
 
 }
