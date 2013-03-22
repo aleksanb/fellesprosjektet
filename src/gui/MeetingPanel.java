@@ -191,7 +191,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		} else if (e.getActionCommand().equals("Find")) {
 			System.out.println("attempting to find rooms");
 			comboBox.removeAllItems();
-			ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), allPlaces);
+			ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), eap.getMeetingPoints());
 			for(int i = 0; i < filter.size(); i++){
 				comboBox.addItem(filter.get(i));
 			}
