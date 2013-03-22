@@ -155,7 +155,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	
 	// use this method to add notifications to the notificationsList
-	//TODO make this method send notifications when it should
 	private void addNotification(Notification notification) {
 		menuPanel.addNotification(notification);
 		
@@ -164,6 +163,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public ArrayList<Notification> fetchNotifications(){
 		return cf.sendAction(currentUser, Action.GET_NOTIFICATION);
 	}
+	//TODO make this method send notifications when it should
 	public void sendNotification(Notification notification){
 		Notification callback = cf.sendAction(notification, Action.NOTIFICATION);
 		System.out.println(callback.getNotificationType());
