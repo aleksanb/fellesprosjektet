@@ -6,8 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import db.AbstractModel;
 import db.Action;
@@ -60,7 +58,6 @@ public class Server implements Runnable{
 
 	//get stream to send and receive data
 	private void setupStreams()throws IOException{
-		//TODO: rewrite this method to handle gson
 		output = new ObjectOutputStream(connection.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());

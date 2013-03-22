@@ -328,9 +328,13 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			cp.displayMainProgram(this);
 		}
 		if(event.getActionCommand().equals("Delete")){
+			String title = "Delete appointment";
+			String mordi = "Are you sure you want to delete this appointment?";
+		    int reply = JOptionPane.showConfirmDialog(cp,mordi,title, JOptionPane.YES_NO_OPTION);
+		    if (reply == JOptionPane.YES_OPTION){
 			cp.deleteAppointment(this.appointment);
 			cp.displayMainProgram(this);
-			//TODO delete-method in CalendarProgram
+		    }
 		}
 		//add meeting options
 		if(event.getActionCommand().equals("Meeting")){
