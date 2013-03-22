@@ -1,8 +1,6 @@
 package db;
 
-import java.io.Serializable;
-
-public class Notification implements Serializable, AbstractModel{
+public class Notification implements AbstractModel{
 	private static final long serialVersionUID = 1L;
 	private int userId;
 	private Appointment appointment;
