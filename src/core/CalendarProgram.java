@@ -279,7 +279,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	//method for getting all appointments from user
 	public ArrayList<Appointment> getApointmentsFromUser(User user){
-		return appointments.get(user.getId());
+		return appointments.get(user);
 	}
 	
 	public ArrayList<User> getCachedUsers() {
