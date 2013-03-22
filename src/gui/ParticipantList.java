@@ -12,6 +12,7 @@ import core.CalendarProgram;
 
 import db.User;
 import java.awt.Color;
+import java.awt.Component;
 
 
 public class ParticipantList extends JPanel implements ActionListener{
@@ -143,4 +144,16 @@ public class ParticipantList extends JPanel implements ActionListener{
         frame.setVisible(true);
 	}
 	
+}
+
+class ListRenderer implements ListCellRenderer{
+		
+		@Override
+		public Component getListCellRendererComponent(JList participantList, Object user, int index, boolean isSelected, boolean cellHasFocus) {
+			JLabel label = new JLabel();
+			User u = (User) user;
+			label.setText(u.getName() + u.getEmail());
+			return label;
+			
+		}
 }
