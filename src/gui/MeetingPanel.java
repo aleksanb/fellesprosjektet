@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -13,6 +14,7 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JComboBox;
 
+import db.Action;
 import db.MeetingPoint;
 import db.User;
 
@@ -29,17 +31,21 @@ import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JRadioButton;
 
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
+
 public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantList pl;
-
-	protected ArrayList<MeetingPoint> allPlaces = new ArrayList<MeetingPoint>();
-	private JTextField textField;
+	protected JTextField hostField;
 	private JButton findButton;
+	private JButton btnUpdateStatus;
+	ButtonGroup group;
+	EditAppointmentPanel eap;
 	
-	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers) {
+	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap, String creator) {
 		setBackground(Color.LIGHT_GRAY);
+		this.eap = eap;
 		//setBackground(Color.PINK);
 		
 		JLabel lblNewLabel = new JLabel("Participants:");
@@ -52,28 +58,33 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		findButton = new JButton("Find Place");
 		findButton.addActionListener(this);
-		findButton.setActionCommand("Cancel");
+		findButton.setActionCommand("Find");
 		
 		JLabel lblStatus = new JLabel("Status:");
 		
 		
 		JRadioButton rdbtnAttending = new JRadioButton("Attending");
+		rdbtnAttending.setActionCommand("Attending");
 		
 		JRadioButton rdbtnNotAttending = new JRadioButton("Not attending");
+		rdbtnNotAttending.setActionCommand("Not attending");
 		
 		//Group radiobuttons
-		ButtonGroup group = new ButtonGroup();
+		group = new ButtonGroup();
 		group.add(rdbtnAttending);
 		group.add(rdbtnNotAttending);
 		
 		
 		JLabel lblHost = new JLabel("Host:");
 		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setColumns(10);
+		hostField = new JTextField(creator);
+		hostField.setEditable(false);
+		hostField.setColumns(10);
 		
-		JButton btnUpdateStatus = new JButton("Update status");
+		btnUpdateStatus = new JButton("Update status");
+		btnUpdateStatus.addActionListener(this);
+		btnUpdateStatus.setActionCommand("UpdateStatus");
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -100,7 +111,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 							.addComponent(lblHost)
 							.addPreferredGap(ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 306, GroupLayout.PREFERRED_SIZE))
+							.addComponent(hostField, GroupLayout.PREFERRED_SIZE, 306, GroupLayout.PREFERRED_SIZE))
 						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
@@ -109,7 +120,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(hostField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblHost))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(lblNewLabel)
@@ -158,8 +169,6 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	public static void main(String[] args){
 
 		JFrame frame = new JFrame();
-		//MeetingPanel mp = new MeetingPanel();
-		//frame.getContentPane().add(mp);
 		frame.pack();
 		frame.setSize(300, 100);
 		frame.setVisible(true);
@@ -172,10 +181,20 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		comboBox.removeAllItems();
-		ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), allPlaces);
-		for(int i = 0; i < filter.size(); i++){
-			comboBox.addItem(filter.get(i));
+		if (e.getActionCommand().equals("UpdateStatus")) {
+			ButtonModel tmp = group.getSelection();
+			if (tmp != null) {
+				eap.setStatus(tmp.getActionCommand());
+			} else {
+				System.out.println("action is null");
+			}
+		} else if (e.getActionCommand().equals("Find")) {
+			System.out.println("attempting to find rooms");
+			comboBox.removeAllItems();
+			ArrayList<MeetingPoint> filter = filterPlaces(pl.getParticipants(), eap.getMeetingPoints());
+			for(int i = 0; i < filter.size(); i++){
+				comboBox.addItem(filter.get(i));
+			}
 		}
 	}
 }

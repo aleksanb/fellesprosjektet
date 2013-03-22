@@ -131,7 +131,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		appointments = cf.sendAction(currentUser, Action.GET_ALL_USERS_ALL_APPOINTMENTS);
 		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
 		
-		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk p��� denne
+		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: ta en titt her
 		//loadAppointments();
 		alarmSetup();
 		//fetching notifications in new thread, after easch call it wait 5 mins
@@ -182,7 +182,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		cf.sendAction(currentUser, Action.DISCONNECT);
 	}
 	
-	public HashMap<User, Status> getAllAppointmentUsers(Appointment app) {
+	public HashMap<User, Status> getAllAppointmentUsers(Appointment app) { // TODO: is this used?
 		System.out.println("getting participants with statuses for " + app.getId());
 		HashMap<User, Status> callback = cf.sendAction(app, Action.GET_ALL_APPOINTMENT_USERS);
 		if (callback != null) {
@@ -230,20 +230,28 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		alarmHandler.removeAppointment(appointment);//removes this version
 		System.out.println("we have these participants!");
 		System.out.println(appointment.getParticipants());
-		// TODO: make edit appointment return the edited version
 		Appointment callback = cf.sendAction(appointment, Action.UPDATE);
 		if (callback.getAction().equals(Action.SUCCESS)) {
 			appointments.get(currentUser).remove(appointment);
 			appointments.get(currentUser).add(callback);
 			calendarPanel.removeAppointment(appointment);
-			calendarPanel.addAppointmentToModel(callback);
 			alarmHandler.addAppointment(callback);//adds the new
 			alarmHandlerThread.interrupt();//wake the thread
 			//calendarPanel.removeAppointment(appointment);
-			//calendarPanel.addAppointmentToModel(appointment);			
+			//calendarPanel.addAppointmentToModel(appointment);		
 		} else {
 			System.out.println("Warning: Returned with status code " + callback.getAction());
 			alarmHandler.addAppointment(appointment);//adds old version if it couldnt retreive the updatet one
+		}
+	}
+	
+	public void setStatus(Appointment appointment, Action action) {
+		System.out.println("setting status for " + appointment);
+		Callback callback = cf.sendAction(appointment, action);
+		if (callback.getAction().equals(Action.SUCCESS)) {
+			System.out.println("updated user action! Current user is now"+action+" "+ appointment);
+		} else {
+			System.out.println("dammit couldn't set status!");
 		}
 	}
 	
