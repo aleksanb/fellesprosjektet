@@ -211,6 +211,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void deleteAppointment(Appointment appointment) {
 		Callback c = cf.sendAction(appointment, Action.DELETE);
 		if (c.getAction().equals(Action.SUCCESS)){
+			System.out.println("det gikk bra");
 			calendarPanel.removeAppointment(appointment);
 			appointments.get(currentUser).remove(appointment);
 			calendarPanel.updateCalendar();
