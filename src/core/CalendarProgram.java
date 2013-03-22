@@ -40,7 +40,6 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private HashMap<User, ArrayList<Appointment>> appointments;
 	private User currentUser;
 	private ArrayList<User> cachedUsers;
-	private ArrayList<MeetingPoint> meetingPoints;
 
 	//tools
 	private Thread alarmHandlerThread;
@@ -305,9 +304,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		return this.cachedUsers;
 	}
 	
-	public ArrayList<MeetingPoint> getMeetingPoints(){
-		this.meetingPoints = cf.sendAction(this.currentUser, Action.GET_MEETINGPOINT);
-		return this.meetingPoints;
+	public ArrayList<MeetingPoint> getMeetingPoints(Appointment app){
+		return cf.sendAction(app, Action.GET_MEETINGPOINT);
 	}
 
 }
