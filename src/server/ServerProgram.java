@@ -1,8 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -65,7 +63,6 @@ public class ServerProgram {
 //	}
 
 	public void saveNotifications(Notification n_callback, ArrayList<User> users) throws IOException {
-		User receiver;
 		for (User user : users) {
 			try{
 			notifications.get(user.getId()).add(n_callback);
