@@ -6,11 +6,13 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
 import db.Callback;
+import db.MeetingPoint;
 import db.Notification;
 import db.Status;
 import db.User;
@@ -313,6 +315,16 @@ public class Server implements Runnable{
 				}
 				System.out.println("sent back " + action + " with status " + u_u_callback.getAction());
 			}
+			break;
+		case GET_MEETINGPOINT:
+			Set<MeetingPoint> mp_callback = sf.getAvailableMeetingpoints((Appointment) am);
+			
+			try {
+				output.writeObject(mp_callback);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			break;
 		case MASSIVE_FAILURE:
 			System.out.println("could not read input properly");
