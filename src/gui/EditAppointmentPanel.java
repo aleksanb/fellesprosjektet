@@ -151,9 +151,19 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 
 		if (cp.getUser().getId() != appointment.getCreatorUserId()) {
 			saveAppButton.setEnabled(false);
+			meetingPanel.toggleEditable(false);
+			startPick.setEnabled(false);
+			titleField.setEnabled(false);
+			endPick.setEnabled(false);
+			endField.setEnabled(false);
+			startField.setEnabled(false);
+			descriptionArea.setEnabled(false);
+			meetingBox.setEnabled(false);
 			if (!firstTime) {
 				deleteButton.setEnabled(false);				
 			}
+		} else {
+			meetingPanel.toggleEditable(true);
 		}
 		
 		//cancel appointment
