@@ -19,6 +19,7 @@ import javax.swing.*;
 import org.jdesktop.swingx.JXDatePicker;
 
 import core.CalendarProgram;
+import db.Action;
 import db.Appointment;
 import db.MeetingPoint;
 import db.User;
@@ -140,7 +141,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.setActionCommand("Meeting");
 		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants());
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this);
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
@@ -536,15 +537,18 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			approved=false;
 	}
 
-
+	public void setStatus(String ac) {
+		if (ac.equals("Attending")) {
+			System.out.println("setting status to attending");
+			cp.setStatus(appointment, Action.SET_STATUS_ATTENDING);			
+		} else if (ac.equals("Not attending")) {
+			System.out.println("setting status to not attending");
+			cp.setStatus(appointment, Action.SET_STATUS_NOT_ATTENDING);			
+		}
+	}
 	
-	//Testing
-	/*public static void main(String[] args){
-		JFrame frame = new JFrame();
-		frame.pack();
-        frame.setSize (500,630);
-        frame.setVisible(true);
-	}*/
-	
+	public Appointment getAppointmnet() {
+		return this.appointment;
+	}
 
 }
