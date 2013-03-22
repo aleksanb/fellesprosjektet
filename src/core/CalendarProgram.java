@@ -57,7 +57,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			public void run() {
 				try {
 					CalendarProgram frame = new CalendarProgram();
-					frame.setSize(1200, 600);
+					frame.setSize(1050, 480);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
