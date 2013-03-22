@@ -3,6 +3,8 @@ package gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -10,6 +12,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import core.CalendarProgram;
 
+import db.Status;
 import db.User;
 import java.awt.Color;
 import java.awt.Component;
@@ -102,13 +105,17 @@ public class ParticipantList extends JPanel implements ActionListener{
 	}
 	
 	
-	public void populateParticipants(ArrayList<User> allUsers, ArrayList<User> participants){
-		allUsers.removeAll(participants);
+	public void populateParticipants(ArrayList<User> allUsers, HashMap<User, Status> hashMap){
+		allUsers.removeAll(hashMap.keySet());
 		for(int i = 0; i < allUsers.size(); i++){
 			this.nonparticipants.addElement(allUsers.get(i));
 		}
-		for (int i = 0; i < participants.size(); i++ ) {
-			this.participants.addElement(participants.get(i));
+		User tmp;
+		for (Map.Entry<User, Status> entry : hashMap.entrySet()) {
+			tmp = entry.getKey().getCopy();
+			tmp.setName(tmp.getName() + entry.getValue());
+			System.out.println("created haxxorUser with name " + tmp.getName());
+			this.participants.addElement(tmp);
 		}
 	}
 	

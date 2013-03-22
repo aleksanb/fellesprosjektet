@@ -16,12 +16,15 @@ import javax.swing.JComboBox;
 
 import db.Action;
 import db.MeetingPoint;
+import db.Status;
 import db.User;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.JButton;
 
 import core.CalendarProgram;
@@ -43,7 +46,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 	ButtonGroup group;
 	EditAppointmentPanel eap;
 	
-	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap) {
+	public MeetingPanel(ArrayList<User> allUsers, HashMap<User, Status> hashMap, EditAppointmentPanel eap) {
 		setBackground(Color.LIGHT_GRAY);
 		this.eap = eap;
 		//setBackground(Color.PINK);
@@ -52,7 +55,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		JLabel lblPlace = new JLabel("Place:");
 		
 		this.pl = new ParticipantList();		
-		this.pl.populateParticipants(allUsers, participatingUsers);
+		this.pl.populateParticipants(allUsers, hashMap);
 		
 		comboBox = new JComboBox<MeetingPoint>();
 		

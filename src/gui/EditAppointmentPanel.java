@@ -141,7 +141,7 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 		meetingBox.setActionCommand("Meeting");
 		
 		//Add and hide meetingPanel
-		meetingPanel = new MeetingPanel(cp.getCachedUsers(), appointment.getParticipants(), this);
+		meetingPanel = new MeetingPanel(cp.getCachedUsers(), cp.getAllAppointmentUsers(appointment), this); //appointment.getParticipants(), this);
 		meetingPanel.setVisible(false);
 		
 		//add or save appointment
