@@ -37,13 +37,13 @@ public class MeetingPanel extends JPanel implements ActionListener{
 
 	protected JComboBox<MeetingPoint> comboBox;
 	protected ParticipantList pl;
-	private JTextField textField;
+	protected JTextField hostField;
 	private JButton findButton;
 	private JButton btnUpdateStatus;
 	ButtonGroup group;
 	EditAppointmentPanel eap;
 	
-	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap) {
+	public MeetingPanel(ArrayList<User> allUsers, ArrayList<User> participatingUsers, EditAppointmentPanel eap, String creator) {
 		setBackground(Color.LIGHT_GRAY);
 		this.eap = eap;
 		//setBackground(Color.PINK);
@@ -77,9 +77,9 @@ public class MeetingPanel extends JPanel implements ActionListener{
 		
 		JLabel lblHost = new JLabel("Host:");
 		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setColumns(10);
+		hostField = new JTextField(creator);
+		hostField.setEditable(false);
+		hostField.setColumns(10);
 		
 		btnUpdateStatus = new JButton("Update status");
 		btnUpdateStatus.addActionListener(this);
@@ -111,7 +111,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 							.addComponent(lblHost)
 							.addPreferredGap(ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 306, GroupLayout.PREFERRED_SIZE))
+							.addComponent(hostField, GroupLayout.PREFERRED_SIZE, 306, GroupLayout.PREFERRED_SIZE))
 						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
@@ -120,7 +120,7 @@ public class MeetingPanel extends JPanel implements ActionListener{
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(hostField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblHost))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(lblNewLabel)
