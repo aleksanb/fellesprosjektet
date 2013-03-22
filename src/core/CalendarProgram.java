@@ -139,7 +139,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		new Thread(new Runnable() {
 			public void run() {
 				while(true){
-					long wait = 300000;//millisec = 5 min
+					long wait = 14000;//millisec = 5 min
 					ArrayList<Notification> notifications = fetchNotifications();
 					System.out.println("Notifications: "+notifications);
 					for (Notification notification : notifications) {
