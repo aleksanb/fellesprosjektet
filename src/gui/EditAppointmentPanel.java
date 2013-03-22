@@ -482,9 +482,9 @@ public class EditAppointmentPanel extends JPanel implements ActionListener{
 			approved=false;
 			return appointment.getAlarm().getAlarmTime();
 		}
-		if(type.equals("Minute"))
+		if(type.equals("Minutes"))
 			alarm.set(Calendar.MINUTE,alarm.get(Calendar.MINUTE) - value);
-		else if(type.equals("Hour"))
+		else if(type.equals("Hours"))
 			alarm.set(Calendar.HOUR,alarm.get(Calendar.HOUR) - value);
 		else
 			alarm.set(Calendar.DATE,alarm.get(Calendar.DATE) - value);

@@ -217,12 +217,15 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			calendarPanel.removeAppointment(appointment);
 			appointments.get(currentUser).remove(appointment);
 			calendarPanel.updateCalendar();
+			alarmHandler.removeAppointment(appointment);
+			alarmHandlerThread.interrupt();
 		} else {
 			System.out.println("Warning: Returned with status code " + c.getAction());
 		}
 	}
 	
 	public void updateAppointment(Appointment appointment){
+		alarmHandler.removeAppointment(appointment);//removes this version
 		System.out.println("we have these participants!");
 		System.out.println(appointment.getParticipants());
 		// TODO: make edit appointment return the edited version
@@ -232,10 +235,13 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			appointments.get(currentUser).add(callback);
 			calendarPanel.removeAppointment(appointment);
 			calendarPanel.addAppointmentToModel(callback);
+			alarmHandler.addAppointment(callback);//adds the new
+			alarmHandlerThread.interrupt();//wake the thread
 			//calendarPanel.removeAppointment(appointment);
 			//calendarPanel.addAppointmentToModel(appointment);			
 		} else {
 			System.out.println("Warning: Returned with status code " + callback.getAction());
+			alarmHandler.addAppointment(appointment);//adds old version if it couldnt retreive the updatet one
 		}
 	}
 	

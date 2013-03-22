@@ -42,11 +42,13 @@ public class AlarmHandler implements Runnable{
 			if(appointment.hasAlarm())
 				appointments.push(appointment);
 		}
+		Collections.sort(appointments,new alarmComparator());
 	}
 	//deletes an alarm
 	public void removeAppointment(Appointment app){
 		appointments.remove(app);
 	}
+	
 	//this is the alarm thread, it will run contunously. 
 	@Override
 	public void run() {
@@ -57,7 +59,7 @@ public class AlarmHandler implements Runnable{
 			if(!appointments.isEmpty()){
 			current = appointments.peek();
 			timeUntilNextAlarm = current.getAlarm().getMillis()-System.currentTimeMillis();
-//			System.out.println("new alarm");
+			System.out.println("new alarm");
 			}
 			//if the list is empty it will sleep for 5 seconds and then begin at the start of the while-loop.
 			else{
@@ -65,7 +67,7 @@ public class AlarmHandler implements Runnable{
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
-//					System.out.println("interupted in standby sleep");
+					System.out.println("interupted in standby sleep");
 //					e.printStackTrace();
 				}
 				continue;
