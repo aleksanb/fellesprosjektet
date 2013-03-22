@@ -203,7 +203,7 @@ public class Appointment implements AbstractModel, Serializable {
 	public <T> T getCopy() {
 		Appointment app = new Appointment(this.id,this.creatorUserId,this.title,this.start,this.end,this.description,this.isMeeting);
 		if(this.hasAlarm())
-			app.setAlarm(this.alarm.getAlarmTime());
+			app.setAlarm((GregorianCalendar)this.alarm.getAlarmTime().clone());
 		app.setParticipants(new ArrayList<User>());
 		for (int i = 0; i < this.participants.size(); i++) {
 			app.addParticipant(this.getParticipants().get(i));
