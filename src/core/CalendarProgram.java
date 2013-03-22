@@ -238,6 +238,8 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 			appointments.get(currentUser).remove(appointment);
 			appointments.get(currentUser).add(callback);
 			calendarPanel.removeAppointment(appointment);
+			calendarPanel.addAppointmentToModel(callback);
+			calendarPanel.updateCalendar();
 			if(callback.hasAlarm()){
 				alarmHandler.addAppointment(callback);//adds the new
 				alarmHandlerThread.interrupt();//wake the thread
