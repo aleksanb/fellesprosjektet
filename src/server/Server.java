@@ -12,6 +12,7 @@ import java.util.Set;
 import db.AbstractModel;
 import db.Action;
 import db.Appointment;
+import db.Callback;
 import db.Notification;
 import db.User;
 
@@ -46,11 +47,14 @@ public class Server implements Runnable{
 			logConsole("Could not establish connection");
 			e1.printStackTrace();
 		}
-		try{
-			whileRunning();
-		}catch(IOException e){
-			logConsole("Server ended the connection");
-		}
+		
+		closeConnection = false;
+		sf = new ServerFactory();
+		do {
+			handleShit();
+		} while(!closeConnection); 
+		closeApp();
+		
 	}
 
 	//get stream to send and receive data
@@ -60,21 +64,6 @@ public class Server implements Runnable{
 		output.flush();
 		input = new ObjectInputStream(connection.getInputStream());
 		logConsole("Streams are now set up!");	
-	}
-	//after connection is setup 
-	private void whileRunning()throws IOException{
-		closeConnection = false;
-		sf = new ServerFactory();
-		do{
-			try{
-				handleShit();
-			}catch(Exception e){
-				e.printStackTrace();
-				logConsole(e.getMessage());
-				closeConnection();
-			}
-		}while(!closeConnection); 
-		closeApp();
 	}
 	private void closeApp(){
 		logConsole("Closing connections" );
@@ -96,10 +85,20 @@ public class Server implements Runnable{
 		System.out.println("SERVER "+connectionID+": " +text);
 	}
 	
-	private void handleShit() throws ClassNotFoundException, IOException {
+	private void handleShit() {
 
 		close = false;
-		am = (AbstractModel) input.readObject();
+		try {
+			am = (AbstractModel) input.readObject();
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+			am = new Callback(Action.MASSIVE_FAILURE);
+			closeConnection();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			am = new Callback(Action.MASSIVE_FAILURE);
+			closeConnection();
+		}
 		Class<? extends AbstractModel> cl = am.getClass();
 		Action action = am.getAction();
 		System.out.println("Read object!"+ am.toString());
@@ -108,24 +107,28 @@ public class Server implements Runnable{
 		switch(action) {
 		case LOGIN:
 			//System.out.println("WE HAVE RECIEVED LOGIN REQUEST");
-			User l_callback = null;
+			User l_callback;
 			try {
 				l_callback = sf.login((User) am);
+				l_callback.setAction(Action.SUCCESS);
 			} catch (Exception e) {
+				System.out.println("no user found :(");
+				l_callback = am.getCopy();
+				l_callback.setAction(Action.MASSIVE_FAILURE);
 				e.printStackTrace();
 			}
 			//adds user to servers list of online users
-			if(l_callback != null)
-//				sp.addOnlineUserConnection(l_callback,connection);
+			if(l_callback.getAction().equals(Action.SUCCESS)) {
 				currentUser = l_callback;
-				System.out.println("*** current user is set to " + currentUser.getName() + " ***");
-			
+				System.out.println("*** current user is set to " + currentUser.getName() + " with id " + currentUser.getId() + " ***");
+			}
 			try {
 				output.writeObject(l_callback);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println("wrote " + l_callback + " back to client");
+			
+			System.out.println("sent back " + action + " with status " + l_callback.getAction());
 			break;
 		case DISCONNECT:
 			//System.out.println("User " + ((User) am).getName() + "Wishes to disconnect");
@@ -138,62 +141,168 @@ public class Server implements Runnable{
 			break;
 			
 		case DELETE:
+			Callback d_a_callback = new Callback();
+			if (cl.equals(Appointment.class)){
+				System.out.println("deleting appointment");
+				Boolean b = sf.deleteAppointment((Appointment) am);
+				if (b) {
+					d_a_callback.setAction(Action.SUCCESS);
+				} else {
+					d_a_callback.setAction(Action.MASSIVE_FAILURE);
+				}
+				try {
+					output.writeObject(d_a_callback);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("fucked up deleting");
+				}
+			}
+			System.out.println("sent back " + action + " with status " + d_a_callback.getAction());
 			break;
 		case GET:
 			break;
+		case GET_ALL_USERS_ALL_APPOINTMENTS:
+			System.out.println("get ALL the users and ALL the appointments!");
+			HashMap<User, ArrayList<Appointment>> g_a_u_a_a_callback;
+			try {
+				g_a_u_a_a_callback = sf.getAllUsersAllAppointments();
+			} catch (Exception e) {
+				g_a_u_a_a_callback = new HashMap<User, ArrayList<Appointment>>();
+			}
+			try {
+				output.writeObject(g_a_u_a_a_callback);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			System.out.println("sent back " + g_a_u_a_a_callback.size() + "users with respective appointments");
+			break;
 		case GET_ALL_APPOINTMENTS:
 			System.out.println("WE HAVE RECIEVED GET ALL APPOINTMENTS REQUEST");
-			ArrayList<Appointment> g_a_a_callback = sf.getAllAppointments(currentUser);
-			output.writeObject(g_a_a_callback);
-			System.out.println("sent back appointments");
+			ArrayList<Appointment> g_a_a_callback;
+			try {
+				g_a_a_callback = sf.getAllAppointments(currentUser);
+			} catch (Exception e) {
+				g_a_a_callback = new ArrayList<Appointment>();
+			}
+			try {
+				output.writeObject(g_a_a_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back " + g_a_a_callback.size() + "appointments");
 			break;
 		case GET_ALL_USERS:
 			System.out.println("Vi vil ha alle brukerne!");
-			ArrayList<User> g_a_u_callback = sf.getAllUsers();
-			output.writeObject(g_a_u_callback);
-			System.out.println("Sending back users" + g_a_u_callback);
+			ArrayList<User> g_a_u_callback;
+			try {
+				g_a_u_callback = sf.getAllUsers();
+			} catch (Exception e) { 
+				g_a_u_callback = new ArrayList<User>();
+			}
+			try {
+				output.writeObject(g_a_u_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back " + g_a_u_callback.size() + " users");
 			break;
 		case INSERT:
 			if ( cl.equals(Appointment.class)) {
 				System.out.println("Vi har fatt insert request for en appointment!");
-				Appointment i_u_callback = sf.insertAppointment( (Appointment) am);
-				output.writeObject(i_u_callback);
-				System.out.println("sent back appointment with id " + i_u_callback.getId());
+				Appointment i_u_callback;
+				try {
+					i_u_callback = sf.insertAppointment( (Appointment) am);
+					i_u_callback.setAction(Action.SUCCESS);
+				} catch (Exception e) {
+					i_u_callback = am.getCopy();
+					i_u_callback.setAction(Action.MASSIVE_FAILURE);
+				}
+				try {
+					output.writeObject(i_u_callback);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				System.out.println("sent back " + action + " with status " + i_u_callback.getAction());
 			}
 			break;
 		case SET_STATUS_ATTENDING:
 		case SET_STATUS_NOT_ATTENDING:
-			sf.setStatus((Appointment) am, currentUser, action);
+			Callback callback;
+			try {
+				sf.setStatus((Appointment) am, currentUser, action);
+				callback = new Callback(Action.SUCCESS);
+			} catch (Exception e) {
+				callback = new Callback(Action.MASSIVE_FAILURE);
+				e.printStackTrace();
+			}
 			System.out.println("sat status " + action);
-			output.writeObject(currentUser);
-			System.out.println("sent reponsestatus");
+			try {
+				output.writeObject(callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back " + action + " with status " + callback.getAction());
 			break;
 		case NOTIFICATION:
 			logConsole("received notification");
 			//receive notification
-			Notification n_callback = (Notification)am;
+			Notification n_callback = (Notification) am;
 			//extract users
 			ArrayList<User> users = n_callback.getAppointment().getParticipants();
 			//call sp, and save notification for all users that match
-			sp.saveNotifications(n_callback,users);
-			
+			try {
+				sp.saveNotifications(n_callback, users);
+				n_callback.setAction(Action.SUCCESS);
+			} catch (Exception e) {
+				n_callback.setAction(Action.MASSIVE_FAILURE);
+				e.printStackTrace();
+			}
 			//write back to client
-			output.writeObject(n_callback);
+			try {
+				output.writeObject(n_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back " + action + " with status " + n_callback.getAction());
 			break;
 			//getting all the notifications for this specific user.
 		case GET_NOTIFICATION:
 			logConsole("fetching notification");
-			ArrayList<Notification> al_n_callback = sp.fetchAppointments((User) am);
-			output.writeObject(al_n_callback);
+			ArrayList<Notification> al_n_callback;
+			try {
+				al_n_callback = sp.fetchAppointments((User) am);
+			} catch (Exception e) {
+				al_n_callback = new ArrayList<Notification>();
+				e.printStackTrace();
+			}
+			try {
+				output.writeObject(al_n_callback);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("sent back " + action + " with size " + al_n_callback.size());
 			break;
 		case UPDATE:
 			if ( cl.equals(Appointment.class)) {
 				System.out.println("Vi har fatt update request for en appointment!");
-				Appointment u_u_callback = sf.updateAppointment( (Appointment) am);
-				output.writeObject(u_u_callback);
-				System.out.println("sent back appointment");
+				Appointment u_u_callback;
+				try {
+					u_u_callback = sf.updateAppointment( (Appointment) am);
+					u_u_callback.setAction(Action.SUCCESS);
+				} catch (Exception e) {
+					u_u_callback = am.getCopy();
+					u_u_callback.setAction(Action.MASSIVE_FAILURE);
+				}
+				try {
+					output.writeObject(u_u_callback);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				System.out.println("sent back " + action + " with status " + u_u_callback.getAction());
 			}
 			break;
+		case MASSIVE_FAILURE:
+			System.out.println("could not read input properly");
 		default:
 			System.out.println("action did not match any enum");
 			break;
