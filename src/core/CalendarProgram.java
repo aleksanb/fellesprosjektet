@@ -21,11 +21,11 @@ import core.alarm.AlarmHandler;
 import core.alarm.AlarmListener;
 import db.Action;
 import db.Appointment;
+import db.Callback;
 import db.Notification;
 import db.User;
 
 public class CalendarProgram extends JFrame implements AlarmListener {
-	
 	
 	//gui
 	private JPanel contentPane;
@@ -35,21 +35,18 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	private CalendarPanel calendarPanel;
 	
 	//model
-	//private HashMap<Integer, Appointment> appointments;
-	private HashMap<Integer, Appointment> appointments;
+	private HashMap<User, ArrayList<Appointment>> appointments;
 	private User currentUser;
 	private ArrayList<User> cachedUsers;/*userList = cp.getUsers();
 	for (int i = 0; i <= userList.size()-1; i++) {
 	makeCheckListItem(userList.get(i));*/
 
-	
 	//tools
 	private Thread alarmHandlerThread;
 	private ClientFactory cf;
 	
 	//Alarm
 	private AlarmHandler alarmHandler;
-
 	/**
 	 * Launch the application.
 	 */
@@ -73,12 +70,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public CalendarProgram() {
 		
 		System.out.println("creating main program");
-		
-		appointments = new HashMap<Integer, Appointment>();
-
-		//sets up a connection to the server
-		//connectToServer();
-
+		appointments = new HashMap<User, ArrayList<Appointment>>();
 		
 		//tool for talking with server
 		cf = new ClientFactory();
@@ -102,24 +94,26 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		loginPanel = new LoginPanel(this);
 		contentPane.add(loginPanel, BorderLayout.CENTER);
 	}
-
-	public boolean logIn(String userName, String password) {
-		System.out.println("trying to log in");
-		User temp = cf.sendAction(new User(0,userName,"eigil@gmail.com",password), Action.LOGIN);
-		System.out.println("got return value " + temp);
-		if(temp != null){
-			System.out.println("*** Got valid login ***");
-			currentUser = temp;
-			return true;
-		}
-		return false;
-	}
 	
 	public void displayMainProgram(JPanel panel){
 		panel.setVisible(false);
 		menuPanel.setVisible(true);
 		calendarPanel.setVisible(true);
 	}
+	public boolean logIn(String userName, String password) {
+		System.out.println("trying to log in");
+		if (userName.length() > 0 && password.length() > 0 ) {
+			User temp = cf.sendAction(new User(0 ,userName ,null, password), Action.LOGIN);
+			System.out.println("got return value " + temp + " with status " + temp.getAction());
+			if (temp.getAction().equals(Action.SUCCESS)) {
+				System.out.println("*** Got valid login ***");
+				currentUser = temp;
+				return true;
+			} 
+		}
+		return false;
+	}
+
 	//called when user logs inn
 	// added some appointments and notifications for testing. Unpossible to do in main...
 	public void CreateMainProgram() {
@@ -131,10 +125,10 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 		contentPane.add(calendarPanel, BorderLayout.CENTER);
 		
 		//Initialize values
-		ArrayList<Appointment> appointments = cf.sendAction(currentUser, Action.GET_ALL_APPOINTMENTS);
+		appointments = cf.sendAction(currentUser, Action.GET_ALL_USERS_ALL_APPOINTMENTS);
 		cachedUsers = cf.sendAction(currentUser, Action.GET_ALL_USERS);
 		
-		calendarPanel.setUserAndAppointments(currentUser,appointments);
+		calendarPanel.setUserAndAppointments(appointments.get(currentUser)); // TODO: kikk på denne
 		//loadAppointments();
 		alarmSetup();
 		//fetching notifications, after easch call it wait 5 mins
@@ -175,7 +169,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	//get appointments and starts to check them in a new thread, signing up for notifications from alarmHandler.
 	private void alarmSetup() {
-		alarmHandler = new AlarmHandler(new ArrayList<Appointment>(appointments.values()));
+		alarmHandler = new AlarmHandler(appointments.get(currentUser));
 		alarmHandler.addAlarmEventListener(this);
 		alarmHandlerThread = new Thread(alarmHandler);
 		alarmHandlerThread.start();
@@ -184,44 +178,58 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	public void logout(){
 		cf.sendAction(currentUser, Action.DISCONNECT);
 	}
-
-	private void logConsole(String text){
-		System.out.println("CLIENT: "+ text);
-	}
 	
 	public void addAppointment(Appointment app){
+		System.out.println("we have these participants!");
+		System.out.println(app.getParticipants());
 		Appointment callback = cf.sendAction(app, Action.INSERT);
-		if (callback != null) {
+		if (callback.getAction().equals(Action.SUCCESS)) {
 			calendarPanel.addAppointmentToModel(callback);
-			appointments.put(app.getId(), callback);
+			appointments.get(currentUser).add(callback);
 			if(callback.hasAlarm()){
 				alarmHandler.addAppointment(callback);
 				alarmHandlerThread.interrupt();
 				System.out.println("Thread: "+alarmHandlerThread.interrupted());
 			}
-		}		
-		System.out.println("our superlist now contains the following: " + appointments);
+			System.out.println("our superlist now contains the following"+appointments.size()+"elements: " + appointments);
+		} else {
+			System.out.println("Warning: Returned with status code " + callback.getAction());
+		}
 	}
 	
 	public void deleteAppointment(Appointment appointment) {
-		cf.sendAction(appointment, Action.DELETE);
-		calendarPanel.removeAppointment(appointment);
-		appointments.remove(appointment.getId());
+		Callback c = cf.sendAction(appointment, Action.DELETE);
+		if (c.getAction().equals(Action.SUCCESS)){
+			calendarPanel.removeAppointment(appointment);
+			appointments.get(currentUser).remove(appointment);
+			calendarPanel.updateCalendar();
+		} else {
+			System.out.println("Warning: Returned with status code " + c.getAction());
+		}
 	}
 	
 	public void updateAppointment(Appointment appointment){
+		System.out.println("we have these participants!");
+		System.out.println(appointment.getParticipants());
 		// TODO: make edit appointment return the edited version
-		cf.sendAction(appointment, Action.UPDATE);
-		calendarPanel.removeAppointment(appointment);
-		appointments.remove(appointment.getId());
-		calendarPanel.addAppointmentToModel(appointment);
+		Appointment callback = cf.sendAction(appointment, Action.UPDATE);
+		if (callback.getAction().equals(Action.SUCCESS)) {
+			appointments.get(currentUser).remove(appointment);
+			appointments.get(currentUser).add(callback);
+			calendarPanel.removeAppointment(appointment);
+			calendarPanel.addAppointmentToModel(callback);
+			//calendarPanel.removeAppointment(appointment);
+			//calendarPanel.addAppointmentToModel(appointment);			
+		} else {
+			System.out.println("Warning: Returned with status code " + callback.getAction());
+		}
 	}
 	
 	public void createEditAppointmentPanel(Appointment appointment){
 		menuPanel.setVisible(false);
 		calendarPanel.setVisible(false);
 		if (appointment == null) {
-			eap = new EditAppointmentPanel(this,new Appointment(currentUser), true);			
+			eap = new EditAppointmentPanel(this,new Appointment(currentUser), true);
 		} else {
 			eap = new EditAppointmentPanel(this,appointment, false);			
 		}
@@ -260,7 +268,7 @@ public class CalendarProgram extends JFrame implements AlarmListener {
 	}
 	//method for getting all appointments from user
 	public ArrayList<Appointment> getApointmentsFromUser(User user){
-		return cf.sendAction(user, Action.GET_ALL_APPOINTMENTS);
+		return appointments.get(user.getId());
 	}
 	
 	public ArrayList<User> getCachedUsers() {
