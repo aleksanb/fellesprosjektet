@@ -1,8 +1,6 @@
 package db;
 
-import java.io.Serializable;
-
-public class User implements AbstractModel, Serializable {
+public class User implements AbstractModel {
 	private Action action;
 	private static final long serialVersionUID = 1L;
 	private int id;
@@ -18,6 +16,28 @@ public class User implements AbstractModel, Serializable {
 		this.email = "too.leqit@to.quit";
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
 	@Override
 	/*public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email
