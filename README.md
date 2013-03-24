@@ -14,4 +14,4 @@ We used future-proof technologies like SWING for java, and web-safe colors like 
 
 # Conclusion
 
-Simple to set up, Open source! Hide yo kids, Hide yo wives, they Notifying everyone around here
+Simple to set up, Open source! Hide yo kids, Hide yo wives, they Notifying everyone around here!
