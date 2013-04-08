@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.admin.Log;
-import net.co.Connection;
+import net.Connection;
 
 /**
  * Helper class implementing asynchronous handling of incoming messages. Objects

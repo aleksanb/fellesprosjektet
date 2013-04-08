@@ -16,8 +16,8 @@ import net.cl.ClException;
 import net.cl.ClSocket;
 import net.cl.KtnDatagram;
 import net.cl.KtnDatagram.Flag;
-import net.co.ClSocketReceiver;
-import net.co.Connection;
+import net.ClSocketReceiver;
+import net.Connection;
 
 /**
  * @author mariubje A partial implementation of the Connection-interface. It

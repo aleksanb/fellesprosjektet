@@ -7,7 +7,7 @@ import net.admin.Log;
 import net.cl.ClException;
 import net.cl.ClSocket;
 import net.cl.KtnDatagram;
-import net.co.AbstractConnection;
+import net.AbstractConnection;
 
 /**
  * A helper class used when sending datagrams and waiting for ack. The class

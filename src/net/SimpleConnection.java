@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import net.co.Connection;
+import net.Connection;
 
 /**
  * @author sebjorns

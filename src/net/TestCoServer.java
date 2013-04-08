@@ -10,7 +10,7 @@ import java.io.EOFException;
 import java.io.IOException;
 
 import net.admin.Log;
-import net.co.Connection;
+import net.Connection;
 
 /**
  * Simplest possible test application, server part.

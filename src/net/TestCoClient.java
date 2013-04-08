@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import net.admin.Log;
-import net.co.Connection;
+import net.Connection;
 
 /**
  * Simplest possible test application, client part.
