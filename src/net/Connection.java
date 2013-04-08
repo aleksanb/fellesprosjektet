@@ -1,4 +1,4 @@
-package net.co;
+package net;
 
 import java.net.InetAddress;
 

@@ -1,7 +1,7 @@
 /**
  * 25. jan.. 2009
  */
-package net.co;
+package net;
 
 /**
  * @author Marius Bjerke

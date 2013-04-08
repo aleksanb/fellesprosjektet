@@ -1,7 +1,7 @@
 /*
  * Created on 11. september 2008
  */
-package net.co;
+package net;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package net.co;
+package net;
 
 import java.io.EOFException;
 import java.io.IOException;
