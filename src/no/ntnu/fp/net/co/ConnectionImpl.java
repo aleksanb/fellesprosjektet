@@ -138,7 +138,15 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
-        throw new NotImplementedException();
+        if (this.state != State.ESTABLISHED) {
+        	throw new ConnectException();
+        }
+        
+        KtnDatagram ack;
+        do
+        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));
+        while ( ack != null );
+        
     }
 
     /**
@@ -150,7 +158,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        throw new NotImplementedException();
+    	throw new NotImplementedException();
     }
 
     /**
@@ -159,7 +167,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-        throw new NotImplementedException();
+    	throw new NotImplementedException();
     }
 
     /**
