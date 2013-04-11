@@ -76,13 +76,13 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
             SocketTimeoutException {
-    	this.remoteAddress = remoteAddress.toString();
+    	this.remoteAddress = remoteAddress.getHostAddress();
     	this.remotePort = remotePort;
     	
     	KtnDatagram syn = constructInternalPacket(Flag.SYN);
-    	
     	try {
 			simplySendPacket(syn);
+			System.out.println("sent syn");
 		} catch (ClException e) {
 			e.printStackTrace();
 		}
@@ -103,25 +103,26 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public Connection accept() throws IOException, SocketTimeoutException {
     	this.state=State.LISTEN;
-    	KtnDatagram datagram = receivePacket(true);
+    	KtnDatagram datagram = null;
+    	
+    	do {
+    		datagram = receivePacket(true);
+    	} while (datagram == null || datagram.getFlag()!=Flag.SYN);
+    	
     	ConnectionImpl newConn = new ConnectionImpl(myPort);
-    	KtnDatagram synAckDatagram;
-    	//sjekker om datagrammet er valid og om det er en SYN-ack
-    	if(isValid(datagram) && datagram.getFlag()==Flag.SYN){
-    		newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
-    		newConn.sendAck(datagram, true);
-    	}
-    	else{
-    		//retry
-    	}
+    	this.state = State.SYN_RCVD;
+    	newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
+    	newConn.sendAck(datagram, true);
+    	this.state = State.SYN_SENT;
     	
     	//listen for final ack
     	KtnDatagram finalAck = receiveAck();
-    	if(isValid(finalAck) && finalAck.getFlag()==Flag.ACK){
-    		//this worked well
-	    	;
+    	if(finalAck.getFlag()==Flag.ACK){
+    		this.state = State.ESTABLISHED;
+    		return newConn;
+    	} else {
+    		throw new IOException();
     	}
-	    return newConn;
     }
 
     /**
@@ -170,7 +171,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        throw new NotImplementedException();
+        return (packet.calculateChecksum() == packet.getChecksum());
     }
     private void fillConnfields(int remotePort, String remoteAddress){
     	this.remotePort=remotePort;
