@@ -158,7 +158,10 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-    	throw new NotImplementedException();
+        KtnDatagram datagram = receivePacket(false);
+    	sendAck(datagram, false);
+    
+        return (String)datagram.getPayload();
     }
 
     /**
