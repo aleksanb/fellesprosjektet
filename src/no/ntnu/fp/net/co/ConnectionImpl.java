@@ -145,7 +145,7 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram ack;
         do
         	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));
-        while ( ack != null );
+        while ( ack == null );
         
     }
 
