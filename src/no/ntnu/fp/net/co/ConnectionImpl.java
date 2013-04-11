@@ -38,7 +38,9 @@ public class ConnectionImpl extends AbstractConnection {
 
     /** Keeps track of the used ports for each server port. */
     private static Map<Integer, Boolean> usedPorts = Collections.synchronizedMap(new HashMap<Integer, Boolean>());
-
+    
+    
+    
     /**
      * Initialise initial sequence number and setup state machine.
      * 
@@ -46,7 +48,8 @@ public class ConnectionImpl extends AbstractConnection {
      *            - the local port to associate with this connection
      */
     public ConnectionImpl(int myPort) {
-        throw new NotImplementedException();
+    	this.myPort = myPort;
+    	this.myAddress = getIPv4Address();
     }
 
     private String getIPv4Address() {
@@ -73,7 +76,23 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
             SocketTimeoutException {
-        throw new NotImplementedException();
+    	this.remoteAddress = remoteAddress.toString();
+    	this.remotePort = remotePort;
+    	
+    	KtnDatagram syn = constructInternalPacket(Flag.SYN);
+    	
+    	try {
+			simplySendPacket(syn);
+		} catch (ClException e) {
+			e.printStackTrace();
+		}
+    	
+    	KtnDatagram synAck = receiveAck();
+    	if (synAck.getFlag() == Flag.SYN_ACK && isValid(synAck)) {
+    		sendAck(synAck, false);
+    		this.state = State.ESTABLISHED;
+    	}
+    	
     }
 
     /**
