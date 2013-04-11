@@ -6,3 +6,4 @@ resources/database.properties
 resource/server.properties
 .classpath
 *~
+Log/
