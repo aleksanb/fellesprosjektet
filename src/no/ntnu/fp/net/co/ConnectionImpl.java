@@ -30,7 +30,7 @@ import no.ntnu.fp.net.cl.KtnDatagram.Flag;
  * of the functionality, leaving message passing and error handling to this
  * implementation.
  * 
- * @author Sebjørn Birkeland and Stein Jakob Nordbø
+ * @author Sebjï¿½rn Birkeland and Stein Jakob Nordbï¿½
  * @see no.ntnu.fp.net.co.Connection
  * @see no.ntnu.fp.net.cl.ClSocket
  */
@@ -102,7 +102,10 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-        throw new NotImplementedException();
+    	KtnDatagram datagram = receivePacket(true);
+    	ConnectionImpl conn = new ConnectionImpl(myPort);
+    	conn.fillConnfields(datagram.getSrc_port(), datagram.getDest_addr(), datagram.getSrc_addr());
+    	return conn;
     }
 
     /**
@@ -152,5 +155,10 @@ public class ConnectionImpl extends AbstractConnection {
      */
     protected boolean isValid(KtnDatagram packet) {
         throw new NotImplementedException();
+    }
+    private void fillConnfields(int remotePort, String myAddress, String remoteAddress){
+    	this.remotePort=remotePort;
+    	this.myAddress=myAddress;
+    	this.remoteAddress=remoteAddress;
     }
 }
