@@ -83,10 +83,26 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
+    	this.state=State.LISTEN;
     	KtnDatagram datagram = receivePacket(true);
-    	ConnectionImpl conn = new ConnectionImpl(myPort);
-    	conn.fillConnfields(datagram.getSrc_port(), datagram.getDest_addr(), datagram.getSrc_addr());
-    	return conn;
+    	ConnectionImpl newConn = new ConnectionImpl(myPort);
+    	KtnDatagram synAckDatagram;
+    	//sjekker om datagrammet er valid og om det er en SYN-ack
+    	if(isValid(datagram) && datagram.getFlag()==Flag.SYN){
+    		newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
+    		newConn.sendAck(datagram, true);
+    	}
+    	else{
+    		//retry
+    	}
+    	
+    	//listen for final ack
+    	KtnDatagram finalAck = receiveAck();
+    	if(isValid(finalAck) && finalAck.getFlag()==Flag.ACK){
+    		//this worked well
+	    	;
+    	}
+	    return newConn;
     }
 
     /**
@@ -137,9 +153,8 @@ public class ConnectionImpl extends AbstractConnection {
     protected boolean isValid(KtnDatagram packet) {
         throw new NotImplementedException();
     }
-    private void fillConnfields(int remotePort, String myAddress, String remoteAddress){
+    private void fillConnfields(int remotePort, String remoteAddress){
     	this.remotePort=remotePort;
-    	this.myAddress=myAddress;
     	this.remoteAddress=remoteAddress;
     }
 }
