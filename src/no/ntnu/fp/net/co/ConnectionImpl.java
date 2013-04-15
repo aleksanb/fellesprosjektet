@@ -145,7 +145,7 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram ack;
         do
         	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));
-        while ( ack != null );
+        while ( ack == null );
         
     }
 
@@ -158,9 +158,14 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        KtnDatagram datagram = receivePacket(false);
-    	sendAck(datagram, false);
-    
+    	KtnDatagram datagram;
+    	try{
+    		datagram = receivePacket(false);
+    		sendAck(datagram, false);
+    	}catch(EOFException e){
+    		this.state=State.CLOSE_WAIT;
+    		throw e;
+    	}
         return (String)datagram.getPayload();
     }
 
@@ -170,7 +175,30 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-    	throw new NotImplementedException();
+    	 if(this.state==State.ESTABLISHED){
+	         KtnDatagram ack;
+//	         do{
+	         	try {
+					simplySendPacket(constructInternalPacket(Flag.FIN));
+				} catch (ClException e) {
+					e.printStackTrace();
+				}
+	         	ack=receiveAck();
+//	         }while ( ack == null);
+	         
+	         KtnDatagram finAck;
+	         do{
+	        	 finAck = receiveAck();
+	         }while(finAck == null);
+	         sendAck(finAck, true);
+    	 }
+    	 else if(this.state == State.CLOSE_WAIT){
+    		 KtnDatagram ack;
+    		 sendAck(disconnectRequest, false);
+    		 do
+ 	         	ack = sendDataPacketWithRetransmit(constructInternalPacket(Flag.FIN));
+ 	         while ( ack == null);
+    	 }
     }
 
     /**
