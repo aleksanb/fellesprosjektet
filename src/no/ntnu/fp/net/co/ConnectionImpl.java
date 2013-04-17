@@ -87,6 +87,8 @@ public class ConnectionImpl extends AbstractConnection {
 			e.printStackTrace();
 		}
     	
+    	this.state = State.SYN_SENT;
+    	
     	KtnDatagram synAck = receiveAck();
     	if (synAck.getFlag() == Flag.SYN_ACK && isValid(synAck)) {
     		sendAck(synAck, false);
@@ -109,11 +111,11 @@ public class ConnectionImpl extends AbstractConnection {
     		datagram = receivePacket(true);
     	} while (datagram == null || datagram.getFlag()!=Flag.SYN);
     	
+
+    	this.state = State.SYN_RCVD;
     	ConnectionImpl newConn = new ConnectionImpl(myPort);
-    	state = State.SYN_RCVD;
     	newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
     	newConn.sendAck(datagram, true);
-    	state = State.SYN_SENT;
     	
     	//listen for final ack
     	KtnDatagram finalAck = receiveAck();
@@ -144,10 +146,10 @@ public class ConnectionImpl extends AbstractConnection {
         }
         
         KtnDatagram ack;
-        do
-        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));
+        do {
+        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));        	
+        }
         while ( ack == null );
-        
     }
 
     /**
@@ -229,4 +231,11 @@ public class ConnectionImpl extends AbstractConnection {
     	this.remotePort=remotePort;
     	this.remoteAddress=remoteAddress;
     }
+    
+    public void o(String output) {
+    	System.out.println("//**         **//");
+    	System.out.println(output);
+    	System.out.println("//**         **//");
+    }
+
 }
