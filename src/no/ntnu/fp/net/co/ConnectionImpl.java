@@ -87,12 +87,12 @@ public class ConnectionImpl extends AbstractConnection {
 			e.printStackTrace();
 		}
     	
-    	this.state = State.SYN_SENT;
+    	state = State.SYN_SENT;
     	
     	KtnDatagram synAck = receiveAck();
     	if (synAck.getFlag() == Flag.SYN_ACK && isValid(synAck)) {
     		sendAck(synAck, false);
-    		this.state = State.ESTABLISHED;
+    		state = State.ESTABLISHED;
     	}
     	
     }
@@ -104,14 +104,15 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
-    	this.state=State.LISTEN;
+    	state=State.LISTEN;
     	KtnDatagram datagram = null;
     	
     	do {
     		datagram = receivePacket(true);
     	} while (datagram == null || datagram.getFlag()!=Flag.SYN);
     	
-    	this.state = State.SYN_RCVD;
+
+    	state = State.SYN_RCVD;
     	ConnectionImpl newConn = new ConnectionImpl(myPort);
     	newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
     	newConn.sendAck(datagram, true);
@@ -119,7 +120,8 @@ public class ConnectionImpl extends AbstractConnection {
     	//listen for final ack
     	KtnDatagram finalAck = receiveAck();
     	if(finalAck.getFlag()==Flag.ACK){
-    		this.state = State.ESTABLISHED;
+    		newConn.state = State.ESTABLISHED;
+    		state=State.LISTEN;
     		return newConn;
     	} else {
     		throw new IOException();
@@ -141,7 +143,7 @@ public class ConnectionImpl extends AbstractConnection {
     public void send(String msg) throws ConnectException, IOException {
     	KtnDatagram packet = constructDataPacket(msg);
     	int attempts = 0;
-        if (this.state != State.ESTABLISHED) {
+        if (state != State.ESTABLISHED) {
         	throw new ConnectException();
         }
         
@@ -185,7 +187,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
-    	 if(this.state==State.ESTABLISHED){
+    	 if(state==State.ESTABLISHED){
 	         KtnDatagram ack;
 //	         do{
 	         	try {
@@ -193,21 +195,35 @@ public class ConnectionImpl extends AbstractConnection {
 				} catch (ClException e) {
 					e.printStackTrace();
 				}
+	         	state=State.FIN_WAIT_1;
+	         	System.out.println("CLIENT: before receive ack");
 	         	ack=receiveAck();
+	         	System.out.println("CLIENT: received ack: " + ack);
+	         	state = State.FIN_WAIT_2;
 //	         }while ( ack == null);
-	         
-	         KtnDatagram finAck;
+	         KtnDatagram disRequest;
 	         do{
-	        	 finAck = receiveAck();
-	         }while(finAck == null);
-	         sendAck(finAck, true);
+		         System.out.println("CLIENT: before receive finack");
+		         disRequest = receiveAck();
+	        	 System.out.println("CLIENT: received disconnetrequest");
+	         }while(disRequest == null);
+	         sendAck(disRequest, true);
     	 }
-    	 else if(this.state == State.CLOSE_WAIT){
+    	 else if(state == State.CLOSE_WAIT){
     		 KtnDatagram ack;
+    		 System.out.println("SERVER: send disconnect request");
     		 sendAck(disconnectRequest, false);
-    		 do
- 	         	ack = sendDataPacketWithRetransmit(constructInternalPacket(Flag.FIN));
- 	         while ( ack == null);
+    		 System.out.println("SERVER: sent disconnect request");
+    		 do{
+    			 System.out.println("send data with retransmit");
+ 	         	try {
+					simplySendPacket(constructInternalPacket(Flag.FIN));
+				} catch (ClException e) {
+					e.printStackTrace();
+				}
+ 	         	ack = receiveAck();
+ 	         	System.out.println("HERE IS THE ACK"+ack);
+    		 }while ( ack == null);
     	 }
     }
 
