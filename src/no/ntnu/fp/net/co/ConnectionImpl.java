@@ -144,10 +144,10 @@ public class ConnectionImpl extends AbstractConnection {
         }
         
         KtnDatagram ack;
-        do
-        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));
+        do {
+        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));        	
+        }
         while ( ack == null );
-        
     }
 
     /**
