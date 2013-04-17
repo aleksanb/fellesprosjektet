@@ -87,6 +87,8 @@ public class ConnectionImpl extends AbstractConnection {
 			e.printStackTrace();
 		}
     	
+    	this.state = State.SYN_SENT;
+    	
     	KtnDatagram synAck = receiveAck();
     	if (synAck.getFlag() == Flag.SYN_ACK && isValid(synAck)) {
     		sendAck(synAck, false);
@@ -109,11 +111,10 @@ public class ConnectionImpl extends AbstractConnection {
     		datagram = receivePacket(true);
     	} while (datagram == null || datagram.getFlag()!=Flag.SYN);
     	
-    	ConnectionImpl newConn = new ConnectionImpl(myPort);
     	this.state = State.SYN_RCVD;
+    	ConnectionImpl newConn = new ConnectionImpl(myPort);
     	newConn.fillConnfields(datagram.getSrc_port(), datagram.getSrc_addr());
     	newConn.sendAck(datagram, true);
-    	this.state = State.SYN_SENT;
     	
     	//listen for final ack
     	KtnDatagram finalAck = receiveAck();
