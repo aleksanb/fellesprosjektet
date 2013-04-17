@@ -139,15 +139,21 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
+    	KtnDatagram packet = constructDataPacket(msg);
+    	int attempts = 0;
         if (this.state != State.ESTABLISHED) {
         	throw new ConnectException();
         }
         
         KtnDatagram ack;
         do {
-        	ack = sendDataPacketWithRetransmit(constructDataPacket(msg));        	
+        	if(attempts>10) {
+      		  throw new IOException("Max resend attempts reached!");
+        	}
+        	attempts++;
+        	ack = sendDataPacketWithRetransmit(packet);        	
         }
-        while ( ack == null );
+        while ( !isCorrect(ack) );
     }
 
     /**
@@ -159,14 +165,17 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-    	KtnDatagram datagram;
-    	try{
-    		datagram = receivePacket(false);
-    		sendAck(datagram, false);
-    	}catch(EOFException e){
-    		this.state=State.CLOSE_WAIT;
-    		throw e;
+    	KtnDatagram datagram = null;
+    	
+    	while(!isValid(datagram)) {
+	    	try{
+	    		datagram = receivePacket(false);
+	    	}catch(EOFException e){
+	    		this.state=State.CLOSE_WAIT;
+    			throw e;
+    		}
     	}
+    	sendAck(datagram, false);
         return (String)datagram.getPayload();
     }
 
@@ -211,7 +220,22 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        return (packet.calculateChecksum() == packet.getChecksum());
+        if(packet.calculateChecksum() != packet.getChecksum()){
+        	return false;
+        }
+        if(packet.getSeq_nr() != lastValidPacketReceived.getSeq_nr() + 1){
+        	return false;
+        }
+        if(packet.getSrc_port() != remotePort){
+        	return false;
+        }
+        if(!packet.getSrc_addr().equals(remoteAddress)){
+        	return false;
+        }
+        if(!(packet.getFlag() == Flag.ACK || packet.getFlag() == Flag.NONE)){
+        	return false;
+        }
+        return true;
     }
     private void fillConnfields(int remotePort, String remoteAddress){
     	this.remotePort=remotePort;
@@ -222,6 +246,18 @@ public class ConnectionImpl extends AbstractConnection {
     	System.out.println("//**         **//");
     	System.out.println(output);
     	System.out.println("//**         **//");
+    }
+    private boolean isCorrect(KtnDatagram ack){
+    	if(ack == null){
+    		return false;
+    	}
+    	if(ack.getFlag() != Flag.ACK){
+    		return false;
+    	}
+    	if(ack.getAck() != lastDataPacketSent.getSeq_nr()){
+    		return false;
+    	}
+    	return true;
     }
 
 }
