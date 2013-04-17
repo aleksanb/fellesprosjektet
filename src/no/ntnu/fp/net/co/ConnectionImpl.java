@@ -190,18 +190,19 @@ public class ConnectionImpl extends AbstractConnection {
 				} catch (ClException e) {
 					e.printStackTrace();
 				}
+	         	state=State.FIN_WAIT_1;
 	         	System.out.println("CLIENT: before receive ack");
 	         	ack=receiveAck();
 	         	System.out.println("CLIENT: received ack: " + ack);
+	         	state = State.FIN_WAIT_2;
 //	         }while ( ack == null);
-	         
-	         KtnDatagram finAck;
+	         KtnDatagram disRequest;
 	         do{
 		         System.out.println("CLIENT: before receive finack");
-	        	 finAck = receiveAck();
-	        	 System.out.println("CLIENT: received finack: " + finAck);
-	         }while(finAck == null);
-	         sendAck(finAck, true);
+		         disRequest = receiveAck();
+	        	 System.out.println("CLIENT: received disconnetrequest");
+	         }while(disRequest == null);
+	         sendAck(disRequest, true);
     	 }
     	 else if(state == State.CLOSE_WAIT){
     		 KtnDatagram ack;
@@ -210,7 +211,12 @@ public class ConnectionImpl extends AbstractConnection {
     		 System.out.println("SERVER: sent disconnect request");
     		 do{
     			 System.out.println("send data with retransmit");
- 	         	ack = sendDataPacketWithRetransmit(constructInternalPacket(Flag.FIN));
+ 	         	try {
+					simplySendPacket(constructInternalPacket(Flag.FIN));
+				} catch (ClException e) {
+					e.printStackTrace();
+				}
+ 	         	ack = receiveAck();
  	         	System.out.println("HERE IS THE ACK"+ack);
     		 }while ( ack == null);
     	 }
