@@ -217,4 +217,11 @@ public class ConnectionImpl extends AbstractConnection {
     	this.remotePort=remotePort;
     	this.remoteAddress=remoteAddress;
     }
+    
+    public void o(String output) {
+    	System.out.println("//**         **//");
+    	System.out.println(output);
+    	System.out.println("//**         **//");
+    }
+
 }
