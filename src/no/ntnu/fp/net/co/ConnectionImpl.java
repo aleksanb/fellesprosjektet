@@ -90,7 +90,7 @@ public class ConnectionImpl extends AbstractConnection {
     	state = State.SYN_SENT;
     	
     	KtnDatagram synAck = receiveAck();
-    	if (synAck.getFlag() == Flag.SYN_ACK && isValid(synAck)) {
+    	if (synAck.getFlag() == Flag.SYN_ACK) {
     		sendAck(synAck, false);
     		state = State.ESTABLISHED;
     	}
@@ -236,10 +236,13 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
+    	if(packet == null){
+    		return false;
+    	}
         if(packet.calculateChecksum() != packet.getChecksum()){
         	return false;
         }
-        if(packet.getSeq_nr() != lastValidPacketReceived.getSeq_nr() + 1){
+        if((lastValidPacketReceived != null) && (packet.getSeq_nr() != lastValidPacketReceived.getSeq_nr() + 1)){
         	return false;
         }
         if(packet.getSrc_port() != remotePort){
